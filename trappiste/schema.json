@@ -1,0 +1,110 @@
+{
+	"global": {
+		"required": true,
+		"type": "dict",
+		"keys": {
+			"core:datatype": {
+				"type": "string",
+				"required": true,
+				"help": "Sample data format (e.g., sc16, fc32)"
+			},
+			"core:offset": {
+				"type": "uint",
+				"required": false,
+				"help": "Index offset of the first sample. Defaults to 0"
+			},
+			"core:description": {
+				"type": "string",
+				"required": false,
+				"help": "Textual description of the capture."
+			},
+			"core:author": {
+				"type": "string",
+				"required": false,
+				"help": "Name and optionally email address of the author"
+			},
+			"core:license": {
+				"type": "string",
+				"required": true,
+				"default": "CC0 1.0 Universal",
+				"help": "Sample data license"
+			},
+			"core:date": {
+				"type": "string",
+				"required": true,
+				"pattern": "",
+				"help": "ISO 8601-formatted date (e.g., 2017-02-01T15:05:03+00:00)"
+			},
+			"core:url": {
+				"type": "string",
+				"required": true,
+				"help": "Location of the sample data file"
+			},
+			"core:hash": {
+				"type": "string",
+				"required": true,
+				"help": "SHA512 hash of the corresponding sample data file"
+			},
+			"core:version": {
+				"type": "string",
+				"required": true,
+				"default": "1.0.0",
+				"help": "Version of the data format header foo"
+			},
+			"core:hw": {
+				"type": "string",
+				"required": false,
+				"help": "Information about the hardware used (measurement setup, antennas, etc.)"
+			}
+		}
+	},
+
+	"capture_infos": {
+		"required": true,
+		"type": "dict_list",
+		"keys": {
+			"core:sampling_start": {
+				"type": "uint",
+				"required": true,
+				"help": "Index of first sample of this chunk"
+			},
+			"core:frequency": {
+				"type": "double",
+				"required": true,
+				"help": "Center frequency of signal (Hz)"
+			},
+			"core:sampling_rate": {
+				"type": "double",
+				"required": true,
+				"help": "Sampling rate of signal (Sps)"
+			},
+			"core:time": {
+				"type": "string",
+				"required": false,
+				"help": "Start time of chunk"
+			}
+		}
+	},
+
+	"annotations": {
+		"required": true,
+		"type": "dict_list",
+		"keys": {
+			"core:sampling_start": {
+				"type": "uint",
+				"required": true,
+				"help": "Index of first sample of this chunk"
+			},
+			"core:sampling_length": {
+				"type": "uint",
+				"required": true,
+				"help": "Center frequency of signal (Hz)"
+			},
+			"core:comment": {
+				"type": "string",
+				"required": false,
+				"help": "Comment"
+			}
+		}
+	}
+}
