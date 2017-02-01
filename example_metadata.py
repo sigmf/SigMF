@@ -8,7 +8,7 @@
 		"core:offset": 0,			# Optional if 0 ...
 	},
 
-	"capture_infos": [ # Sorted list by sample_start
+	"capture": [ # Sorted list by sample_start
 		# First one mandatory start at data start (either 0 or "offset", see global)
 		{
 			"sample_start": 0,				# Mandatory (and be 0)
