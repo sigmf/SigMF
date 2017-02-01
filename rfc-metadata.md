@@ -39,6 +39,8 @@ The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL 
 “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be
 interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
+JSON key words are used as defined in [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+
 ## Specification
 
 This specification fundamentally describes two types of information: datasets,
@@ -79,11 +81,37 @@ and computer applications that are clients of the dataset.
 
 ### Metadata Format
 
-#### Types of Segments
-global, capture, annotations
+1. The entire contents of the metadata file MUST be contained within a single
+   JSON object (i.e., the first character of the file MUST be '{' and the last
+   character of the file MUST be '}'. This object is hereafter called the
+   `top-level object`.
+2. The top-level object MUST contain three objects named `global`, `capture`,
+   and `annotations`.
+
+#### Global Object
+
+The global object provides information that applies to the entire dataset.
+
+1. It is RECOMMENDED that the global object be the first object in the top-level
+   object.
+2. The global object MUST contain `core:datatype`.
+3. `core:license`
+4. `core:date`
+5. `core:url`
+6. `core:hash`
+7. `core:version`
+
+optional: `offset`, `description`, `author`, `hw`
+
+#### Capture Object
+
+#### Annotation Object
+
 
 ### application requirements
 segments referring to non-existent samples should be ignored
+
+applications should be able to ignore any sections not specified in this document
 
 ## Example
 example of metadata file contents
