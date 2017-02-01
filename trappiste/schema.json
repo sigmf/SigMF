@@ -10,7 +10,7 @@
 			},
 			"core:offset": {
 				"type": "uint",
-				"required": false,
+				"requirrefed": false,
 				"help": "Index offset of the first sample. Defaults to 0"
 			},
 			"core:description": {
@@ -40,7 +40,7 @@
 				"required": true,
 				"help": "Location of the sample data file"
 			},
-			"core:hash": {
+			"core:sha512": {
 				"type": "string",
 				"required": true,
 				"help": "SHA512 hash of the corresponding sample data file"
@@ -59,23 +59,23 @@
 		}
 	},
 
-	"capture_infos": {
+	"capture": {
 		"required": true,
 		"type": "dict_list",
 		"keys": {
-			"core:sampling_start": {
+			"core:sample_start": {
 				"type": "uint",
 				"required": true,
 				"help": "Index of first sample of this chunk"
 			},
 			"core:frequency": {
 				"type": "double",
-				"required": true,
+				"required": false,
 				"help": "Center frequency of signal (Hz)"
 			},
 			"core:sampling_rate": {
 				"type": "double",
-				"required": true,
+				"required": false,
 				"help": "Sampling rate of signal (Sps)"
 			},
 			"core:time": {
@@ -90,12 +90,12 @@
 		"required": true,
 		"type": "dict_list",
 		"keys": {
-			"core:sampling_start": {
+			"core:sample_start": {
 				"type": "uint",
 				"required": true,
 				"help": "Index of first sample of this chunk"
 			},
-			"core:sampling_length": {
+			"core:sample_length": {
 				"type": "uint",
 				"required": true,
 				"help": "Center frequency of signal (Hz)"
