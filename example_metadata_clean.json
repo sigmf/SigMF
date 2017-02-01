@@ -1,0 +1,29 @@
+{
+    "global": {
+        "core:type": "cf32",
+        "core:offset": 0
+    },
+
+    "capture_infos": [
+        {
+            "sample_start": 0,
+            "core:samplerate": 10000000,
+            "core:frequency": 950000000,
+            "core:time": "2017-02-01T11:33:17,053240428+01:00",
+            "uhd:gain": 34
+        },
+        {
+            "sample_start": 100000,
+            "core:frequency": 950000000,
+            "uhd:gain": 54
+        }
+    ],
+    "annotations": [
+        {
+            "sample_start": 100000,
+            "sample_length": 120000,
+            "core:comment": "Some textual comment about stuff happenning",
+            "gsm:xxx": 111
+        }
+    ]
+}
