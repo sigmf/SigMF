@@ -26,7 +26,7 @@
     "annotations": [
         {
             "core:sample_start": 100000,
-            "sample_length": 120000,
+            "core:sample_length": 120000,
             "core:comment": "Some textual comment about stuff happenning",
             "gsm:xxx": 111
         }

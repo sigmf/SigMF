@@ -10,7 +10,7 @@
 			},
 			"core:offset": {
 				"type": "uint",
-				"requirrefed": false,
+				"required": false,
 				"help": "Index offset of the first sample. Defaults to 0"
 			},
 			"core:description": {
