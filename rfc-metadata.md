@@ -13,8 +13,9 @@ Brussels Hackfest](http://www.darpahackfest.com/).
 
 This document is Copyright of The GNU Radio Foundation, Inc. 
 
-This document is available under the CC-BY-SA license.
-<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+This document is available under the [CC-BY-SA License](http://"creativecommons".org/licenses/by-sa/4.0/).
+
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a>
 
 ## Table of Contents
 
