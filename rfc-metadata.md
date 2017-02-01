@@ -44,14 +44,9 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 This specification fundamentally describes two types of information: datasets,
 and metadata associated with those datasets.
 
-### Dataset
-
 Datasets, for purposes of this specification, are recordings of digital samples.
 The samples may be created by digital synthesis (i.e., simulation) or by an
 actual Analog-to-Digital Converter (ADC) that is sampling an analog signal.
-
-
-### Metadata
 
 Metadata describes the dataset with which it is associated. The metadata
 includes information meant for the human users of the dataset, such as a title and
@@ -63,14 +58,19 @@ operate on the dataset.
 1. The metadata and dataset MUST be separate files.
 2. A metadata file MUST only describe one dataset file.
 
-#### Dataset File & Format
+#### Dataset File
+
+The purpose of the dataset file is to store the sample set.
 
 1. The dataset file MUST have a `.data` filename extension.
 2. The dataset file MUST be a 'flat' file that is composed only of sample data
    and MUST NOT contain any other characters (e.g., delimiters, whitespace,
    line-endings, `EOF` characters, etc.,).
 
-#### Metadata File & Format
+#### Metadata File
+
+The purpose of the metadata file is to describe the dataset to both human users
+and computer applications that are clients of the dataset.
 
 1. The metadata file MUST have a `.meta` filename extension.
 2. The metadata file MUST be a [JSON](http://www.json.org/) file, as specified
@@ -80,10 +80,7 @@ operate on the dataset.
 ### Metadata Format
 
 #### Types of Segments
-global, capture_info, annotations
-
-
-### Dataset Format
+global, capture, annotations
 
 ### application requirements
 segments referring to non-existent samples should be ignored
