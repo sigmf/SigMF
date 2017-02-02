@@ -1,1 +1,1 @@
-[Metadata definition](rfc-metadata.md)
+[Signal Metadata Format Specification](sigmf-spec.md)
