@@ -82,12 +82,16 @@ def validate_section(data_section, ref_section, section):
                 False,
                 "Section `{sec}' exists, but is not a dict.".format(sec=section)
             )
-        if not all((validate_key(
+        key_validation_results = (
+            validate_key(
                 data_section.get(key),
                 ref_section["keys"].get(key),
-                section, key) for key in ref_section["keys"])
-                  ):
-            return ValidationResult(False, "Missing Keys")
+                section, key
+            ) for key in ref_section["keys"]
+        )
+        for result in key_validation_results:
+            if not bool(result):
+                return result
     if ref_section["type"] == "dict_list":
         if not isinstance(data_section, list) or \
                 not all((isinstance(x, dict) for x in data_section)):
