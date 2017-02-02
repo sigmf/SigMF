@@ -1,6 +1,7 @@
 {
     "global": {
         "core:datatype": "cf32",
+        "core:datapath": "foo.dat",
         "core:offset": 0,
         "core:version": "1.0.0",
         "core:license": "CC0",
@@ -26,7 +27,7 @@
     "annotations": [
         {
             "core:sample_start": 100000,
-            "core:sample_length": 120000,
+            "core:sample_count": 120000,
             "core:comment": "Some textual comment about stuff happenning",
             "gsm:xxx": 111
         }
