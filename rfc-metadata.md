@@ -63,11 +63,65 @@ file contains information that describes the dataset.
 
 1. The metadata and dataset MUST be separate files.
 2. A metadata file MUST only describe one dataset file.
-3. The dataset file MUST have a `.data` filename extension.
-4. The dataset file MUST be a 'flat' file that is composed only of sample data
+3. The metadata file MUST have a `.meta` filename extension.
+4. The dataset file MUST have a `.data` filename extension.
+5. The dataset file MUST be a 'flat' file that is composed only of sample data
    and MUST NOT contain any other characters (e.g., delimiters, whitespace,
    line-endings, `EOF` characters, etc.,).
-5. The metadata file MUST have a `.meta` filename extension.
+
+### Sample Format
+
+The samples in the dataset file must be in a supported format. There are four
+orthogonal characteristics of sample data: complex or real, floating-point or
+fixed-point, bit-width, and endianness. All of these must be explicitly
+specified, except for endianness which is assumed to be `little endian` unless
+specified otherwise.
+
+Sample formats are specified by strings that indicate the type for each of the
+four different characteristics. The types must be specified in the following
+order:
+
+```
+<complex or real> <floating or fixed> <bit-width> <endianness>
+```
+
+Where the following strings specify types:
+
+` ` or `c`: `<nothing>` for real data, and `c` for complex (quadrature) data.
+`f` or `i` or `u`: `f` for floating-point, `i` for signed fixed-point, and `u`
+for unsigned fixed-point.
+`8` or `16` or `32`: `8` for 8-bit samples, `16` for 16-bit samples, `32` for
+32-bit samples.
+`_le` or `_be`: `_le` for little-endian, `_be` for big-endian.
+
+
+
+The tables below detail how to specify each type.
+
+**Complex or Real:**
+
+
+|type string|description|
+|-----------|-----------|
+|"cf32"|complex 32-bit floating-point
+|"ci32"|complex 32-bit integer
+|"ci16"|complex 16-bit integer
+|"ci8"|real signed 8-bit integer
+|"f32"|real 32-bit floating-point
+|"i32"|real 32-bit integer
+|"i16"|real 16-bit integer
+|"i8"|real signed 8-bit integer
+|"u8"|real unsigned 8-bit integer
+
+int8
+uint8
+int16
+uint16
+float
+
+In order to specify an endianness, an extension is added to the above type
+strings: `_le` for little-endian or `_be` for big-endian (e.g., `cf32_be` is
+complex 32-bit floats in big-endian).
 
 ### Metadata Format
 
