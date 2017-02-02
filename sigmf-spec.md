@@ -42,7 +42,7 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
             - [Capture Object](#capture-object)
             - [Annotation Object](#annotation-object)
         - [Dataset Licensing](#dataset-licensing)
-        - [application requirements](#application-requirements)
+        - [Application Requirements](#application-requirements)
     - [Example](#example)
 - [Acknowledgements](#acknowledgements)
 
@@ -246,18 +246,19 @@ the `annotation` object:
 |`comment`|false|string|A human-readable comment.|
 |`freq_lower_edge`|false|double|The lower edge of the frequency band of a signal feature that this annotation describes.|
 |`freq_upper_edge`|false|double|The upper edge of the frequency band of a signal feature that this annotation describes. |
-|`latitude`|false|need a standard?|
-|`longitude`|false|need a standard?|
+|`latitude`|false|need a standard?| |
+|`longitude`|false|need a standard?| |
 
 ### Dataset Licensing
 
 You may specify any license of your choosing. Recommended licenses for SigMF
 recordings are:
 
-* ["CC0 1.0 Public Domain Dedication"](https://creativecommons.org/publicdomain/zero/1.0/)
-* ["CC-BY Attrition 2.0 Generic"](https://creativecommons.org/licenses/by/2.0/)
+* [CC0 1.0 Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/)
+* [CC-BY Attrition 2.0 Generic](https://creativecommons.org/licenses/by/2.0/)
 
-### application requirements
+### Application Requirements
+
 segments referring to non-existent samples should be ignored
 
 applications should be able to ignore any sections not specified in this document
@@ -266,4 +267,6 @@ applications should be able to ignore any sections not specified in this documen
 example of metadata file contents
 
 # Acknowledgements
-DARPA
+
+This specification originated at the DARPA Brussels Hackfest 2017.
+
