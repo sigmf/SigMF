@@ -18,18 +18,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """
-Hashing functions
+Schema default foo.
 """
 
-import hashlib
+import json
+from sigmf import utils
 
-def calculate_sha512(filename):
+def get_schema(version=None):
     """
-    Returns sha512 of filename
+    Return a schema based on the version
     """
-    the_hash = hashlib.sha512()
-    with open(filename, "rb") as f:
-        for buff in iter(lambda: f.read(4096), b""):
-            the_hash.update(buff)
-    return the_hash.hexdigest()
-
+    schema_file = os.path.join(
+        utils.get_schema_path(os.path.dirname(utils.__file__)),
+        'schema.json'
+    )
+    return json.load(open(schema_file))

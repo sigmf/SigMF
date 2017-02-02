@@ -47,3 +47,9 @@ def insert_sorted_dict_list(dict_list, new_entry, key):
     dict_list = dict_list + [new_entry]
     return sorted(dict_list, key=lambda k: k[key])
 
+
+def get_schema_path(module_path):
+    """
+    """
+    return module_path
+

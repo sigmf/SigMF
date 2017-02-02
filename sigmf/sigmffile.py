@@ -18,10 +18,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """
-Formatter Object
+SigMF File Representation Object
 """
 
-import os
 import json
 from six import iteritems
 from .utils import dict_merge, insert_sorted_dict_list
@@ -54,33 +53,36 @@ class SigMFFile(object):
     API to manipulate annotation files.
 
     Parameters:
-    metadata_file -- Path to an annotation file (required). If it does not
-                     exist, it will be created. If it can't be read or accessed,
-                     an error will be thrown.
-    data_file     -- Path to the corresponding data file (optional).
-    global_info   -- Dictionary containing global header info.
+    metadata    -- Metadata. Either a string, or a dictionary.
+    data_file   -- Path to the corresponding data file (optional).
+    global_info -- Dictionary containing global header info.
     """
     START_INDEX_KEY = "core:sample_start"
     LENGTH_INDEX_KEY = "core:sample_length"
     START_OFFSET_KEY = "core:offset"
     HASH_KEY = "core:sha512"
+    VERSION_KEY = "core:version"
 
     def __init__(
             self,
-            metadata_file,
+            metadata=None,
             data_file=None,
             global_info=None,
     ):
-        self.metadata_file = metadata_file
-        if os.path.isfile(self.metadata_file):
-            self._metadata = json.load(open(self.metadata_file))
+        if metadata is None:
+            from sigmf import schema
+            the_schema = schema.get_schema(
+                global_info.get(self.VERSION_KEY) if global_info is not None else None
+            )
+            self._metadata = get_default_metadata(the_schema)
+        elif isinstance(metadata, dict):
+            self._metadata = metadata
         else:
-            # FIXME no hardcodery!
-            default_schema = json.load(open("caf/schema.json"))
-            self._metadata = get_default_metadata(default_schema)
+            self._metadata = json.loads(metadata)
         if global_info is not None:
             self.set_global_info(global_info)
         self.data_file = data_file
+        # TODO check if the data file exists
 
     def _get_start_offset(self):
         """
@@ -173,8 +175,8 @@ class SigMFFile(object):
         Calculates the hash of the data file and adds it to the global section.
         Also returns a string representation of the hash.
         """
-        from .sigmf_hash import sha512
-        the_hash = sha512(self.data_file)
+        from sigmf import sigmf_hash
+        the_hash = sigmf_hash.calculate_sha512(self.data_file)
         self._metadata["global"][self.HASH_KEY] = the_hash
         return the_hash
 
@@ -182,22 +184,26 @@ class SigMFFile(object):
         """
         Return True if this is valid.
         """
-        # FIXME write
-        return True
+        from sigmf import validate
+        from sigmf import schema
+        schema_version = self._metadata.get("global", {}).get(self.VERSION_KEY)
+        return validate.validate(
+            self._metadata,
+            schema.get_schema(schema_version),
+        )
 
-
-    def write(self, pretty=False):
+    def dump(self, filep, pretty=False):
         """
         Write out the file.
         """
         json.dump(
             self._metadata,
-            open(self.metadata_file, 'w'),
+            filep,
             indent=4 if pretty else None,
             separators=(',', ': ') if pretty else None,
         )
 
-    def dump(self, pretty=False):
+    def dumps(self, pretty=False):
         """
         Return a string representation of the metadata file.
         """
