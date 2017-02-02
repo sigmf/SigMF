@@ -57,29 +57,31 @@ operate on the dataset.
 
 ### Files
 
+One complete <NAME> consists of two files: a `metadata` file and a `dataset`
+file. The dataset file is a binary file for storing samples, and the metadata
+file contains information that describes the dataset.
+
 1. The metadata and dataset MUST be separate files.
 2. A metadata file MUST only describe one dataset file.
-
-#### Dataset File
-
-The purpose of the dataset file is to store the sample set.
-
-1. The dataset file MUST have a `.data` filename extension.
-2. The dataset file MUST be a 'flat' file that is composed only of sample data
+3. The dataset file MUST have a `.data` filename extension.
+4. The dataset file MUST be a 'flat' file that is composed only of sample data
    and MUST NOT contain any other characters (e.g., delimiters, whitespace,
    line-endings, `EOF` characters, etc.,).
-
-#### Metadata File
-
-The purpose of the metadata file is to describe the dataset to both human users
-and computer applications that are clients of the dataset.
-
-1. The metadata file MUST have a `.meta` filename extension.
-2. The metadata file MUST be a [JSON](http://www.json.org/) file, as specified
+5. The metadata file MUST have a `.meta` filename extension.
+6. The metadata file MUST be a [JSON](http://www.json.org/) file, as specified
    by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf),
    composed of ASCII text.
 
 ### Metadata Format
+
+Metadata takes the form of JSON name/value pairs, and are contained within JSON
+`objects`. There are three types top-level objects: `global`, `capture`, and
+`annotations`. The `global` object is composed of name/value pairs. The
+`capture` and `annotations` objects contain an array of sorted objects, which
+are called `capture segments` and `annotation segments`, respectively. These
+`segments` are composed of name/value pairs. The names of the name/value pairs
+can be namespaced for further structure.
+
 
 1. The entire contents of the metadata file MUST be contained within a single
    JSON object (i.e., the first character of the file MUST be '{' and the last
@@ -87,6 +89,8 @@ and computer applications that are clients of the dataset.
    `top-level object`.
 2. The top-level object MUST contain three objects named `global`, `capture`,
    and `annotations`.
+   
+#### Namespaces
 
 #### Global Object
 
