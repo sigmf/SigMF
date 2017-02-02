@@ -100,12 +100,16 @@ def validate_section(data_section, ref_section, section):
                 "Section `{sec}' exists, but is not a list of dicts.".format(sec=section)
             )
         for chunk in data_section:
-            if not all((
-                    validate_key(
-                        chunk.get(key),
-                        ref_section["keys"].get(key),
-                        section, key) for key in ref_section["keys"])):
-                return ValidationResult(False, "missing keys yo")
+            key_validation_results = (
+                validate_key(
+                    chunk.get(key),
+                    ref_section["keys"].get(key),
+                    section, key
+                ) for key in ref_section["keys"]
+            )
+            for result in key_validation_results:
+                if not bool(result):
+                    return result
     return True
 
 def validate(data, ref=None):
@@ -115,8 +119,8 @@ def validate(data, ref=None):
     data, ref: dicts
     """
     if ref is None:
-        from sigmf import default_schema
-        ref = default_schema.get_default_schema()
+        from sigmf import schema
+        ref = schema.get_schema()
     for result in (validate_section(data.get(key), ref.get(key), key) for key in ref):
         if not result:
             return result
