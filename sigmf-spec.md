@@ -20,7 +20,7 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
 **Table of Contents**
 
-- [RFC Metadata](#rfc-metadata)
+- [Signal Metadata Format Specification v0.0.1](#signal-metadata-format-specification-v001)
     - [Abstract](#abstract)
     - [Status of this Document](#status-of-this-document)
     - [Copyright Notice](#copyright-notice)
@@ -66,8 +66,9 @@ JSON keywords are used as defined in [ECMA-404](http://www.ecma-international.or
 
 ## Specification
 
-This specification fundamentally describes two types of information: datasets,
-and metadata associated with those datasets.
+The SigMF specification fundamentally describes two types of information:
+datasets, and metadata associated with those datasets. Taken together, a dataset
+with its SigMF metadata is a `SigMF recording`.
 
 Datasets, for purposes of this specification, are sets of digital samples.
 The samples may be created by digital synthesis (i.e., simulation) or by an
@@ -80,7 +81,7 @@ operate on the dataset.
 
 ### Files
 
-A SigMF `recording` consists of two files: a SigMF `metadata` file and a
+A SigMF recording consists of two files: a SigMF `metadata` file and a
 `dataset` file. The dataset file is a binary file of samples, and the metadata
 file contains information that describes the dataset.
 
@@ -117,8 +118,8 @@ The above strings must be joined in a specific order to create a type string:
 `<c|(empty)>``<f|i|u>``<8|16|32>``[<_le|_be>]`
 
 So, for example, the string `"cf32"` specifies `complex 32-bit floating-point
-samples stored in little-endian`, and the string `u16_be` specifies `real unsigned 16-bit
-samples stored in big-endian`.
+samples stored in little-endian`, and the string `u16_be` specifies `real
+unsigned 16-bit samples stored in big-endian`.
 
 The samples should be written to the dataset file without separation, and the
 dataset file MUST NOT contain any other characters (e.g., delimiters,
@@ -183,9 +184,17 @@ Other namespaces may be defined by the user as needed.
 
 The following names are specified in the `core` namespace:
 
+|namespace|name|valid segments|default|
+|---------|----|--------------|-------|
+|core|`type`|`global`|null|
+
+The `type` name describes the format of the stored samples in the dataset file.
+Its value must be a valid SigMF dataset format type string.
+
+
 |namespace|name|datatype|required|description|default|
 |---------|----|--------|--------|-----------|-------|
-|core|datatype|string|true|A valid SigMF dataset format.|null|
+|core|datatype|string|true|A valid SigMF dataset format type string.|null|
 |core|url|string|true|Location of the dataset file.|null|
 |core|version|string|true|Version of SigMF Specification used for the recording.|null|
 |core|sha512|string|true|The SHA512 hash of the dataset file.|null|
