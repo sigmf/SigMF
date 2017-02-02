@@ -202,8 +202,8 @@ objects, called `capture segments`, composed of name/value pairs. The name/value
 pairs in capture segments describe the parameters of the signal capture.
 
 Each capture segment must contain a `core:sample_start` name/value pair, which
-indicates the first index at which the rest of the capture segment's name/value
-pairs apply.
+indicates the first index at which the rest of the segment's name/value pairs
+apply.
 
 The capture object's array of segments is sorted by the value of each segment's
 `core:sample_start` key.
@@ -213,12 +213,33 @@ the `capture` object:
 
 |name|required|type|description|
 |----|--------------|-------|-----------|
-|`sample_start`|true|uint|The sample index at which this capture segment takes effect.|
+|`sample_start`|true|uint|The sample index at which this segment takes effect.|
 |`frequency`|false|double|The center frequency of the signal in Hz.|
 |`sample_rate`|false|double|The sample rate of the signal in Samples per Second.|
 |`time`|false|string|An ISO-8601 formatted string indicating the timestamp of the sample index specified by `sample_start`.|
 
 #### Annotation Object
+
+The annotation object contains a single ordered JSON array. The array contains
+JSON objects, called `annotation segments`, composed of name/value pairs. The
+name/value pairs in capture segments describe the parameters of the signal
+capture.
+
+Each annotation segment must contain a `core:sample_start` name/value pair,
+which indicates the first index at which the rest of the segment's name/value
+pairs apply.
+
+The annotation object's array of segments is sorted by the value of each segment's
+`core:sample_start` key.
+
+The following names are specified in the `core` namespace and should be used in
+the `annotation` object:
+
+|name|required|type|description|
+|----|--------------|-------|-----------|
+|`sample_start`|true|uint|The sample index at which this segment takes effect.|
+|`sample_count`|true|uint|The number of samples that this segment applies to. |
+|`comment`|false|string|A human-readable comment.|
 
 ### Dataset Licensing
 
