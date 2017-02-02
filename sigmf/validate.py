@@ -34,8 +34,8 @@ class ValidationResult(object):
     __nonzero__ = __bool__
 
     def __str__(self):
-        if self.value:
-            return str(True)
+        if self.value or self.error is None:
+            return str(self.value)
         return str(self.error)
 
 def match_type(value, our_type):
@@ -103,6 +103,7 @@ def validate_section(data_section, ref_section, section):
                 False,
                 "Section `{sec}' exists, but is not a list of dicts.".format(sec=section)
             )
+        last_index = (data_section[0].get("core:sample_start", 0) if len(data_section) else 0) - 1
         for chunk in data_section:
             key_validation_results = (
                 validate_key(
@@ -114,6 +115,16 @@ def validate_section(data_section, ref_section, section):
             for result in key_validation_results:
                 if not bool(result):
                     return result
+            this_index = chunk["core:sample_start"]
+            if this_index <= last_index:
+                return ValidationResult(
+                    False,
+                    "In Section `{sec}', chunk starting at index {idx} "\
+                    "is ahead of previous section.".format(
+                        sec=section, idx=this_index
+                    )
+                )
+            last_index = this_index
     return True
 
 def validate(data, ref=None):
