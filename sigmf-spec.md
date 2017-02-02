@@ -129,11 +129,8 @@ whitespace, line-endings, `EOF` characters, etc.,).
 
 SigMF is written in JSON, and takes the form of JSON name/value pairs
 which are contained within JSON `objects`. There are three types top-level
-objects: `global`, `capture`, and `annotations`. The `global` object is composed
-of name/value pairs. The `capture` and `annotations` objects contain an array of
-sorted objects, which are called `capture segments` and `annotation segments`,
-respectively. These `segments` are composed of name/value pairs. The names of
-the name/value pairs can be namespaced for further structure.
+objects: `global`, `capture`, and `annotations`. The names of the name/value
+pairs can be namespaced for further structure.
 
 The format of the name/value pairs is:
 
@@ -160,13 +157,8 @@ The values in each name/value pair must be one of the following datatypes:
 
 |type|long-form name|description|
 |----|----|-----------|
-|int16|short|Signed 16-bit integer.|
-|int32|integer|Signed 32-bit integer.|
-|int64|long|Signed 64-bit integer.|
-|uint16|unsigned short|Unsigned 16-bit integer.|
-|uint32|unsigned integer|Unsigned 32-bit integer.|
-|uint64|unsigned long|Unsigned 64-bit integer.|
-|float|single-precision floating-point number|A 32-bit float as defined by IEEE 754.|
+|int|integer|Signed 64-bit integer.|
+|uint|unsigned long|Unsigned 64-bit integer.|
 |double|double-precision floating-point number|A 64-bit float as defined by IEEE 754.|
 |string|string|A string of ASCII characters, as defined by the JSON standard.|
 |boolean|boolean|Either `true` or `false`, as defined by the JSON standard.|
@@ -180,48 +172,51 @@ commonly used name/value pairs for describing signal data.
 
 Other namespaces may be defined by the user as needed.
 
-##### The `core` Namespace
-
-The following names are specified in the `core` namespace:
-
-|name|valid segments|default|description|
-|----|--------------|-------|-----------|
-|`core:type` |`global`|null|The `type` name describes the format of the stored samples in the dataset file. Its value must be a valid SigMF dataset format type string.|
-|`core:type` |`global`|null|The `type` name describes the format of the stored samples in the dataset file. Its value must be a valid SigMF dataset format type string.|
-|`core:type` |`global`|null|The `type` name describes the format of the stored samples in the dataset file. Its value must be a valid SigMF dataset format type string.|
-|`core:type` |`global`|null|The `type` name describes the format of the stored samples in the dataset file. Its value must be a valid SigMF dataset format type string.|
-
-
-
-|namespace|name|datatype|required|description|default|
-|---------|----|--------|--------|-----------|-------|
-|core|datatype|string|true|A valid SigMF dataset format type string.|null|
-|core|url|string|true|Location of the dataset file.|null|
-|core|version|string|true|Version of SigMF Specification used for the recording.|null|
-|core|sha512|string|true|The SHA512 hash of the dataset file.|null|
-|core|offset|uint64|false|Index offset of the first sample.|0|
-|core|description|string|false|Textual description of the dataset.|null|
-|core|author|string|false|Name and optionally email address of the author.|null|
-|core|date|string|false|ISO 8601-formatted date.|null|
-|core|license|string|false|License of the SigMF recording.|null|
-|core|hw|string|false|Description that |null|
-
 #### Global Object
 
-The global object provides information that applies to the entire dataset.
+The global object consists of name/value pairs that provide information
+applicable to the entire dataset. It contains the information that is minimally
+necessary to open and parse the dataset file, as well as general information
+about the recording itself.
 
-1. It is RECOMMENDED that the global object be the first object in the top-level
-   object.
-2. The global object MUST contain `core:datatype`.
-3. `core:license`
-4. `core:date`
-5. `core:url`
-6. `core:hash`
-7. `core:version`
+The following names are specified in the `core` namespace and should be used in
+the `global` object:
 
-optional: `offset`, `description`, `author`, `hw`
+|name|required|type|description|
+|----|--------------|-------|-----------|
+|`type`|true|string|The format of the stored samples in the dataset file. Its value must be a valid SigMF dataset format type string.|
+|`datapath`|true|string|The filepath to the dataset file described by the SigMF file. The path can be absolute or relative.|
+|`version`|true|string|The version of the SigMF specification used to create the metadata file.|
+|`sha512`|true|string|The SHA512 hash of the dataset file associated with the SigMF file.|
+|`offset`|false|uint64|The index number of the first sample in the dataset. This value defaults to zero.|
+|`description`|false|string|A text description of the SigMF recording.|
+|`author`|false |string|The author's name (and optionally e-mail address).|
+|`date`|false|string|An ISO-8601 formatted string of the capture date of the recording.|
+|`license`|false|string|The license under which the recording is offered. Recommended licenses are CC0 and CC-BY.|
+|`hw`|false |string|A text description of the hardware used to make the recording.|
 
 #### Capture Object
+
+The capture object contains a single ordered JSON array. The array contains JSON
+objects, called `capture segments`, composed of name/value pairs. The name/value
+pairs in capture segments describe the parameters of the signal capture.
+
+Each capture segment must contain a `core:sample_start` name/value pair, which
+indicates the first index at which the rest of the capture segment's name/value
+pairs apply.
+
+The capture object's array of segments is sorted by the value of each segment's
+`core:sample_start` key.
+
+The following names are specified in the `core` namespace and should be used in
+the `capture` object:
+
+|name|required|type|description|
+|----|--------------|-------|-----------|
+|`sample_start`|true|uint|The sample index at which this capture segment takes effect.|
+|`frequency`|false|double|The center frequency of the signal in Hz.|
+|`sample_rate`|false|double|The sample rate of the signal in Samples per Second.|
+|`time`|false|string|An ISO-8601 formatted string indicating the timestamp of the sample index specified by `sample_start`.|
 
 #### Annotation Object
 
