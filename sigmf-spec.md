@@ -106,7 +106,7 @@ SigMF sample formats are specified by strings that indicate the type for each of
 the four different characteristics. The types are specified with the following
 characters / strings:
 
-* ` ` (empty): real-valued data
+* `s`: real-valued data
 * `c`: complex (quadrature) data
 * `f`: floating-point data
 * `i`: signed fixed-point data
@@ -119,10 +119,10 @@ characters / strings:
 
 The above strings must be joined in a specific order to create a type string:
 
-`<c|(empty)>``<f|i|u>``<8|16|32>``[<_le|_be>]`
+`<s|c>``<f|i|u>``<8|16|32>``[<_le|_be>]`
 
 So, for example, the string `"cf32"` specifies `complex 32-bit floating-point
-samples stored in little-endian`, and the string `u16_be` specifies `real
+samples stored in little-endian`, and the string `su16_be` specifies `real
 unsigned 16-bit samples stored in big-endian`.
 
 The samples should be written to the dataset file without separation, and the
@@ -191,7 +191,7 @@ the `global` object:
 |`type`|true|string|The format of the stored samples in the dataset file. Its value must be a valid SigMF dataset format type string.|
 |`datapath`|true|string|The filepath to the dataset file described by the SigMF file. The path can be absolute or relative.|
 |`version`|true|string|The version of the SigMF specification used to create the metadata file.|
-|`sha512`|true|string|The SHA512 hash of the dataset file associated with the SigMF file.|
+|`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
 |`offset`|false|uint64|The index number of the first sample in the dataset. This value defaults to zero.|
 |`description`|false|string|A text description of the SigMF recording.|
 |`author`|false |string|The author's name (and optionally e-mail address).|

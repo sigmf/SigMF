@@ -3,10 +3,10 @@
 		"required": true,
 		"type": "dict",
 		"keys": {
-			"core:datatype": {
+			"core:type": {
 				"type": "string",
 				"required": true,
-				"help": "Sample data format (e.g., sc16, fc32)"
+				"help": "Sample data format"
 			},
 			"core:offset": {
 				"type": "uint",
@@ -25,26 +25,24 @@
 			},
 			"core:license": {
 				"type": "string",
-				"required": true,
-				"default": "CC0 1.0 Universal",
+				"required": false,
 				"help": "Sample data license"
 			},
 			"core:date": {
 				"type": "string",
-				"required": true,
+				"required": false,
 				"pattern": "",
 				"help": "ISO 8601-formatted date (e.g., 2017-02-01T15:05:03+00:00)"
 			},
-			"core:url": {
+			"core:datapath": {
 				"type": "string",
 				"required": true,
 				"help": "Location of the sample data file"
 			},
 			"core:sha512": {
 				"type": "string",
-				"required": true,
-				"help": "SHA512 hash of the corresponding sample data file",
-				"py_re": "^\\d{128}$"
+				"required": false,
+				"help": "SHA512 hash of the corresponding sample data file"
 			},
 			"core:version": {
 				"type": "string",
@@ -67,8 +65,7 @@
 			"core:sample_start": {
 				"type": "uint",
 				"required": true,
-				"help": "Index of first sample of this chunk",
-                "default": 0
+				"help": "Index of first sample of this chunk"
 			},
 			"core:frequency": {
 				"type": "double",
@@ -97,10 +94,10 @@
 				"required": true,
 				"help": "Index of first sample of this chunk"
 			},
-			"core:sample_length": {
+			"core:sample_count": {
 				"type": "uint",
 				"required": true,
-				"help": "Center frequency of signal (Hz)"
+				"help": "The number of samples described by this segment"
 			},
 			"core:comment": {
 				"type": "string",
