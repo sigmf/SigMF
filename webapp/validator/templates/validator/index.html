@@ -1,0 +1,26 @@
+{% extends "validator/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="starter-template">
+<h1>Cyberspectrum File-Format Validator</h1>
+
+{% if validator_result %}
+    <div class="alert alert-success" role="alert">
+        <h2>Your SigMF file is valid!</h2>
+    </div>
+{% elif validator_result == False %}
+    <div class="alert alert-danger" role="alert">
+        <h2>Your SigMF file is invalid!</h2>
+        <p>{{validator_error}}</p>
+    </div>
+{% endif %}
+
+<form action="{% url 'index' %}" method="post" enctype="multipart/form-data" style="text-align:left;">
+    {% csrf_token %}
+    {{ sigmf_upload_form }}
+    <input type="submit" value="Validate!" />
+</form>
+
+</div>
+{% endblock %}

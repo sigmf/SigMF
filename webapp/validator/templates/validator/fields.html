@@ -1,0 +1,46 @@
+{% extends "validator/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="starter-template">
+<h1>Cyberspectrum File-Format Fields List</h1>
+
+{% for cat in categories %}
+<h2>Cyber-Category {{cat.name}}</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th style="width:30%;">
+                Cyber-Key
+            </th>
+            <th style="width:10%;">
+                Type
+            </th>
+            <th style="width:60%;">
+                Help
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for field in cat.fields %}
+    {% if field.key_required is True %}
+        <tr style="background-color:#af3e11;">
+    {% else %}
+        <tr>
+    {% endif %}
+            <th scope="row">
+                {{field.key_name}}
+            </th>
+            <td>
+                {{field.value_type}}
+            </td>
+            <td>
+                {{field.key_help}}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endfor %}
+</div>
+{% endblock %}
