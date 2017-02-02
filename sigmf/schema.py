@@ -21,6 +21,7 @@
 Schema default foo.
 """
 
+import os
 import json
 from sigmf import utils
 
