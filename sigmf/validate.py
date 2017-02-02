@@ -33,6 +33,10 @@ class ValidationResult(object):
         return self.value
     __nonzero__ = __bool__
 
+    def __str__(self):
+        if self.value:
+            return str(True)
+        return str(self.error)
 
 def match_type(value, our_type):
     " Checks if value matches our_type "
