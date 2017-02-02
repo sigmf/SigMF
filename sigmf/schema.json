@@ -3,7 +3,7 @@
 		"required": true,
 		"type": "dict",
 		"keys": {
-			"core:type": {
+			"core:datatype": {
 				"type": "string",
 				"required": true,
 				"help": "Sample data format"
