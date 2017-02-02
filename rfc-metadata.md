@@ -57,7 +57,7 @@ operate on the dataset.
 
 ### Files
 
-One complete <NAME> consists of two files: a `metadata` file and a `dataset`
+One complete [NAME] consists of two files: a `metadata` file and a `dataset`
 file. The dataset file is a binary file for storing samples, and the metadata
 file contains information that describes the dataset.
 
@@ -68,29 +68,58 @@ file contains information that describes the dataset.
    and MUST NOT contain any other characters (e.g., delimiters, whitespace,
    line-endings, `EOF` characters, etc.,).
 5. The metadata file MUST have a `.meta` filename extension.
-6. The metadata file MUST be a [JSON](http://www.json.org/) file, as specified
-   by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf),
-   composed of ASCII text.
 
 ### Metadata Format
 
-Metadata takes the form of JSON name/value pairs, and are contained within JSON
-`objects`. There are three types top-level objects: `global`, `capture`, and
-`annotations`. The `global` object is composed of name/value pairs. The
-`capture` and `annotations` objects contain an array of sorted objects, which
-are called `capture segments` and `annotation segments`, respectively. These
-`segments` are composed of name/value pairs. The names of the name/value pairs
-can be namespaced for further structure.
+Metadata is written in JSON, and takes the form of JSON name/value pairs which
+are contained within JSON `objects`. There are three types top-level objects:
+`global`, `capture`, and `annotations`. The `global` object is composed of
+name/value pairs. The `capture` and `annotations` objects contain an array of
+sorted objects, which are called `capture segments` and `annotation segments`,
+respectively. These `segments` are composed of name/value pairs. The names of
+the name/value pairs can be namespaced for further structure.
 
+The format of the name/value pairs is:
 
-1. The entire contents of the metadata file MUST be contained within a single
+```
+"<namespace:>name": value,
+```
+
+Where the `namespace` string should be replaced with the name of the namespace
+in use, or omitted entirely (including the colon).
+
+1. The metadata MUST be written in [JSON](http://www.json.org/), as specified
+   by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf),
+   composed of ASCII text.
+2. The entire contents of the metadata file MUST be contained within a single
    JSON object (i.e., the first character of the file MUST be '{' and the last
    character of the file MUST be '}'. This object is hereafter called the
    `top-level object`.
-2. The top-level object MUST contain three objects named `global`, `capture`,
+3. The top-level object MUST contain three objects named `global`, `capture`,
    and `annotations`.
    
+#### Datatypes
+
+The values in each name/value pair must be one of the following datatypes.
+   
 #### Namespaces
+
+Namespaces provide a way to further classify name/value pairs within metadata
+objects. This specification defines the `core` namespace, which contains
+commonly used name/value pairs for describing signal data.
+
+Other namespaces may be defined by the user as needed.
+
+##### The `core` Namespace
+
+The following names are specified in the `core` namespace:
+
+|namespace|name|datatype|required|description|
+|---------|----|--------|--------|-----------|
+|core|datatype|string|true|Format of the sample data|
+
+
+
 
 #### Global Object
 
