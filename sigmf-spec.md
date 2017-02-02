@@ -184,12 +184,21 @@ Other namespaces may be defined by the user as needed.
 
 The following names are specified in the `core` namespace:
 
-|namespace|name|valid segments|default|
-|---------|----|--------------|-------|
-|core|`type`|`global`|null|
+|name|valid segments|default|description|
+|----|--------------|-------|-----------|
+|`core:type` |`global`|null|The `type` name describes the format of the stored
+samples in the dataset file. Its value must be a valid SigMF dataset format type
+string.|
+|`core:type` |`global`|null|The `type` name describes the format of the stored
+samples in the dataset file. Its value must be a valid SigMF dataset format type
+string.|
+|`core:type` |`global`|null|The `type` name describes the format of the stored
+samples in the dataset file. Its value must be a valid SigMF dataset format type
+string.|
+|`core:type` |`global`|null|The `type` name describes the format of the stored
+samples in the dataset file. Its value must be a valid SigMF dataset format type
+string.|
 
-The `type` name describes the format of the stored samples in the dataset file.
-Its value must be a valid SigMF dataset format type string.
 
 
 |namespace|name|datatype|required|description|default|
