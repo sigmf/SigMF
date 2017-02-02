@@ -1,6 +1,4 @@
-# RFC Metadata
-
-cool title pending beer consumption
+# Signal Metadata Format Specification v0.0.1
 
 ## Abstract
 
@@ -46,7 +44,6 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
 
 <!-- markdown-toc end -->
 
-
 ## Introduction
 
 Why this is needed
@@ -72,7 +69,7 @@ JSON keywords are used as defined in [ECMA-404](http://www.ecma-international.or
 This specification fundamentally describes two types of information: datasets,
 and metadata associated with those datasets.
 
-Datasets, for purposes of this specification, are recordings of digital samples.
+Datasets, for purposes of this specification, are sets of digital samples.
 The samples may be created by digital synthesis (i.e., simulation) or by an
 actual Analog-to-Digital Converter (ADC) that is sampling an analog signal.
 
@@ -83,25 +80,25 @@ operate on the dataset.
 
 ### Files
 
-One complete [NAME] consists of two files: a `metadata` file and a `dataset`
-file. The dataset file is a binary file for storing samples, and the metadata
+A SigMF `recording` consists of two files: a SigMF `metadata` file and a
+`dataset` file. The dataset file is a binary file of samples, and the metadata
 file contains information that describes the dataset.
 
-1. The metadata and dataset MUST be separate files.
+1. The metadata and dataset MUST be in separate files.
 2. A metadata file MUST only describe one dataset file.
 3. The metadata file MUST have a `.meta` filename extension.
 4. The dataset file MUST have a `.data` filename extension.
 
 ### Dataset Format
 
-The samples in the dataset file must be in a supported format. There are four
-orthogonal characteristics of sample data: complex or real, floating-point or
-fixed-point, bit-width, and endianness. All of these must be explicitly
+The samples in the dataset file must be in a SigMF-supported format. There are
+four orthogonal characteristics of sample data: complex or real, floating-point
+or fixed-point, bit-width, and endianness. All of these must be explicitly
 specified, except for endianness which is assumed to be `little-endian` unless
 specified otherwise.
 
-Sample formats are specified by strings that indicate the type for each of the
-four different characteristics. The types are specified with the following
+SigMF sample formats are specified by strings that indicate the type for each of
+the four different characteristics. The types are specified with the following
 characters / strings:
 
 * ` ` (empty): real-valued data
@@ -129,10 +126,10 @@ whitespace, line-endings, `EOF` characters, etc.,).
 
 ### Metadata Format
 
-Metadata is written in JSON, and takes the form of JSON name/value pairs which
-are contained within JSON `objects`. There are three types top-level objects:
-`global`, `capture`, and `annotations`. The `global` object is composed of
-name/value pairs. The `capture` and `annotations` objects contain an array of
+SigMF is written in JSON, and takes the form of JSON name/value pairs
+which are contained within JSON `objects`. There are three types top-level
+objects: `global`, `capture`, and `annotations`. The `global` object is composed
+of name/value pairs. The `capture` and `annotations` objects contain an array of
 sorted objects, which are called `capture segments` and `annotation segments`,
 respectively. These `segments` are composed of name/value pairs. The names of
 the name/value pairs can be namespaced for further structure.
@@ -160,7 +157,7 @@ in use, or omitted entirely (including the colon).
 
 The values in each name/value pair must be one of the following datatypes:
 
-|type|name|description|
+|type|long-form name|description|
 |----|----|-----------|
 |int16|short|Signed 16-bit integer.|
 |int32|integer|Signed 32-bit integer.|
@@ -186,23 +183,18 @@ Other namespaces may be defined by the user as needed.
 
 The following names are specified in the `core` namespace:
 
-**core:datatype**
-
 |namespace|name|datatype|required|description|default|
 |---------|----|--------|--------|-----------|-------|
-|core|datatype|string|true|Format of the sample data|nil|
+|core|datatype|string|true|A valid SigMF dataset format.|null|
+|core|url|string|true|Location of the dataset file.|null|
+|core|version|string|true|Version of SigMF Specification used for the recording.|null|
+|core|sha512|string|true|The SHA512 hash of the dataset file.|null|
 |core|offset|uint64|false|Index offset of the first sample.|0|
-|core|description|string|false|Textual description of the dataset.|nil|
-|core|author|string|false|Name and optionally email address of the author.|nil|
-|core|license|string|true|License of the [NAME].|CC0|
-|core|date|string|true|ISO 8601-formatted date.|nil|
-|core|url|string|true|Location of the dataset file.|nil|
-|core|sha512|string|true||
-core:version true
-core:hw
-
-
-
+|core|description|string|false|Textual description of the dataset.|null|
+|core|author|string|false|Name and optionally email address of the author.|null|
+|core|date|string|false|ISO 8601-formatted date.|null|
+|core|license|string|false|License of the SigMF recording.|null|
+|core|hw|string|false|Description that |null|
 
 #### Global Object
 
