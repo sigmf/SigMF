@@ -78,50 +78,29 @@ specified, except for endianness which is assumed to be `little endian` unless
 specified otherwise.
 
 Sample formats are specified by strings that indicate the type for each of the
-four different characteristics. The types must be specified in the following
-order:
+four different characteristics. The types are specified with the following
+characters / strings:
+
+* ` ` (empty): real-valued data
+* `c`: complex (quadrature) data
+* `f`: floating-point data
+* `i`: signed fixed-point data
+* `u`: unsigned fixed-point data
+* `8`: 8-bit samples
+* `16`: 16-bit samples
+* `32`: 32-bit samples
+* `_le`: little-endian data
+* `_be`: big-endian data
+
+The above strings must be joined in a specific order to create a type string:
 
 ```
-<complex or real> <floating or fixed> <bit-width> <endianness>
+<c | (empty)> <f | i | u> <8 | 16 | 32> [<_le | _be>]
 ```
 
-Where the following strings specify types:
-
-` ` or `c`: `<nothing>` for real data, and `c` for complex (quadrature) data.
-`f` or `i` or `u`: `f` for floating-point, `i` for signed fixed-point, and `u`
-for unsigned fixed-point.
-`8` or `16` or `32`: `8` for 8-bit samples, `16` for 16-bit samples, `32` for
-32-bit samples.
-`_le` or `_be`: `_le` for little-endian, `_be` for big-endian.
-
-
-
-The tables below detail how to specify each type.
-
-**Complex or Real:**
-
-
-|type string|description|
-|-----------|-----------|
-|"cf32"|complex 32-bit floating-point
-|"ci32"|complex 32-bit integer
-|"ci16"|complex 16-bit integer
-|"ci8"|real signed 8-bit integer
-|"f32"|real 32-bit floating-point
-|"i32"|real 32-bit integer
-|"i16"|real 16-bit integer
-|"i8"|real signed 8-bit integer
-|"u8"|real unsigned 8-bit integer
-
-int8
-uint8
-int16
-uint16
-float
-
-In order to specify an endianness, an extension is added to the above type
-strings: `_le` for little-endian or `_be` for big-endian (e.g., `cf32_be` is
-complex 32-bit floats in big-endian).
+So, for example, the string `"cf32"` specifies `complex 32-bit floating-point
+samples stored in little-endian`, and the string `u16_be` specifies `real unsigned 16-bit
+samples stored in big-endian`.
 
 ### Metadata Format
 
