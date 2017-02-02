@@ -67,8 +67,8 @@ def validate_key(data_value, ref_dict, section, key):
                 key=key,
                 type=ref_dict["type"]
             ))
-    if "py_re" in ref_dict and not re.match(ref_dict["py_re"], data_value):
-        return ValidationResult(False, "regex fail")
+    # if "py_re" in ref_dict and not re.match(ref_dict["py_re"], data_value):
+        # return ValidationResult(False, "regex fail")
     return True
 
 def validate_section(data_section, ref_section, section):
