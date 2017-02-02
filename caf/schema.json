@@ -43,7 +43,8 @@
 			"core:sha512": {
 				"type": "string",
 				"required": true,
-				"help": "SHA512 hash of the corresponding sample data file"
+				"help": "SHA512 hash of the corresponding sample data file",
+				"py_re": "^\\d{128}$"
 			},
 			"core:version": {
 				"type": "string",
@@ -66,7 +67,8 @@
 			"core:sample_start": {
 				"type": "uint",
 				"required": true,
-				"help": "Index of first sample of this chunk"
+				"help": "Index of first sample of this chunk",
+                "default": 0
 			},
 			"core:frequency": {
 				"type": "double",
