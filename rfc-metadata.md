@@ -19,7 +19,33 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
 
 ## Table of Contents
 
-auto-generate this
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
+**Table of Contents**
+
+- [RFC Metadata](#rfc-metadata)
+    - [Abstract](#abstract)
+    - [Status of this Document](#status-of-this-document)
+    - [Copyright Notice](#copyright-notice)
+    - [Table of Contents](#table-of-contents)
+    - [Introduction](#introduction)
+    - [Conventions Used in this Document](#conventions-used-in-this-document)
+    - [Specification](#specification)
+        - [Files](#files)
+        - [Dataset Format](#dataset-format)
+        - [Metadata Format](#metadata-format)
+            - [Datatypes](#datatypes)
+            - [Namespaces](#namespaces)
+                - [The `core` Namespace](#the-core-namespace)
+            - [Global Object](#global-object)
+            - [Capture Object](#capture-object)
+            - [Annotation Object](#annotation-object)
+        - [Dataset Licensing](#dataset-licensing)
+        - [application requirements](#application-requirements)
+    - [Example](#example)
+- [Acknowledgements](#acknowledgements)
+
+<!-- markdown-toc end -->
+
 
 ## Introduction
 
@@ -39,7 +65,7 @@ The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL 
 “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be
 interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
-JSON key words are used as defined in [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+JSON keywords are used as defined in [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 
 ## Specification
 
@@ -65,16 +91,13 @@ file contains information that describes the dataset.
 2. A metadata file MUST only describe one dataset file.
 3. The metadata file MUST have a `.meta` filename extension.
 4. The dataset file MUST have a `.data` filename extension.
-5. The dataset file MUST be a 'flat' file that is composed only of sample data
-   and MUST NOT contain any other characters (e.g., delimiters, whitespace,
-   line-endings, `EOF` characters, etc.,).
 
-### Sample Format
+### Dataset Format
 
 The samples in the dataset file must be in a supported format. There are four
 orthogonal characteristics of sample data: complex or real, floating-point or
 fixed-point, bit-width, and endianness. All of these must be explicitly
-specified, except for endianness which is assumed to be `little endian` unless
+specified, except for endianness which is assumed to be `little-endian` unless
 specified otherwise.
 
 Sample formats are specified by strings that indicate the type for each of the
@@ -94,13 +117,15 @@ characters / strings:
 
 The above strings must be joined in a specific order to create a type string:
 
-```
-<c | (empty)> <f | i | u> <8 | 16 | 32> [<_le | _be>]
-```
+`<c|(empty)>``<f|i|u>``<8|16|32>``[<_le|_be>]`
 
 So, for example, the string `"cf32"` specifies `complex 32-bit floating-point
 samples stored in little-endian`, and the string `u16_be` specifies `real unsigned 16-bit
 samples stored in big-endian`.
+
+The samples should be written to the dataset file without separation, and the
+dataset file MUST NOT contain any other characters (e.g., delimiters,
+whitespace, line-endings, `EOF` characters, etc.,).
 
 ### Metadata Format
 
