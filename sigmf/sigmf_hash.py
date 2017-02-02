@@ -18,9 +18,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """
-Cyberspectrum annotation format
+Hashing functions
 """
 
-from .sigmffile import SigMFFile
+import hashlib
 
-__version__ = "1.0.0"
+
+def calculate_sha512(filename):
+    """
+    Returns sha512 of filename
+    """
+    the_hash = hashlib.sha512()
+    with open(filename , "rb") as f:
+        for buff in iter(lambda: f.read(4096), b""):
+            the_hash.update(buff)
+    return the_hash.hexdigest()
+
+
+

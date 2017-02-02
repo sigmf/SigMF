@@ -49,7 +49,7 @@ def get_default_metadata(schema):
         for category, desc in iteritems(schema)
     }
 
-class SigMF(object):
+class SigMFFile(object):
     """
     API to manipulate annotation files.
 
@@ -62,6 +62,8 @@ class SigMF(object):
     """
     START_INDEX_KEY = "core:sample_start"
     LENGTH_INDEX_KEY = "core:sample_length"
+    START_OFFSET_KEY = "core:offset"
+    HASH_KEY = "core:sha512"
 
     def __init__(
             self,
@@ -73,12 +75,18 @@ class SigMF(object):
         if os.path.isfile(self.metadata_file):
             self._metadata = json.load(open(self.metadata_file))
         else:
-            # FIXME no hardcodery
+            # FIXME no hardcodery!
             default_schema = json.load(open("caf/schema.json"))
             self._metadata = get_default_metadata(default_schema)
         if global_info is not None:
             self.set_global_info(global_info)
         self.data_file = data_file
+
+    def _get_start_offset(self):
+        """
+        Return the offset of the first sample.
+        """
+        return self._metadata.get("global", {}).get(self.START_OFFSET_KEY, 0)
 
     def set_global_info(self, new_global):
         """
@@ -103,7 +111,7 @@ class SigMF(object):
         TODO: fail if index already exists
         TODO: Validate metadata
         """
-        assert start_index >= self._metadata.get("global", {}).get("core:offset", 0)
+        assert start_index >= self._get_start_offset()
         metadata[self.START_INDEX_KEY] = start_index
         self._metadata["capture"] = insert_sorted_dict_list(
             self._metadata.get("capture", []),
@@ -117,7 +125,7 @@ class SigMF(object):
 
         TODO: Validate
         """
-        assert start_index >= self._metadata.get("global", {}).get("core:offset", 0)
+        assert start_index >= self._get_start_offset()
         assert length > 1
         metadata[self.START_INDEX_KEY] = start_index
         metadata[self.LENGTH_INDEX_KEY] = length
@@ -138,7 +146,7 @@ class SigMF(object):
         Returns a dictionary containing all the capture information at sample
         'index'.
         """
-        start_offset = self._metadata.get("global", {}).get("core:offset", 0)
+        start_offset = self._get_start_offset()
         assert index >= start_offset
         captures = self._metadata.get("capture", [])
         assert len(captures) > 0
@@ -160,9 +168,42 @@ class SigMF(object):
             and x[self.START_INDEX_KEY] + x[self.LENGTH_INDEX_KEY] > index
         ]
 
+    def calculate_hash(self):
+        """
+        Calculates the hash of the data file and adds it to the global section.
+        Also returns a string representation of the hash.
+        """
+        from .sigmf_hash import sha512
+        the_hash = sha512(self.data_file)
+        self._metadata["global"][self.HASH_KEY] = the_hash
+        return the_hash
+
     def validate(self):
         """
         Return True if this is valid.
         """
+        # FIXME write
         return True
+
+
+    def write(self, pretty=False):
+        """
+        Write out the file.
+        """
+        json.dump(
+            self._metadata,
+            open(self.metadata_file, 'w'),
+            indent=4 if pretty else None,
+            separators=(',', ': ') if pretty else None,
+        )
+
+    def dump(self, pretty=False):
+        """
+        Return a string representation of the metadata file.
+        """
+        return json.dumps(
+            self._metadata,
+            indent=4 if pretty else None,
+            separators=(',', ': ') if pretty else None,
+        )
 
