@@ -100,7 +100,21 @@ in use, or omitted entirely (including the colon).
    
 #### Datatypes
 
-The values in each name/value pair must be one of the following datatypes.
+The values in each name/value pair must be one of the following datatypes:
+
+|type|name|description|
+|----|----|-----------|
+|int16|short|Signed 16-bit integer.|
+|int32|integer|Signed 32-bit integer.|
+|int64|long|Signed 64-bit integer.|
+|uint16|unsigned short|Unsigned 16-bit integer.|
+|uint32|unsigned integer|Unsigned 32-bit integer.|
+|uint64|unsigned long|Unsigned 64-bit integer.|
+|float|single-precision floating-point number|A 32-bit float as defined by IEEE 754.|
+|double|double-precision floating-point number|A 64-bit float as defined by IEEE 754.|
+|string|string|A string of ASCII characters, as defined by the JSON standard.|
+|boolean|boolean|Either `true` or `false`, as defined by the JSON standard.|
+|null|null|`null`, as defined by the JSON standard.|
    
 #### Namespaces
 
@@ -114,9 +128,20 @@ Other namespaces may be defined by the user as needed.
 
 The following names are specified in the `core` namespace:
 
-|namespace|name|datatype|required|description|
-|---------|----|--------|--------|-----------|
-|core|datatype|string|true|Format of the sample data|
+**core:datatype**
+
+|namespace|name|datatype|required|description|default|
+|---------|----|--------|--------|-----------|-------|
+|core|datatype|string|true|Format of the sample data|nil|
+|core|offset|uint64|false|Index offset of the first sample.|0|
+|core|description|string|false|Textual description of the dataset.|nil|
+|core|author|string|false|Name and optionally email address of the author.|nil|
+|core|license|string|true|License of the [NAME].|CC0|
+|core|date|string|true|ISO 8601-formatted date.|nil|
+|core|url|string|true|Location of the dataset file.|nil|
+|core|sha512|string|true||
+core:version true
+core:hw
 
 
 
@@ -140,6 +165,7 @@ optional: `offset`, `description`, `author`, `hw`
 
 #### Annotation Object
 
+### Dataset Licensing
 
 ### application requirements
 segments referring to non-existent samples should be ignored
