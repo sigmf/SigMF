@@ -192,7 +192,7 @@ the `global` object:
 |`description`|false|string|A text description of the SigMF recording.|
 |`author`|false |string|The author's name (and optionally e-mail address).|
 |`date`|false|string|An ISO-8601 formatted string of the capture date of the recording.|
-|`license`|false|string|The license under which the recording is offered. Recommended licenses are CC0 and CC-BY.|
+|`license`|false|string|The license under which the recording is offered.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
 
 #### Capture Object
@@ -246,6 +246,12 @@ the `annotation` object:
 |`longitude`|false|need a standard?|
 
 ### Dataset Licensing
+
+You may specify any license of your choosing. Recommended licenses for SigMF
+recordings are:
+
+* ["CC0 1.0 Public Domain Dedication"](https://creativecommons.org/publicdomain/zero/1.0/)
+* ["CC-BY Attrition 2.0 Generic"](https://creativecommons.org/licenses/by/2.0/)
 
 ### application requirements
 segments referring to non-existent samples should be ignored
