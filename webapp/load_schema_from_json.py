@@ -6,7 +6,7 @@ os.environ["DJANGO_SETTINGS_MODULE"] = "webapp.settings"
 django.setup()
 from validator.models import Field
 
-schema = json.load(open('../../sigmf/schema.json'))
+schema = json.load(open('../sigmf/schema.json'))
 global_keys = schema["global"]["keys"].keys()
 capture_keys = schema["capture"]["keys"].keys()
 annotations_keys = schema["annotations"]["keys"].keys()

@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="starter-template">
-<h1>Cyberspectrum File-Format Validator</h1>
+<h1>SigMF Validator</h1>
 
 {% if validator_result %}
     <div class="alert alert-success" role="alert">
@@ -16,11 +16,27 @@
     </div>
 {% endif %}
 
-<form action="{% url 'index' %}" method="post" enctype="multipart/form-data" style="text-align:left;">
+<form action="{% url 'index' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ sigmf_upload_form }}
+    <input type="file" id="id_sigmf_meta_file" name="sigmf_meta_file"
+            style="display:none;"/>
+    <button type="button" id="browse" style="width:80%;height:50px;">
+        Upload SigMF File
+    </button>
+    </br>
     <input type="submit" value="Validate!" />
 </form>
 
+
 </div>
+
+<script type="text/javascript">
+    $('#browse').click(function(){
+        $(this).parent().find('#id_sigmf_meta_file').click();
+    });
+    $('#id_sigmf_meta_file').on("change", function(){
+        $('#browse').html($(this).val());
+    });
+</script>
+
 {% endblock %}
