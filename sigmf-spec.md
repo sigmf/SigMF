@@ -9,8 +9,14 @@ of the system that generated the samples, and features of the signal itself.
 
 ## Status of this Document
 
-This document is currently under active development as part of the [DARPA
-Brussels Hackfest](http://www.darpahackfest.com/).
+This document is currently under active development and is not stable. We
+encourage anyone and everyone interested in this effort to participate. We are
+using the Issue Tracker for the repository as the medium for discussion, and
+changes are submitted as Pull Requests.
+
+This effort was kicked off at
+the [DARPA Brussels Hackfest](http://www.darpahackfest.com/) in early February
+2017, and first announced at FOSDEM'17.
 
 ## Copyright Notice
 
@@ -50,15 +56,20 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
 
 ## Introduction
 
-Why this is needed
+Sharing sets of recorded signal data is an important part of science and
+engineering. It enables multiple parties to collaborate, is often a necessary
+part of reproducing scientific results (a requirement of scientific rigor), and
+enables sharing data with those who do not have direct access to the equipment
+required to capture it.
 
-portability of datasets
+Unfortunately, these datasets have historically not been very portable, and
+there is not an agreed upon method of sharing metadata descriptions of the
+recorded data itself. This is the problem that SigMF solves.
 
-ensure datasets remain useful after capture
-
-ability to share datasets
-
-enable scientific rigor / reproduction
+By providing a standard way to describe data recordings, SigMF facilitates the
+sharing of data, prevents the "bitrot" of datasets wherein details of the
+capture are lost over time, and makes it possible for different tools to operate
+on the same dataset, thus enabling data portability between tools and workflows.
 
 ## Conventions Used in this Document
 
@@ -132,7 +143,7 @@ whitespace, line-endings, `EOF` characters, etc.,).
 ### Metadata Format
 
 SigMF is written in JSON, and takes the form of JSON name/value pairs
-which are contained within JSON `objects`. There are three types top-level
+which are contained within JSON `objects`. There are three types of top-level
 objects: `global`, `capture`, and `annotations`. The names of the name/value
 pairs can be namespaced for further structure.
 
@@ -257,14 +268,20 @@ recordings are:
 * [CC0 1.0 Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/)
 * [CC-BY Attrition 2.0 Generic](https://creativecommons.org/licenses/by/2.0/)
 
-### Application Requirements
+### SigMF Compliance by Applications
 
-segments referring to non-existent samples should be ignored
+In order to be `SigMF Compliant`, an application must meet the following
+requirements:
 
-applications should be able to ignore any sections not specified in this document
+1. Adheres to and supports for the file rules, dataset formats, `objects`,
+   `namespaces`, and `names` specified by this document.
+2. Must be able to ignore any `object` or `namespace` not specified by this
+   document and still function normally.
+3. `Capture` segments referring to non-existent samples should be ignored.
 
 ## Example
-example of metadata file contents
+
+[TODO] Provide an example of metadata file contents.
 
 # Acknowledgements
 
