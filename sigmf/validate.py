@@ -20,7 +20,6 @@
 " SigMF Validation routines "
 
 from __future__ import print_function
-import re
 import json
 
 class ValidationResult(object):
@@ -49,7 +48,15 @@ def match_type(value, our_type):
 
 def validate_key(data_value, ref_dict, section, key):
     """
-    Validates a data entry in a chunk.
+    Validates a key/value pair entry in a chunk.
+
+    Parameters:
+    data_value -- The value. May be None.
+    ref_dict -- A dictionary containing reference information.
+    section -- The section in which this key/value pair is stored ("global",
+               etc.). This is for better error reporting only.
+    key -- The key of this key/value pair ("core:Version", etc.). This is for
+           better error reporting only.
     """
     if ref_dict["required"] and data_value is None:
         return ValidationResult(
@@ -71,6 +78,65 @@ def validate_key(data_value, ref_dict, section, key):
         # return ValidationResult(False, "regex fail")
     return True
 
+def validate_key_throw(*args):
+    """
+    Like validate_key, but throws a ValueError when invalid.
+    """
+    validation_result = validate_key(*args)
+    if not validation_result:
+        raise ValueError(str(validation_result))
+    return validation_result
+
+def validate_section_dict(data_section, ref_section, section):
+    if not isinstance(data_section, dict):
+        return ValidationResult(
+            False,
+            "Section `{sec}' exists, but is not a dict.".format(sec=section)
+        )
+    key_validation_results = (
+        validate_key(
+            data_section.get(key),
+            ref_section["keys"].get(key),
+            section, key
+        ) for key in ref_section["keys"]
+    )
+    for result in key_validation_results:
+        if not bool(result):
+            return result
+    return True
+
+def validate_section_dict_list(data_section, ref_section, section):
+    if not isinstance(data_section, list) or \
+            not all((isinstance(x, dict) for x in data_section)):
+        return ValidationResult(
+            False,
+            "Section `{sec}' exists, but is not a list of dicts.".format(sec=section)
+        )
+    sort_key = ref_section.get("sort")
+    last_index = (data_section[0].get(sort_key, 0) if len(data_section) else 0) - 1
+    for chunk in data_section:
+        key_validation_results = (
+            validate_key(
+                chunk.get(key),
+                ref_section["keys"].get(key),
+                section, key
+            ) for key in ref_section["keys"]
+        )
+        for result in key_validation_results:
+            if not bool(result):
+                return result
+        this_index = chunk.get(sort_key, 0)
+        if this_index <= last_index:
+            return ValidationResult(
+                False,
+                "In Section `{sec}', chunk starting at index {idx} "\
+                "is ahead of previous section.".format(
+                    sec=section, idx=this_index
+                )
+            )
+        last_index = this_index
+    return True
+
 def validate_section(data_section, ref_section, section):
     """
     Validates a section (e.g. global, capture, etc.).
@@ -80,52 +146,10 @@ def validate_section(data_section, ref_section, section):
             False,
             "Required section `{sec}' not found.".format(sec=section)
         )
-    if ref_section["type"] == "dict":
-        if not isinstance(data_section, dict):
-            return ValidationResult(
-                False,
-                "Section `{sec}' exists, but is not a dict.".format(sec=section)
-            )
-        key_validation_results = (
-            validate_key(
-                data_section.get(key),
-                ref_section["keys"].get(key),
-                section, key
-            ) for key in ref_section["keys"]
-        )
-        for result in key_validation_results:
-            if not bool(result):
-                return result
-    if ref_section["type"] == "dict_list":
-        if not isinstance(data_section, list) or \
-                not all((isinstance(x, dict) for x in data_section)):
-            return ValidationResult(
-                False,
-                "Section `{sec}' exists, but is not a list of dicts.".format(sec=section)
-            )
-        last_index = (data_section[0].get("core:sample_start", 0) if len(data_section) else 0) - 1
-        for chunk in data_section:
-            key_validation_results = (
-                validate_key(
-                    chunk.get(key),
-                    ref_section["keys"].get(key),
-                    section, key
-                ) for key in ref_section["keys"]
-            )
-            for result in key_validation_results:
-                if not bool(result):
-                    return result
-            this_index = chunk["core:sample_start"]
-            if this_index <= last_index:
-                return ValidationResult(
-                    False,
-                    "In Section `{sec}', chunk starting at index {idx} "\
-                    "is ahead of previous section.".format(
-                        sec=section, idx=this_index
-                    )
-                )
-            last_index = this_index
-    return True
+    return {
+        'dict': validate_section_dict,
+        'dict_list': validate_section_dict_list,
+    }[ref_section["type"]](data_section, ref_section, section)
 
 def validate(data, ref=None):
     """

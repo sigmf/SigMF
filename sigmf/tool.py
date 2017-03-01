@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Copyright 2016 GNU Radio Foundation
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,43 +19,44 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """
-Utilities
+SigMF Tool
 """
 
-from copy import deepcopy
-from six import iteritems
+import argparse
+from sigmf import SigMFFile
 
-def dict_merge(a, b):
-    """
-    Recursively merge b into a. b[k] will overwrite a[k] if it exists.
-    """
-    if not isinstance(b, dict):
-        return b
-    result = deepcopy(a)
-    for k, v in iteritems(b):
-        if k in result and isinstance(result[k], dict):
-            result[k] = dict_merge(result[k], v)
-        else:
-            result[k] = deepcopy(v)
-    return result
 
-def insert_sorted_dict_list(dict_list, new_entry, key):
+def cmd_validate(args):
     """
-    Insert new_entry (which must be a dict) into a sorted list of other dicts.
-    Returns the new list, which is still sorted.
+    validate
     """
-    for index, entry in enumerate(dict_list):
-        if entry[key] == new_entry[key]:
-            dict_list[index] = dict_merge(entry, new_entry)
-            return dict_list
-        if entry[key] > new_entry[key]:
-            dict_list.insert(index, new_entry)
-            return dict_list
-    dict_list = dict_list + [new_entry]
-    return dict_list
+    try:
+        smffile = SigMFFile(open(args.filename).read())
+    except ValueError as ex:
+        print(str(ex))
+        return False
+    res = smffile.validate()
+    if not res:
+        print(str(res))
 
-def get_schema_path(module_path):
-    """
-    """
-    return module_path
 
+def setup_parser():
+    """
+    Setup parser
+    """
+    parser = argparse.ArgumentParser(description="SigMF Tool")
+    subparsers = parser.add_subparsers(help='foo')
+    validate_parser = subparsers.add_parser('validate', help='validate')
+    validate_parser.add_argument('filename')
+    return parser
+
+
+def main():
+    """
+    Go, go, go!
+    """
+    args = setup_parser().parse_args()
+    return cmd_validate(args)
+
+if __name__ == '__main__':
+    main()

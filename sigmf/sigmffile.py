@@ -23,8 +23,9 @@ SigMF File Representation Object
 
 import json
 from six import iteritems
-from .utils import dict_merge, insert_sorted_dict_list
-# from .validate import v
+from sigmf.utils import dict_merge, insert_sorted_dict_list
+from sigmf import validate
+from sigmf import schema
 
 def get_default_metadata(schema):
     """
@@ -62,6 +63,10 @@ class SigMFFile(object):
     START_OFFSET_KEY = "core:offset"
     HASH_KEY = "core:sha512"
     VERSION_KEY = "core:version"
+    FILENAME_KEY = "core:datapath"
+    GLOBAL_KEY = "global"
+    CAPTURE_KEY = "capture"
+    ANNOTATION_KEY = "annotation"
 
     def __init__(
             self,
@@ -69,12 +74,10 @@ class SigMFFile(object):
             data_file=None,
             global_info=None,
     ):
+        self.version = None
+        self.schema = None
         if metadata is None:
-            from sigmf import schema
-            the_schema = schema.get_schema(
-                global_info.get(self.VERSION_KEY) if global_info is not None else None
-            )
-            self._metadata = get_default_metadata(the_schema)
+            self._metadata = get_default_metadata(self.get_schema())
         elif isinstance(metadata, dict):
             self._metadata = metadata
         else:
@@ -82,75 +85,99 @@ class SigMFFile(object):
         if global_info is not None:
             self.set_global_info(global_info)
         self.data_file = data_file
-        # TODO check if the data file exists
+        if self.data_file is not None:
+            self.set_global_field(self.FILENAME_KEY, self.data_file)
 
     def _get_start_offset(self):
         """
         Return the offset of the first sample.
         """
-        return self._metadata.get("global", {}).get(self.START_OFFSET_KEY, 0)
+        return self.get_global_field(self.START_OFFSET_KEY, 0)
+
+    def _validate_dict_in_section(self, entries, section_key):
+        """
+        Checks a dictionary for validity.
+        Throws if not.
+        """
+        schema_section = self.get_schema()[section_key]
+        print(schema_section)
+        for k, v in iteritems(entries):
+            validate.validate_key_throw(
+                v, schema_section.get(key, {}), section, k
+            )
+
+    def get_schema(self):
+        """
+        Return a schema object valid for the current metadata
+        """
+        current_metadata_version = self.get_global_info().get(self.VERSION_KEY)
+        if self.version != current_metadata_version or self.schema is None:
+            self.version = current_metadata_version
+            from sigmf import schema
+            self.schema = schema.get_schema(self.version)
+        assert isinstance(self.schema, dict)
+        return self.schema
 
     def set_global_info(self, new_global):
         """
         Overwrite the global info with a new dictionary.
-
-        TODO: Validate
         """
-        self._metadata["global"] = new_global
-
-    def add_global_field(self, key, value):
-        """
-        Inserts a value into the global fields.
-
-        TODO: Validate
-        """
-        self._metadata["global"][key] = value
-
-    def add_capture(self, start_index, metadata=None):
-        """
-        Insert capture info
-
-        TODO: fail if index already exists
-        TODO: Validate metadata
-        """
-        assert start_index >= self._get_start_offset()
-        metadata[self.START_INDEX_KEY] = start_index
-        self._metadata["capture"] = insert_sorted_dict_list(
-            self._metadata.get("capture", []),
-            metadata,
-            self.START_INDEX_KEY,
-        )
-
-    def add_annotation(self, start_index, length, metadata):
-        """
-        Insert annotation
-
-        TODO: Validate
-        """
-        assert start_index >= self._get_start_offset()
-        assert length > 1
-        metadata[self.START_INDEX_KEY] = start_index
-        metadata[self.LENGTH_INDEX_KEY] = length
-        self._metadata["annotation"] = insert_sorted_dict_list(
-            self._metadata.get("annotation", []),
-            metadata,
-            self.START_INDEX_KEY,
-        )
+        self._validate_dict_in_section(new_global, self.GLOBAL_KEY)
+        self._metadata[self.GLOBAL_KEY] = new_global
 
     def get_global_info(self):
         """
         Returns a dictionary with all the global info.
         """
-        return self._metadata.get("global", {})
+        return self._metadata.get(self.GLOBAL_KEY, {})
+
+    def set_global_field(self, key, value):
+        """
+        Inserts a value into the global fields.
+
+        Will throw a ValueError if the key/value pair is invalid.
+        """
+        schema_section = self.get_schema()[self.GLOBAL_KEY].get('keys', {})
+        print( schema_section.get(key, {}))
+        validate.validate_key_throw(
+            value,
+            schema_section.get(key, {}),
+            self.GLOBAL_KEY,
+            key
+        )
+        self._metadata[self.GLOBAL_KEY][key] = value
+        return value
+
+    def get_global_field(self, key, default=None):
+        """
+        Return a field from the global info, or default if the field is not set.
+        """
+        return self._metadata[self.GLOBAL_KEY].get(key, default)
+
+    def add_capture(self, start_index, metadata=None):
+        """
+        Insert capture info for sample starting at start_index.
+        If there is already capture info for this index, metadata will be merged
+        with the existing metadata, overwriting keys if they were previously
+        set.
+        """
+        assert start_index >= self._get_start_offset()
+        metadata = metadata or {}
+        self._validate_dict_in_section(metadata, self.CAPTURE_KEY)
+        metadata[self.START_INDEX_KEY] = start_index
+        self._metadata[self.CAPTURE_KEY] = insert_sorted_dict_list(
+            self._metadata.get(self.CAPTURE_KEY, []),
+            metadata,
+            self.START_INDEX_KEY,
+        )
 
     def get_capture_info(self, index):
         """
         Returns a dictionary containing all the capture information at sample
         'index'.
         """
-        start_offset = self._get_start_offset()
-        assert index >= start_offset
-        captures = self._metadata.get("capture", [])
+        assert index >= self._get_start_offset()
+        captures = self._metadata.get(self.CAPTURE_KEY, [])
         assert len(captures) > 0
         cap_info = captures[0]
         for capture in captures:
@@ -159,13 +186,28 @@ class SigMFFile(object):
             cap_info = dict_merge(cap_info, capture)
         return cap_info
 
+    def add_annotation(self, start_index, length, metadata):
+        """
+        Insert annotation
+        """
+        assert start_index >= self._get_start_offset()
+        assert length > 1
+        metadata[self.START_INDEX_KEY] = start_index
+        metadata[self.LENGTH_INDEX_KEY] = length
+        self._validate_dict_in_section(metadata, self.ANNOTATION_KEY)
+        self._metadata[self.ANNOTATION_KEY] = insert_sorted_dict_list(
+            self._metadata.get(self.ANNOTATION_KEY, []),
+            metadata,
+            self.START_INDEX_KEY,
+        )
+
     def get_annotations(self, index):
         """
         Returns a list of dictionaries.
         Every dictionary contains one annotation for the sample at 'index'.
         """
         return [
-            x for x in self._metadata.get("annotation", [])
+            x for x in self._metadata.get(self.ANNOTATION_KEY, [])
             if x[self.START_INDEX_KEY] <= index
             and x[self.START_INDEX_KEY] + x[self.LENGTH_INDEX_KEY] > index
         ]
@@ -177,16 +219,13 @@ class SigMFFile(object):
         """
         from sigmf import sigmf_hash
         the_hash = sigmf_hash.calculate_sha512(self.data_file)
-        self._metadata["global"][self.HASH_KEY] = the_hash
-        return the_hash
+        return self.set_global_field(self.HASH_KEY, the_hash)
 
     def validate(self):
         """
-        Return True if this is valid.
+        Return True if the metadata is valid.
         """
-        from sigmf import validate
-        from sigmf import schema
-        schema_version = self._metadata.get("global", {}).get(self.VERSION_KEY)
+        schema_version = self.get_global_field(self.VERSION_KEY)
         return validate.validate(
             self._metadata,
             schema.get_schema(schema_version),
@@ -195,6 +234,10 @@ class SigMFFile(object):
     def dump(self, filep, pretty=False):
         """
         Write out the file.
+
+        Parameters:
+        filep -- File pointer or something that json.dump() can handle
+        pretty -- If true, output will be formatted extra nicely.
         """
         json.dump(
             self._metadata,
@@ -206,6 +249,9 @@ class SigMFFile(object):
     def dumps(self, pretty=False):
         """
         Return a string representation of the metadata file.
+
+        Parameters:
+        pretty -- If true, output will be formatted extra nicely.
         """
         return json.dumps(
             self._metadata,

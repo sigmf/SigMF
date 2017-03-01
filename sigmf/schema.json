@@ -61,6 +61,7 @@
 	"capture": {
 		"required": true,
 		"type": "dict_list",
+		"sort": "core:sample_start",
 		"keys": {
 			"core:sample_start": {
 				"type": "uint",
@@ -88,6 +89,7 @@
 	"annotations": {
 		"required": true,
 		"type": "dict_list",
+		"sort": "core:sample_start",
 		"keys": {
 			"core:sample_start": {
 				"type": "uint",
