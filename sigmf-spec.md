@@ -237,8 +237,8 @@ the `capture` object:
 
 The annotation object contains a single ordered JSON array. The array contains
 JSON objects, called `annotation segments`, composed of name/value pairs. The
-name/value pairs in capture segments describe the parameters of the signal
-capture.
+name/value pairs in annotation segments are used to describe anything regarding
+the signal data not part of the `capture` and `global` objects.
 
 Each annotation segment must contain a `core:sample_start` name/value pair,
 which indicates the first index at which the rest of the segment's name/value
