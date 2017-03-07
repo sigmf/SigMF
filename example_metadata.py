@@ -1,42 +1,37 @@
 # 
-# Warning: this is not strict JSON, this is python to allow inline comment ...
+# Warning: this is not strict JSON, this is python to allow inline comment
 #
 
 {
 	"global": {
-		"core:type": "cf32",		# Mandatory
-		"core:offset": 0,			# Optional if 0 ...
+		"core:datatype": "cf32",            # The datatype of the recording (here, complex 32-bit float)
+        "core:datapath": "./samples.bin",   # The filepath of the dataset.
+        "core:version": "0.0.1",            # Version of the SigMF spec used.
+        "core:description": "An example metadafile for a SigMF recording.",
 	},
 
-	"capture": [ # Sorted list by sample_start
-		# First one mandatory start at data start (either 0 or "offset", see global)
+	"capture": [
+        # The `capture` object contains a list of segments, sorted by the `sample_start` value
 		{
-			"sample_start": 0,				# Mandatory (and be 0)
-			"core:samplerate": 10000000,	# 10 MHz
-			"core:frequency": 950000000,	# 950 MHz
+            "sample_start": 0,              # The sample index that these parameters take effect.
+			"core:sample_rate": 10000000,	# The sample rate of the recording (10 MHz, here).
+			"core:frequency": 900000000,	# The center frequency of the recording (900 MHz, here).
 			"core:time": "2017-02-01T11:33:17,053240428+01:00",
-			"uhd:gain": 34,					# App / Hw specific value
-			# ...
 		},
-		# Only updated infos need to be present
 		{
 			"sample_start": 100000,			# Mandatory
+			"core:sample_rate": 10000000,	# 10 MHz
 			"core:frequency": 950000000,	# Now at 950 MHz
-			"uhd:gain": 54,					# Now with more gain
-			# ...
 		},
 	],
 
-	"annotations": [ # Sorted list by sample_start
+	"annotations": [
+        # The `annotations` object contains a list of segments, sorted by the `sample_start` value
 		{
-			"sample_start": 100000,			# Mandatory
-			"sample_length": 120000,		# Optional
-			"core:comment": "Some textual comment about stuff happenning",
-			"gsm:xxx": 111,					# Some application specific field
+            "sample_start": 1000000,        # The sample index at which this annotation first applies.
+			"sample_count": 120000,		    # The number of samples that this annotation applies to.
+			"core:comment": "Some text comment about stuff happening",
 		},
 	],
 }
-
-# - Global sections: Stuff valid for the entire file that can't change, ever
-# - 'sample_length' of zero is invalid for capture_infos.
 
