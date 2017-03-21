@@ -48,7 +48,7 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
             - [Capture Object](#capture-object)
             - [Annotation Object](#annotation-object)
         - [Dataset Licensing](#dataset-licensing)
-        - [Application Requirements](#application-requirements)
+        - [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
     - [Example](#example)
 - [Acknowledgements](#acknowledgements)
 
@@ -142,10 +142,10 @@ whitespace, line-endings, `EOF` characters, etc.,).
 
 ### Metadata Format
 
-SigMF is written in JSON, and takes the form of JSON name/value pairs
-which are contained within JSON `objects`. There are three types of top-level
-objects: `global`, `capture`, and `annotations`. The names of the name/value
-pairs can be namespaced for further structure.
+SigMF is written in JSON, encoded in UTF-8, and takes the form of JSON
+name/value pairs which are contained within JSON `objects`. There are three
+types of top-level objects: `global`, `capture`, and `annotations`. The names of
+the name/value pairs can be namespaced for further structure.
 
 The format of the name/value pairs is:
 
