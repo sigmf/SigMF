@@ -48,7 +48,7 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
             - [Capture Object](#capture-object)
             - [Annotation Object](#annotation-object)
         - [Dataset Licensing](#dataset-licensing)
-        - [Application Requirements](#application-requirements)
+        - [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
     - [Example](#example)
 - [Acknowledgements](#acknowledgements)
 
@@ -101,7 +101,8 @@ A SigMF recording consists of two files: a SigMF `metadata` file and a
 file contains information that describes the dataset.
 
 1. The metadata and dataset MUST be in separate files.
-2. A metadata file MUST only describe one dataset file.
+2. The metadata file MUST only describe one dataset file.
+3. The metadata file MUST be stored in UTF-8 encoding.
 3. The metadata file MUST have a `.meta` filename extension.
 4. The dataset file MUST have a `.data` filename extension.
 
@@ -142,10 +143,10 @@ whitespace, line-endings, `EOF` characters, etc.,).
 
 ### Metadata Format
 
-SigMF is written in JSON, and takes the form of JSON name/value pairs
-which are contained within JSON `objects`. There are three types of top-level
-objects: `global`, `capture`, and `annotations`. The names of the name/value
-pairs can be namespaced for further structure.
+SigMF is written in JSON and takes the form of JSON name/value pairs which are
+contained within JSON `objects`. There are three types of top-level objects:
+`global`, `capture`, and `annotations`. The names of the name/value pairs can be
+namespaced for further structure.
 
 The format of the name/value pairs is:
 
@@ -157,8 +158,7 @@ Where the `namespace` string should be replaced with the name of the namespace
 in use, or omitted entirely (including the colon).
 
 1. The metadata MUST be written in [JSON](http://www.json.org/), as specified
-   by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf),
-   composed of ASCII text.
+   by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 2. The entire contents of the metadata file MUST be contained within a single
    JSON object (i.e., the first character of the file MUST be '{' and the last
    character of the file MUST be '}'. This object is hereafter called the
@@ -175,7 +175,7 @@ The values in each name/value pair must be one of the following datatypes:
 |int|integer|Signed 64-bit integer.|
 |uint|unsigned long|Unsigned 64-bit integer.|
 |double|double-precision floating-point number|A 64-bit float as defined by IEEE 754.|
-|string|string|A string of ASCII characters, as defined by the JSON standard.|
+|string|string|A string of characters, as defined by the JSON standard.|
 |boolean|boolean|Either `true` or `false`, as defined by the JSON standard.|
 |null|null|`null`, as defined by the JSON standard.|
    
