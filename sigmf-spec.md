@@ -203,7 +203,7 @@ the `global` object:
 |`datapath`|true|string|The filepath to the dataset file described by the SigMF file. The path can be absolute or relative.|
 |`version`|true|string|The version of the SigMF specification used to create the metadata file.|
 |`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
-|`offset`|false|uint64|The index number of the first sample in the dataset. This value defaults to zero.|
+|`offset`|false|uint64|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
 |`description`|false|string|A text description of the SigMF recording.|
 |`author`|false |string|The author's name (and optionally e-mail address).|
 |`date`|false|string|An ISO-8601 formatted string of the capture date of the recording.|
