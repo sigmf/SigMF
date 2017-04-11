@@ -213,7 +213,6 @@ the `global` object:
 |`offset`|false|uint64|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
 |`description`|false|string|A text description of the SigMF recording.|
 |`author`|false |string|The author's name (and optionally e-mail address).|
-|`date`|false|string|An ISO-8601 formatted string of the capture date of the recording.|
 |`license`|false|string|The license under which the recording is offered.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
 
@@ -238,7 +237,7 @@ capture segment objects:
 |----|--------------|-------|-----------|
 |`sample_start`|true|uint|The sample index at which this segment takes effect.|
 |`frequency`|false|double|The center frequency of the signal in Hz.|
-|`time`|false|string|An ISO-8601 formatted string indicating the timestamp of the sample index specified by `sample_start`.|
+|`datetime`|false|string|An ISO-8601 formatted string indicating the timestamp of the sample index specified by `sample_start`, using the UTC/Zulu timezone.|
 
 #### Annotation Array
 
