@@ -145,17 +145,14 @@ whitespace, line-endings, `EOF` characters, etc.,).
 
 SigMF is written in JSON and takes the form of JSON name/value pairs which are
 contained within JSON `objects`. There are three types of top-level objects:
-`global`, `capture`, and `annotations`. The names of the name/value pairs can be
-namespaced for further structure.
+`global`, `capture`, and `annotations`. The names of the name/value pairs must
+be namespaced.
 
 The format of the name/value pairs is:
 
 ```
-"<namespace:>name": value,
+"namespace:name": value,
 ```
-
-Where the `namespace` string should be replaced with the name of the namespace
-in use, or omitted entirely (including the colon).
 
 1. The metadata MUST be written in [JSON](http://www.json.org/), as specified
    by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
