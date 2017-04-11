@@ -185,6 +185,11 @@ Namespaces provide a way to further classify name/value pairs within metadata
 objects. This specification defines the `core` namespace, which contains
 commonly used name/value pairs for describing signal data.
 
+Some keys within the `core` namespace are optional, and others are required. The
+fields that are required are those that are minimally necessary to parse &
+process the dataset, or that have obvious defaults that are valid. Other fields
+are 'optional', even if they are highly encouraged.
+
 Other namespaces may be defined by the user as needed.
 
 #### Global Object
