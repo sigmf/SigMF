@@ -111,8 +111,7 @@ file contains information that describes the dataset.
 The samples in the dataset file must be in a SigMF-supported format. There are
 four orthogonal characteristics of sample data: complex or real, floating-point
 or fixed-point, bit-width, and endianness. All of these must be explicitly
-specified, except for endianness which is assumed to be `little-endian` unless
-specified otherwise.
+specified.
 
 SigMF sample formats are specified by strings that indicate the type for each of
 the four different characteristics. The types are specified with the following
@@ -131,9 +130,9 @@ characters / strings:
 
 The above strings must be joined in a specific order to create a type string:
 
-`<r|c>``<f|i|u>``<8|16|32>``[<_le|_be>]`
+`<r|c><f|i|u><8|16|32><_le|_be>`
 
-So, for example, the string `"cf32"` specifies `complex 32-bit floating-point
+So, for example, the string `"cf32_le"` specifies `complex 32-bit floating-point
 samples stored in little-endian`, and the string `ru16_be` specifies `real
 unsigned 16-bit samples stored in big-endian`.
 
