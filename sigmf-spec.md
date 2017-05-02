@@ -161,7 +161,11 @@ The format of the name/value pairs is:
    `top-level object`.
 3. The top-level object MUST contain three values named `global`, `capture`,
    and `annotations`.
-   
+4. Metadata name/value pairs SHALL NOT be assumed to have carried over between
+   segments. If a name/value pair applies to a particular segment, then it must
+   appear in that segment, even if the value is unchanged relative to the
+   previous segment.
+
 #### Datatypes
 
 The values in each name/value pair must be one of the following datatypes:
