@@ -260,6 +260,7 @@ annotation segment objects:
 |----|--------------|-------|-----------|
 |`sample_start`|true|uint|The sample index at which this segment takes effect.|
 |`sample_count`|true|uint|The number of samples that this segment applies to. |
+|`generator`|false|string|Human-readable name of the entity that created this annotation.|
 |`comment`|false|string|A human-readable comment.|
 |`freq_lower_edge`|false|double|The lower edge of the frequency band of a signal feature that this annotation describes.|
 |`freq_upper_edge`|false|double|The upper edge of the frequency band of a signal feature that this annotation describes. |
