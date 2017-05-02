@@ -129,7 +129,10 @@ class SigMFFile(object):
         """
         Returns a dictionary with all the global info.
         """
-        return self._metadata.get(self.GLOBAL_KEY, {})
+        try:
+            return self._metadata.get(self.GLOBAL_KEY, {})
+        except AttributeError:
+            return {}
 
     def set_global_field(self, key, value):
         """
@@ -258,4 +261,3 @@ class SigMFFile(object):
             indent=4 if pretty else None,
             separators=(',', ': ') if pretty else None,
         )
-

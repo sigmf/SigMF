@@ -123,3 +123,6 @@ def test_invalid_capture_seq():
 
 def test_assert_empty():
     pass
+
+def test_default_constructor():
+    sigmf.SigMFFile()
