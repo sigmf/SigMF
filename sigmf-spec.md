@@ -162,7 +162,7 @@ in use, or omitted entirely (including the colon).
    JSON object (i.e., the first character of the file MUST be '{' and the last
    character of the file MUST be '}'. This object is hereafter called the
    `top-level object`.
-3. The top-level object MUST contain three objects named `global`, `capture`,
+3. The top-level object MUST contain three values named `global`, `capture`,
    and `annotations`.
    
 #### Datatypes
@@ -193,7 +193,7 @@ Other namespaces may be defined by the user as needed.
 
 #### Global Object
 
-The global object consists of name/value pairs that provide information
+The `global` object consists of name/value pairs that provide information
 applicable to the entire dataset. It contains the information that is minimally
 necessary to open and parse the dataset file, as well as general information
 about the recording itself.
@@ -214,21 +214,22 @@ the `global` object:
 |`license`|false|string|The license under which the recording is offered.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
 
-#### Capture Object
+#### Capture Array
 
-The capture object contains a single ordered JSON array. The array contains JSON
-objects, called `capture segments`, composed of name/value pairs. The name/value
-pairs in capture segments describe the parameters of the signal capture.
+The `capture` value is an array of _capture segment objects_ that describe the
+parameters of the signal capture. It MUST be sorted by the value of each
+segment's `core:sample_start` key, ascending.
+
+#### Capture Segment Objects
+
+Capture segment objects are composed of name/value pairs.
 
 Each capture segment must contain a `core:sample_start` name/value pair, which
 indicates the first index at which the rest of the segment's name/value pairs
 apply.
 
-The capture object's array of segments is sorted by the value of each segment's
-`core:sample_start` key.
-
 The following names are specified in the `core` namespace and should be used in
-the `capture` object:
+capture segment objects:
 
 |name|required|type|description|
 |----|--------------|-------|-----------|
