@@ -220,13 +220,13 @@ The `capture` value is an array of _capture segment objects_ that describe the
 parameters of the signal capture. It MUST be sorted by the value of each
 segment's `core:sample_start` key, ascending.
 
-#### Capture Segment Objects
+##### Capture Segment Objects
 
 Capture segment objects are composed of name/value pairs.
 
-Each capture segment must contain a `core:sample_start` name/value pair, which
-indicates the first index at which the rest of the segment's name/value pairs
-apply.
+Each capture segment object must contain a `core:sample_start` name/value pair,
+which indicates the first index at which the rest of the segment's name/value
+pairs apply.
 
 The following names are specified in the `core` namespace and should be used in
 capture segment objects:
@@ -238,22 +238,23 @@ capture segment objects:
 |`sample_rate`|false|double|The sample rate of the signal in Samples per Second.|
 |`time`|false|string|An ISO-8601 formatted string indicating the timestamp of the sample index specified by `sample_start`.|
 
-#### Annotation Object
+#### Annotation Array
 
-The annotation object contains a single ordered JSON array. The array contains
-JSON objects, called `annotation segments`, composed of name/value pairs. The
-name/value pairs in annotation segments are used to describe anything regarding
-the signal data not part of the `capture` and `global` objects.
+The `annotation` value is an array of _annotation segment objects_ that
+describe anything regarding the signal data not part of the `capture` and
+`global` objects. It MUST be sorted by the value of each segment's
+`core:sample_start` key, ascending.
 
-Each annotation segment must contain a `core:sample_start` name/value pair,
-which indicates the first index at which the rest of the segment's name/value
-pairs apply.
+##### Annotation Segment Objects
 
-The annotation object's array of segments is sorted by the value of each segment's
-`core:sample_start` key.
+Annotation segment objects contain name/value pairs.
+
+Each annotation segment object must contain a `core:sample_start` name/value
+pair, which indicates the first index at which the rest of the segment's
+name/value pairs apply.
 
 The following names are specified in the `core` namespace and should be used in
-the `annotation` object:
+annotation segment objects:
 
 |name|required|type|description|
 |----|--------------|-------|-----------|
