@@ -121,7 +121,7 @@ characters / strings:
 
 * `r`: real-valued data
 * `c`: complex (quadrature) data
-* `f`: floating-point data
+* `f`: floating-point data (IEEE-754 single-precision only)
 * `i`: signed fixed-point data
 * `u`: unsigned fixed-point data
 * `8`: 8-bit samples
@@ -137,6 +137,10 @@ The above strings must be joined in a specific order to create a type string:
 So, for example, the string `"cf32_le"` specifies `complex 32-bit floating-point
 samples stored in little-endian`, and the string `ru16_be` specifies `real
 unsigned 16-bit samples stored in big-endian`.
+
+Note that since only IEEE-754 single-precision floating-point is supported, the
+`8` and `16` bit-width options must not be used  with the `f` floating-point
+dataset format.
 
 The samples should be written to the dataset file without separation, and the
 dataset file MUST NOT contain any other characters (e.g., delimiters,
