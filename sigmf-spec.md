@@ -103,9 +103,9 @@ file contains information that describes the dataset.
 1. The metadata and dataset MUST be in separate files.
 2. The metadata file MUST only describe one dataset file.
 3. The metadata file MUST be stored in UTF-8 encoding.
-3. The metadata file MUST have a `.meta` filename extension.
-4. The dataset file MUST have a `.data` filename extension.
-5. The names of the metadata and dataset files must be identical (excepting
+4. The metadata file MUST have a `.sigmf-meta` filename extension.
+5. The dataset file MUST have a `.sigmf-data` filename extension.
+6. The names of the metadata and dataset files must be identical (excepting
    their extensions).
 
 ### Dataset Format
