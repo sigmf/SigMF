@@ -207,6 +207,8 @@ the `global` object:
 |name|required|type|description|
 |----|--------------|-------|-----------|
 |`datatype`|true|string|The format of the stored samples in the dataset file. Its value must be a valid SigMF dataset format type string.|
+|`datapath`|true|string|The filepath to the dataset file described by the SigMF file. The path can be absolute or relative.|
+|`sample_rate`|false|double|The sample rate of the signal in Samples per Second.|
 |`version`|true|string|The version of the SigMF specification used to create the metadata file.|
 |`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
 |`offset`|false|uint64|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
@@ -237,7 +239,6 @@ capture segment objects:
 |----|--------------|-------|-----------|
 |`sample_start`|true|uint|The sample index at which this segment takes effect.|
 |`frequency`|false|double|The center frequency of the signal in Hz.|
-|`sample_rate`|false|double|The sample rate of the signal in Samples per Second.|
 |`time`|false|string|An ISO-8601 formatted string indicating the timestamp of the sample index specified by `sample_start`.|
 
 #### Annotation Array
