@@ -34,11 +34,6 @@
 				"pattern": "",
 				"help": "ISO 8601-formatted date (e.g., 2017-02-01T15:05:03+00:00)"
 			},
-			"core:datapath": {
-				"type": "string",
-				"required": true,
-				"help": "Location of the sample data file"
-			},
 			"core:sha512": {
 				"type": "string",
 				"required": false,

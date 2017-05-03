@@ -105,6 +105,8 @@ file contains information that describes the dataset.
 3. The metadata file MUST be stored in UTF-8 encoding.
 3. The metadata file MUST have a `.meta` filename extension.
 4. The dataset file MUST have a `.data` filename extension.
+5. The names of the metadata and dataset files must be identical (excepting
+   their extensions).
 
 ### Dataset Format
 
@@ -205,7 +207,6 @@ the `global` object:
 |name|required|type|description|
 |----|--------------|-------|-----------|
 |`datatype`|true|string|The format of the stored samples in the dataset file. Its value must be a valid SigMF dataset format type string.|
-|`datapath`|true|string|The filepath to the dataset file described by the SigMF file. The path can be absolute or relative.|
 |`version`|true|string|The version of the SigMF specification used to create the metadata file.|
 |`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
 |`offset`|false|uint64|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|

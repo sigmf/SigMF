@@ -55,7 +55,7 @@ class SigMFFile(object):
 
     Parameters:
     metadata    -- Metadata. Either a string, or a dictionary.
-    data_file   -- Path to the corresponding data file (optional).
+    data_file   -- Path to the corresponding data file.
     global_info -- Dictionary containing global header info.
     """
     START_INDEX_KEY = "core:sample_start"
@@ -63,7 +63,6 @@ class SigMFFile(object):
     START_OFFSET_KEY = "core:offset"
     HASH_KEY = "core:sha512"
     VERSION_KEY = "core:version"
-    FILENAME_KEY = "core:datapath"
     GLOBAL_KEY = "global"
     CAPTURE_KEY = "capture"
     ANNOTATION_KEY = "annotation"
@@ -85,8 +84,6 @@ class SigMFFile(object):
         if global_info is not None:
             self.set_global_info(global_info)
         self.data_file = data_file
-        if self.data_file is not None:
-            self.set_global_field(self.FILENAME_KEY, self.data_file)
 
     def _get_start_offset(self):
         """
