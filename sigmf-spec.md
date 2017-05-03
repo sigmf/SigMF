@@ -286,6 +286,10 @@ requirements:
 2. Must be able to ignore any `object` or `namespace` not specified by this
    document and still function normally.
 3. `Capture` segments referring to non-existent samples should be ignored.
+4. Must treat consecutive capture segments whose metadata is equivalent for
+   purposes of that application (i.e., it may be different in values ignored by
+   the application such as optional values or unknown extensions) as it would
+   a single segment.
 
 ## Example
 
