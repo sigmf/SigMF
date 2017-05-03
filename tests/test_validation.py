@@ -27,7 +27,6 @@ MD_VALID = """
 {
     "global": {
         "core:datatype": "cf32",
-        "core:datapath": "foo.dat",
         "core:offset": 0,
         "core:version": "1.0.0",
         "core:license": "CC0",
@@ -65,7 +64,6 @@ MD_INVALID_SEQUENCE_CAP = """
 {
     "global": {
         "core:datatype": "cf32",
-        "core:datapath": "foo.dat"
     },
 
     "capture": [
@@ -89,7 +87,6 @@ MD_INVALID_SEQUENCE_ANN = """
 {
     "global": {
         "core:datatype": "cf32",
-        "core:datapath": "foo.dat"
     },
 
     "capture": [
