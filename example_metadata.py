@@ -5,7 +5,6 @@
 {
     "global": {
         "core:datatype": "cf32",            # The datatype of the recording (here, complex 32-bit float)
-        "core:datapath": "./samples.bin",   # The filepath of the dataset.
         "core:sample_rate": 10000000,       # The sample rate of the recording (10 MHz, here).
         "core:version": "0.0.1",            # Version of the SigMF spec used.
         "core:description": "An example metadafile for a SigMF recording.",

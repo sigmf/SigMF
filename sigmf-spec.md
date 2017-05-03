@@ -207,7 +207,6 @@ the `global` object:
 |name|required|type|description|
 |----|--------------|-------|-----------|
 |`datatype`|true|string|The format of the stored samples in the dataset file. Its value must be a valid SigMF dataset format type string.|
-|`datapath`|true|string|The filepath to the dataset file described by the SigMF file. The path can be absolute or relative.|
 |`sample_rate`|false|double|The sample rate of the signal in samples per second.|
 |`version`|true|string|The version of the SigMF specification used to create the metadata file.|
 |`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
