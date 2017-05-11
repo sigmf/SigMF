@@ -237,7 +237,17 @@ capture segment objects:
 |----|--------------|-------|-----------|
 |`sample_start`|true|uint|The sample index at which this segment takes effect.|
 |`frequency`|false|double|The center frequency of the signal in Hz.|
-|`datetime`|false|string|An ISO-8601 formatted string indicating the timestamp of the sample index specified by `sample_start`, using the UTC/Zulu timezone.|
+|`datetime`|false|string|An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`. More details, below.|
+
+###### The `datetime` Pair
+
+This name/value pair must be an ISO-8601 string of the form
+`YYYY-MM-DDTHH:MM:SS.SSSZ`, where the `T` is the delimiter between the date and
+the time, and the `Z` indicates the UTC/Zulu timezone. All timestamps must be in
+the UTC/Zulu timezone, and use the 24-hour clock.
+
+Any number of digits of precision may be used in the fractional seconds portion
+of the timestamp.
 
 #### Annotation Array
 
