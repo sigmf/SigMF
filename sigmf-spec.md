@@ -282,7 +282,7 @@ recordings are:
 In order to be `SigMF Compliant`, an application must meet the following
 requirements:
 
-1. Adheres to and supports for the file rules, dataset formats, `objects`,
+1. Adheres to and supports the file rules, dataset formats, `objects`,
    `namespaces`, and `names` specified by this document.
 2. Must be able to ignore any `object` or `namespace` not specified by this
    document and still function normally.
