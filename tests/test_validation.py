@@ -120,3 +120,7 @@ def test_assert_empty():
 
 def test_default_constructor():
     sigmf.SigMFFile()
+
+def test_set_non_required_global_field():
+    f = sigmf.SigMFFile()
+    f.set_global_field('this_is:not_in_the_schema', None)
