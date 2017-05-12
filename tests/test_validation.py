@@ -34,7 +34,6 @@ MD_VALID = """
         "core:url": "foo",
         "core:sha512": "69a014f8855058d25b30b1caf4f9d15bb7b38afa26e28b24a63545734e534a861d658eddae1dbc666b33ca1d18c1ca85722f1f2f010703a7dbbef08189a1d0e5"
     },
-
     "capture": [
         {
             "core:sample_start": 0,
@@ -63,9 +62,8 @@ MD_VALID = """
 MD_INVALID_SEQUENCE_CAP = """
 {
     "global": {
-        "core:datatype": "cf32",
+        "core:datatype": "cf32"
     },
-
     "capture": [
         {
             "core:sample_start": 10
@@ -86,9 +84,8 @@ MD_INVALID_SEQUENCE_CAP = """
 MD_INVALID_SEQUENCE_ANN = """
 {
     "global": {
-        "core:datatype": "cf32",
+        "core:datatype": "cf32"
     },
-
     "capture": [
         {
             "core:sample_start": 0
