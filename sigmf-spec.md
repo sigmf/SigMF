@@ -108,6 +108,20 @@ file contains information that describes the dataset.
 6. The names of the metadata and dataset files must be identical (excepting
    their extensions).
 
+#### Archive Format
+
+The metadata and dataset files that comprise a SigMF recording may be combined
+into a file archive.
+
+1. The archive MUST use the `tar` archive format, as specified by POSIX.1-2001.
+2. The archive file's filename extension MUST be `.sigmf`.
+3. The archive MUST contain the following files: for each contained recording
+   with some name given here meta-syntactically as `N`, files named `N` (a
+   directory), `N/N.sigmf-meta`, and `N/N.sigmf-data`.
+4. The archive MUST NOT contain any other files unless their pathnames begin
+   with `N/N`. for some `N` which has `.sigmf-meta` and `.sigmf-data` files as
+   described above.
+
 ### Dataset Format
 
 The samples in the dataset file must be in a SigMF-supported format. There are
