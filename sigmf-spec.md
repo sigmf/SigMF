@@ -278,8 +278,8 @@ annotation segment objects:
 |`sample_count`|true|uint|The number of samples that this segment applies to. |
 |`generator`|false|string|Human-readable name of the entity that created this annotation.|
 |`comment`|false|string|A human-readable comment.|
-|`freq_lower_edge`|false|double|The lower edge (in the baseband) of the frequency band of a signal feature that this annotation describes.|
-|`freq_upper_edge`|false|double|The upper edge (in the baseband) of the frequency band of a signal feature that this annotation describes.|
+|`freq_lower_edge`|false|double|The true frequency value (at RF, if applicable) of the lower edge of the feature described by this annotation.|
+|`freq_upper_edge`|false|double|The true frequency value (at RF, if applicable) of the upper edge of the feature described by this annotation.|
 |`latitude`|false|need a standard?| |
 |`longitude`|false|need a standard?| |
 
