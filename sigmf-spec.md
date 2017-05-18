@@ -79,6 +79,10 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 JSON keywords are used as defined in [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 
+Augmented Backus-Naur form (ABNF) is used as defined by [RFC
+5234](https://tools.ietf.org/html/rfc5234) and updated by [RFC
+7405](https://tools.ietf.org/html/rfc7405).
+
 ## Specification
 
 The SigMF specification fundamentally describes two types of information:
@@ -112,35 +116,29 @@ file contains information that describes the dataset.
 
 The samples in the dataset file must be in a SigMF-supported format. There are
 four orthogonal characteristics of sample data: complex or real, floating-point
-or fixed-point, bit-width, and endianness. All of these must be explicitly
-specified.
+or integer, bit-width, and endianness. The following ABNF rules specify the
+dataset formats defined in the SigMF `core` namespace:
 
-SigMF sample formats are specified by strings that indicate the type for each of
-the four different characteristics. The types are specified with the following
-characters / strings:
+    dataset-format = (real / complex) type endianness
 
-* `r`: real-valued data
-* `c`: complex (quadrature) data
-* `f`: floating-point data (IEEE-754 single-precision only)
-* `i`: signed fixed-point data
-* `u`: unsigned fixed-point data
-* `8`: 8-bit samples
-* `16`: 16-bit samples
-* `32`: 32-bit samples
-* `_le`: little-endian data
-* `_be`: big-endian data
+    real = "r"
+    complex = "c"
 
-The above strings must be joined in a specific order to create a type string:
+    type = floating-point / signed-integer / unsigned-integer
+    floating-point = "f32"
+    signed-integer = "i32" / "i16" / "i8"
+    unsigned-integer = "u32" / "u16" / "u8"
 
-`<r|c><f|i|u><8|16|32><_le|_be>`
+    endianness = little-endian / big-endian
+    little-endian = "_le"
+    big-endian = "_be"
 
 So, for example, the string `"cf32_le"` specifies `complex 32-bit floating-point
 samples stored in little-endian`, and the string `ru16_be` specifies `real
 unsigned 16-bit samples stored in big-endian`.
 
-Note that since only IEEE-754 single-precision floating-point is supported, the
-`8` and `16` bit-width options must not be used  with the `f` floating-point
-dataset format.
+Note that IEEE-754 single-precision floating-point is supported by the SigMF
+`core` namespace.
 
 The samples should be written to the dataset file without separation, and the
 dataset file MUST NOT contain any other characters (e.g., delimiters,
@@ -184,7 +182,7 @@ The values in each name/value pair must be one of the following datatypes:
 |string|string|A string of characters, as defined by the JSON standard.|
 |boolean|boolean|Either `true` or `false`, as defined by the JSON standard.|
 |null|null|`null`, as defined by the JSON standard.|
-   
+
 #### Namespaces
 
 Namespaces provide a way to further classify name/value pairs within metadata
