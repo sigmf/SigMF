@@ -80,7 +80,7 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 JSON keywords are used as defined in [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 
 Fields defined as "human-readable", a "string", or simply as "text" shall be
-treated as plaintext ASCII where whitespace is respected, unless otherwise
+treated as plaintext where whitespace is significant, unless otherwise
 specified.
 
 ## Specification
