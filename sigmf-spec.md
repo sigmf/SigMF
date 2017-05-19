@@ -230,7 +230,6 @@ the `global` object:
 |`offset`|false|uint64|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
 |`description`|false|string|A text description of the SigMF recording.|
 |`author`|false |string|The author's name (and optionally e-mail address).|
-|`date`|false|string|An ISO-8601 formatted string of the capture date of the recording.|
 |`license`|false|string|The license under which the recording is offered.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
 
@@ -255,7 +254,33 @@ capture segment objects:
 |----|--------------|-------|-----------|
 |`sample_start`|true|uint|The sample index at which this segment takes effect.|
 |`frequency`|false|double|The center frequency of the signal in Hz.|
-|`time`|false|string|An ISO-8601 formatted string indicating the timestamp of the sample index specified by `sample_start`.|
+|`datetime`|false|string|An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`. More details, below.|
+
+###### The `datetime` Pair
+
+This name/value pair must be an ISO-8601 string, as defined by [RFC
+3339](https://www.ietf.org/rfc/rfc3339.txt), where the only allowed
+`time-offset` is `Z`, indicating the UTC/Zulu timezone. The ABNF description is:
+
+   date-fullyear   = 4DIGIT
+   date-month      = 2DIGIT  ; 01-12
+   date-mday       = 2DIGIT  ; 01-28, 01-29, 01-30, 01-31 based on
+                             ; month/year
+   time-hour       = 2DIGIT  ; 00-23
+   time-minute     = 2DIGIT  ; 00-59
+   time-second     = 2DIGIT  ; 00-58, 00-59, 00-60 based on leap second
+                             ; rules
+   time-secfrac    = "." 1*DIGIT
+   time-offset     = "Z"
+
+   partial-time    = time-hour ":" time-minute ":" time-second [time-secfrac]
+   full-date       = date-fullyear "-" date-month "-" date-mday
+   full-time       = partial-time time-offset
+
+   date-time       = full-date "T" full-time
+
+Thus, timestamps take the form of `YYYY-MM-DDTHH:MM:SS.SSSZ`, where any number
+of digits for fractional seconds is permitted.
 
 #### Annotation Array
 
