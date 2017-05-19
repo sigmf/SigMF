@@ -234,7 +234,7 @@ the `global` object:
 |`offset`|false|uint64|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
 |`description`|false|string|A text description of the SigMF recording.|
 |`author`|false |string|The author's name (and optionally e-mail address).|
-|`license`|false|string|The license under which the recording is offered.|
+|`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
 
 #### Capture Array
