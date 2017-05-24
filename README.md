@@ -1,7 +1,9 @@
 # Signal Metadata Format (SigMF)
 
-Welcome to the SigMF project! If you are looking for the SigMF specification,
-head here: [Signal Metadata Format Specification](sigmf-spec.md)
+Welcome to the SigMF project! The SigMF specification document is the
+`sigmf-spec.md` file in this repository:
+
+SigMF: [Signal Metadata Format Specification](sigmf-spec.md)
 
 ## Introduction
 
@@ -22,7 +24,7 @@ on the same dataset, thus enabling data portability between tools and workflows.
 
 (Taken from the
 [Introduction](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#introduction)
-of the specification document.
+of the specification document.)
 
 ## Contributing
 
