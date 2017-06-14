@@ -25,7 +25,7 @@ import json
 
 from six import iteritems
 
-from . import schema, sigmf_hash, validate
+from . import error, schema, sigmf_hash, validate
 from .utils import dict_merge, insert_sorted_dict_list
 
 
@@ -40,16 +40,19 @@ def get_default_metadata(schema):
             for key, desc in iteritems(keys_dict)
             if "default" in desc
         }
+
     def default_category_data(cat_type, defaults):
         " Return a valid data type for a category "
         return {
             'dict': lambda x: x,
             'dict_list': lambda x: [x],
         }[cat_type](defaults)
+
     return {
         category: default_category_data(desc["type"], get_default_dict(desc["keys"]))
         for category, desc in iteritems(schema)
     }
+
 
 class SigMFFile(object):
     """
@@ -86,6 +89,8 @@ class SigMFFile(object):
         if global_info is not None:
             self.set_global_info(global_info)
         self.data_file = data_file
+        if self.data_file:
+            self.calculate_hash()
 
     def _get_start_offset(self):
         """
@@ -220,6 +225,13 @@ class SigMFFile(object):
         the_hash = sigmf_hash.calculate_sha512(self.data_file)
         return self.set_global_field(self.HASH_KEY, the_hash)
 
+    def set_data_file(self, data_file):
+        """
+        Set the datafile path and recalculate the hash. Return the hash string.
+        """
+        self.data_file = data_file
+        return self.calculate_hash()
+
     def validate(self):
         """
         Return True if the metadata is valid.
@@ -232,7 +244,7 @@ class SigMFFile(object):
 
     def dump(self, filep, pretty=False):
         """
-        Write out the file.
+        Write metadata to a file.
 
         Parameters:
         filep -- File pointer or something that json.dump() can handle
@@ -257,3 +269,6 @@ class SigMFFile(object):
             indent=4 if pretty else None,
             separators=(',', ': ') if pretty else None,
         )
+
+    def archive(self):
+        """
