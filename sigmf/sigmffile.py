@@ -22,10 +22,12 @@ SigMF File Representation Object
 """
 
 import json
+
 from six import iteritems
-from sigmf.utils import dict_merge, insert_sorted_dict_list
-from sigmf import validate
-from sigmf import schema
+
+from . import schema, sigmf_hash, validate
+from .utils import dict_merge, insert_sorted_dict_list
+
 
 def get_default_metadata(schema):
     """
@@ -65,7 +67,7 @@ class SigMFFile(object):
     VERSION_KEY = "core:version"
     GLOBAL_KEY = "global"
     CAPTURE_KEY = "capture"
-    ANNOTATION_KEY = "annotation"
+    ANNOTATION_KEY = "annotations"
 
     def __init__(
             self,
@@ -97,10 +99,9 @@ class SigMFFile(object):
         Throws if not.
         """
         schema_section = self.get_schema()[section_key]
-        print(schema_section)
         for k, v in iteritems(entries):
             validate.validate_key_throw(
-                v, schema_section.get(key, {}), section, k
+                v, schema_section.get(k, {}), schema_section, k
             )
 
     def get_schema(self):
@@ -110,7 +111,6 @@ class SigMFFile(object):
         current_metadata_version = self.get_global_info().get(self.VERSION_KEY)
         if self.version != current_metadata_version or self.schema is None:
             self.version = current_metadata_version
-            from sigmf import schema
             self.schema = schema.get_schema(self.version)
         assert isinstance(self.schema, dict)
         return self.schema
@@ -138,7 +138,6 @@ class SigMFFile(object):
         Will throw a ValueError if the key/value pair is invalid.
         """
         schema_section = self.get_schema()[self.GLOBAL_KEY].get('keys', {})
-        print( schema_section.get(key, {}))
         validate.validate_key_throw(
             value,
             schema_section.get(key, {}),
@@ -190,8 +189,9 @@ class SigMFFile(object):
         """
         Insert annotation
         """
-        assert start_index >= self._get_start_offset()
         assert length > 1
+        global_start_index = self._get_start_offset()
+        assert global_start_index <= start_index < global_start_index + length
         metadata[self.START_INDEX_KEY] = start_index
         metadata[self.LENGTH_INDEX_KEY] = length
         self._validate_dict_in_section(metadata, self.ANNOTATION_KEY)
@@ -217,7 +217,6 @@ class SigMFFile(object):
         Calculates the hash of the data file and adds it to the global section.
         Also returns a string representation of the hash.
         """
-        from sigmf import sigmf_hash
         the_hash = sigmf_hash.calculate_sha512(self.data_file)
         return self.set_global_field(self.HASH_KEY, the_hash)
 

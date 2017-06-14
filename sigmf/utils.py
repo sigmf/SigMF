@@ -22,7 +22,9 @@ Utilities
 """
 
 from copy import deepcopy
+
 from six import iteritems
+
 
 def dict_merge(a, b):
     """
@@ -44,6 +46,8 @@ def insert_sorted_dict_list(dict_list, new_entry, key):
     Returns the new list, which is still sorted.
     """
     for index, entry in enumerate(dict_list):
+        if not entry:
+            continue
         if entry[key] == new_entry[key]:
             dict_list[index] = dict_merge(entry, new_entry)
             return dict_list
@@ -57,4 +61,3 @@ def get_schema_path(module_path):
     """
     """
     return module_path
-

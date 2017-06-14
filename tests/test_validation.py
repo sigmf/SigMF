@@ -124,3 +124,13 @@ def test_default_constructor():
 def test_set_non_required_global_field():
     f = sigmf.SigMFFile()
     f.set_global_field('this_is:not_in_the_schema', None)
+
+def test_add_capture():
+    f = sigmf.SigMFFile()
+    f.add_capture(start_index=0, metadata={})
+
+def test_add_annotation():
+    f = sigmf.SigMFFile()
+    f.add_capture(start_index=0, metadata={})
+    m = {"latitude": 40.0, "longitude": -105.0}
+    f.add_annotation(start_index=0, length=128, metadata=m)

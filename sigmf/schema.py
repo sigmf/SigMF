@@ -17,18 +17,14 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""
-Schema default foo.
-"""
 
 import os
 import json
-from sigmf import utils
+
+from . import utils
+
 
 def get_schema(version=None):
-    """
-    Return a schema based on the version
-    """
     schema_file = os.path.join(
         utils.get_schema_path(os.path.dirname(utils.__file__)),
         'schema.json'
