@@ -1,4 +1,6 @@
-# Copyright 2016 GNU Radio Foundation
+# flake8: noqa
+
+# Copyright 2017 GNU Radio Foundation
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -18,4 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__ = "0.0.1"
+
+import numpy as np
+
+
+TEST_FLOAT32_DATA = np.arange(16, dtype=np.float32)
+
+TEST_METADATA = {
+    'annotations': [{'core:sample_count': 16, 'core:sample_start': 0}],
+    'captures': [{'core:sample_start': 0}],
+    'global': {
+        'core:datatype': 'f32',
+        'core:sha512': 'f4984219b318894fa7144519185d1ae81ea721c6113243a52b51e444512a39d74cf41a4cec3c5d000bd7277cc71232c04d7a946717497e18619bdbe94bfeadd6',
+        'core:version': '0.0.1'
+    }
+}
