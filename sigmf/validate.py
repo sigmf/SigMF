@@ -155,11 +155,6 @@ def validate_section(data_section, ref_section, section):
     }[ref_section["type"]](data_section, ref_section, section)
 
 def validate(data, ref=None):
-    """
-    docstring for validate
-
-    data, ref: dicts
-    """
     if ref is None:
         from sigmf import schema
         ref = schema.get_schema()
