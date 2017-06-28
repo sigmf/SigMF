@@ -1,11 +1,13 @@
 import codecs
 import json
-import numpy as np
-import tempfile
+import os
 import tarfile
+import tempfile
 from os import path
 
+import numpy as np
 import pytest
+
 from sigmf import error
 from sigmf.archive import SIGMF_DATASET_EXT, SIGMF_METADATA_EXT
 
@@ -62,6 +64,18 @@ def test_fileobj_not_closed(test_sigmffile):
     with tempfile.NamedTemporaryFile() as t:
         test_sigmffile.archive(fileobj=t)
         assert not t.file.closed
+
+
+def test_unwritable_fileobj_throws_fileerror(test_sigmffile):
+    with tempfile.NamedTemporaryFile(mode="rb") as t:
+        with pytest.raises(error.SigMFFileError):
+            test_sigmffile.archive(fileobj=t)
+
+
+def test_unwritable_name_throws_fileerror(test_sigmffile):
+    unwritable_file = "/root/unwritable.sigmf"  # assumes root is unwritable
+    with pytest.raises(error.SigMFFileError):
+        test_sigmffile.archive(name=unwritable_file)
 
 
 def test_tarfile_layout(test_sigmffile):
