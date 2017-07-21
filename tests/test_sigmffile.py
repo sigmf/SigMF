@@ -24,10 +24,27 @@ import tempfile
 
 import numpy as np
 
-from sigmf import sigmffile
+from sigmf import sigmffile, utils
 from sigmf.sigmffile import SigMFFile
 
 from .testdata import TEST_FLOAT32_DATA, TEST_METADATA
+
+
+def simulate_capture(sigmf_md, n, capture_len):
+    start_index = capture_len * n
+
+    capture_md = {"core:time": utils.get_sigmf_iso8601_datetime_now()}
+
+    sigmf_md.add_capture(start_index=start_index, metadata=capture_md)
+
+    annotation_md = {
+        "core:latitude": 40.0 + 0.0001 * n,
+        "core:longitude": -105.0 + 0.0001 * n,
+    }
+
+    sigmf_md.add_annotation(start_index=start_index,
+                            length=capture_len,
+                            metadata=annotation_md)
 
 
 def test_default_constructor():
@@ -64,3 +81,9 @@ def test_fromarchive(test_sigmffile):
 
     os.remove(tf)
     shutil.rmtree(td)
+
+
+def test_add_multiple_captures_and_annotations():
+    f = SigMFFile()
+    for i in range(3):
+        simulate_capture(f, i, 1024)

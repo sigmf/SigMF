@@ -22,8 +22,20 @@ Utilities
 """
 
 from copy import deepcopy
+from datetime import datetime
 
 from six import iteritems
+
+
+SIGMF_DATETIME_ISO8601_FMT = "%Y-%m-%dT%H:%M:%S.%fZ"
+
+
+def get_sigmf_iso8601_datetime_now():
+    return datetime.isoformat(datetime.utcnow()) + 'Z'
+
+
+def parse_iso8601_datetime(d):
+    return datetime.strptime(d, SIGMF_DATETIME_ISO8601_FMT)
 
 
 def dict_merge(a, b):
