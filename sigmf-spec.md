@@ -266,6 +266,7 @@ This name/value pair must be an ISO-8601 string, as defined by [RFC
 3339](https://www.ietf.org/rfc/rfc3339.txt), where the only allowed
 `time-offset` is `Z`, indicating the UTC/Zulu timezone. The ABNF description is:
 
+```abnf
    date-fullyear   = 4DIGIT
    date-month      = 2DIGIT  ; 01-12
    date-mday       = 2DIGIT  ; 01-28, 01-29, 01-30, 01-31 based on
@@ -282,6 +283,7 @@ This name/value pair must be an ISO-8601 string, as defined by [RFC
    full-time       = partial-time time-offset
 
    date-time       = full-date "T" full-time
+```
 
 Thus, timestamps take the form of `YYYY-MM-DDTHH:MM:SS.SSSZ`, where any number
 of digits for fractional seconds is permitted.
