@@ -1,4 +1,6 @@
-# Copyright 2016 GNU Radio Foundation
+# flake8: noqa
+
+# Copyright 2017 GNU Radio Foundation
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -7,8 +9,8 @@
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -18,15 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
-import json
 
-from . import utils
+import numpy as np
 
 
-def get_schema(version=None):
-    schema_file = os.path.join(
-        utils.get_schema_path(os.path.dirname(utils.__file__)),
-        'schema.json'
-    )
-    return json.load(open(schema_file))
+TEST_FLOAT32_DATA = np.arange(16, dtype=np.float32)
+
+TEST_METADATA = {
+    'annotations': [{'core:sample_count': 16, 'core:sample_start': 0}],
+    'captures': [{'core:sample_start': 0}],
+    'global': {
+        'core:datatype': 'f32',
+        'core:sha512': 'f4984219b318894fa7144519185d1ae81ea721c6113243a52b51e444512a39d74cf41a4cec3c5d000bd7277cc71232c04d7a946717497e18619bdbe94bfeadd6',
+        'core:version': '0.0.1'
+    }
+}

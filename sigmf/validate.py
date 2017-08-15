@@ -17,10 +17,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-" SigMF Validation routines "
+
+"""SigMF Validation routines"""
 
 from __future__ import print_function
+
 import json
+
 
 class ValidationResult(object):
     " Amends a validation result (True, False) with an error string. "
@@ -152,11 +155,6 @@ def validate_section(data_section, ref_section, section):
     }[ref_section["type"]](data_section, ref_section, section)
 
 def validate(data, ref=None):
-    """
-    docstring for validate
-
-    data, ref: dicts
-    """
     if ref is None:
         from sigmf import schema
         ref = schema.get_schema()

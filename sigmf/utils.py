@@ -22,7 +22,21 @@ Utilities
 """
 
 from copy import deepcopy
+from datetime import datetime
+
 from six import iteritems
+
+
+SIGMF_DATETIME_ISO8601_FMT = "%Y-%m-%dT%H:%M:%S.%fZ"
+
+
+def get_sigmf_iso8601_datetime_now():
+    return datetime.isoformat(datetime.utcnow()) + 'Z'
+
+
+def parse_iso8601_datetime(d):
+    return datetime.strptime(d, SIGMF_DATETIME_ISO8601_FMT)
+
 
 def dict_merge(a, b):
     """
@@ -44,6 +58,8 @@ def insert_sorted_dict_list(dict_list, new_entry, key):
     Returns the new list, which is still sorted.
     """
     for index, entry in enumerate(dict_list):
+        if not entry:
+            continue
         if entry[key] == new_entry[key]:
             dict_list[index] = dict_merge(entry, new_entry)
             return dict_list
@@ -57,4 +73,3 @@ def get_schema_path(module_path):
     """
     """
     return module_path
-
