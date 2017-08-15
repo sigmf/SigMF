@@ -17,10 +17,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-" SigMF Validation routines "
+
+"""SigMF Validation routines"""
 
 from __future__ import print_function
+
 import json
+
 
 class ValidationResult(object):
     " Amends a validation result (True, False) with an error string. "
@@ -58,14 +61,14 @@ def validate_key(data_value, ref_dict, section, key):
     key -- The key of this key/value pair ("core:Version", etc.). This is for
            better error reporting only.
     """
-    if ref_dict["required"] and data_value is None:
+    if ref_dict.get('required') and data_value is None:
         return ValidationResult(
             False,
             "In Section `{sec}', an entry is missing required key `{key}'.".format(
                 sec=section,
                 key=key
             ))
-    if not match_type(data_value, ref_dict["type"]):
+    if 'type' in ref_dict and not match_type(data_value, ref_dict["type"]):
         return ValidationResult(
             False,
             "In Section `{sec}', entry `{key}={value}' is not of type `{type}'.".format(
@@ -152,11 +155,6 @@ def validate_section(data_section, ref_section, section):
     }[ref_section["type"]](data_section, ref_section, section)
 
 def validate(data, ref=None):
-    """
-    docstring for validate
-
-    data, ref: dicts
-    """
     if ref is None:
         from sigmf import schema
         ref = schema.get_schema()
@@ -170,6 +168,6 @@ if __name__ == "__main__":
     ref_dict_ = json.load(open("schema.json"))
     print(validate(data_dict_, ref_dict_))
 
-				# "py_re": "^(?:[1-9]\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:Z|[+-][01]\d:[0-5]\d)$"
+    # "py_re": "^(?:[1-9]\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:Z|[+-][01]\d:[0-5]\d)$"
 
-				# "py_re": "\d+\.\d+\.\d+"
+    # "py_re": "\d+\.\d+\.\d+"

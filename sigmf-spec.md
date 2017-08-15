@@ -40,13 +40,16 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
     - [Conventions Used in this Document](#conventions-used-in-this-document)
     - [Specification](#specification)
         - [Files](#files)
+            - [Archive Format](#archive-format)
         - [Dataset Format](#dataset-format)
         - [Metadata Format](#metadata-format)
             - [Datatypes](#datatypes)
             - [Namespaces](#namespaces)
             - [Global Object](#global-object)
-            - [Capture Object](#capture-object)
-            - [Annotation Object](#annotation-object)
+            - [Capture Array](#capture-array)
+                - [Capture Segment Objects](#capture-segment-objects)
+            - [Annotation Array](#annotation-array)
+                - [Annotation Segment Objects](#annotation-segment-objects)
         - [Dataset Licensing](#dataset-licensing)
         - [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
     - [Example](#example)
@@ -83,6 +86,10 @@ Augmented Backus-Naur form (ABNF) is used as defined by [RFC
 5234](https://tools.ietf.org/html/rfc5234) and updated by [RFC
 7405](https://tools.ietf.org/html/rfc7405).
 
+Fields defined as "human-readable", a "string", or simply as "text" shall be
+treated as plaintext where whitespace is significant, unless otherwise
+specified.
+
 ## Specification
 
 The SigMF specification fundamentally describes two types of information:
@@ -111,6 +118,20 @@ file contains information that describes the dataset.
 5. The dataset file MUST have a `.sigmf-data` filename extension.
 6. The names of the metadata and dataset files must be identical (excepting
    their extensions).
+
+#### Archive Format
+
+The metadata and dataset files that comprise a SigMF recording may be combined
+into a file archive.
+
+1. The archive MUST use the `tar` archive format, as specified by POSIX.1-2001.
+2. The archive file's filename extension MUST be `.sigmf`.
+3. The archive MUST contain the following files: for each contained recording
+   with some name given here meta-syntactically as `N`, files named `N` (a
+   directory), `N/N.sigmf-meta`, and `N/N.sigmf-data`.
+4. The archive MUST NOT contain any other files unless their pathnames begin
+   with `N/N`. for some `N` which has `.sigmf-meta` and `.sigmf-data` files as
+   described above.
 
 ### Dataset Format
 
@@ -215,8 +236,7 @@ the `global` object:
 |`offset`|false|uint64|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
 |`description`|false|string|A text description of the SigMF recording.|
 |`author`|false |string|The author's name (and optionally e-mail address).|
-|`date`|false|string|An ISO-8601 formatted string of the capture date of the recording.|
-|`license`|false|string|The license under which the recording is offered.|
+|`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
 
 #### Capture Array
@@ -240,7 +260,35 @@ capture segment objects:
 |----|--------------|-------|-----------|
 |`sample_start`|true|uint|The sample index at which this segment takes effect.|
 |`frequency`|false|double|The center frequency of the signal in Hz.|
-|`time`|false|string|An ISO-8601 formatted string indicating the timestamp of the sample index specified by `sample_start`.|
+|`datetime`|false|string|An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`. More details, below.|
+
+###### The `datetime` Pair
+
+This name/value pair must be an ISO-8601 string, as defined by [RFC
+3339](https://www.ietf.org/rfc/rfc3339.txt), where the only allowed
+`time-offset` is `Z`, indicating the UTC/Zulu timezone. The ABNF description is:
+
+```abnf
+   date-fullyear   = 4DIGIT
+   date-month      = 2DIGIT  ; 01-12
+   date-mday       = 2DIGIT  ; 01-28, 01-29, 01-30, 01-31 based on
+                             ; month/year
+   time-hour       = 2DIGIT  ; 00-23
+   time-minute     = 2DIGIT  ; 00-59
+   time-second     = 2DIGIT  ; 00-58, 00-59, 00-60 based on leap second
+                             ; rules
+   time-secfrac    = "." 1*DIGIT
+   time-offset     = "Z"
+
+   partial-time    = time-hour ":" time-minute ":" time-second [time-secfrac]
+   full-date       = date-fullyear "-" date-month "-" date-mday
+   full-time       = partial-time time-offset
+
+   date-time       = full-date "T" full-time
+```
+
+Thus, timestamps take the form of `YYYY-MM-DDTHH:MM:SS.SSSZ`, where any number
+of digits for fractional seconds is permitted.
 
 #### Annotation Array
 
@@ -266,10 +314,16 @@ annotation segment objects:
 |`sample_count`|true|uint|The number of samples that this segment applies to. |
 |`generator`|false|string|Human-readable name of the entity that created this annotation.|
 |`comment`|false|string|A human-readable comment.|
-|`freq_lower_edge`|false|double|The lower edge of the frequency band of a signal feature that this annotation describes.|
-|`freq_upper_edge`|false|double|The upper edge of the frequency band of a signal feature that this annotation describes. |
-|`latitude`|false|need a standard?| |
-|`longitude`|false|need a standard?| |
+|`freq_lower_edge`|false|double|The frequency (Hz) of the lower edge of the feature described by this annotation.|
+|`freq_upper_edge`|false|double|The frequency (Hz) of the upper edge of the feature described by this annotation.|
+|`latitude`|false|| |
+|`longitude`|false|| |
+
+The `freq_lower_edge` and `freq_upper_edge` fields should be at RF if the
+feature is at a known RF frequency. If there is no known center frequency (as
+defined by the `frequency` field in the relevant `capture segment object`), or
+the center frequency is at baseband, the `freq_lower_edge` and `freq_upper_edge`
+fields may be relative to baseband.
 
 ### Dataset Licensing
 
