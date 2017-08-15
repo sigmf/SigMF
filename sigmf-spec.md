@@ -140,23 +140,28 @@ four orthogonal characteristics of sample data: complex or real, floating-point
 or integer, bit-width, and endianness. The following ABNF rules specify the
 dataset formats defined in the SigMF `core` namespace:
 
-    dataset-format = (real / complex) type endianness
+```abnf
+    dataset-format = (real / complex) ((type endianness) / byte)
 
     real = "r"
     complex = "c"
 
     type = floating-point / signed-integer / unsigned-integer
     floating-point = "f32"
-    signed-integer = "i32" / "i16" / "i8"
-    unsigned-integer = "u32" / "u16" / "u8"
+    signed-integer = "i32" / "i16"
+    unsigned-integer = "u32" / "u16"
 
     endianness = little-endian / big-endian
     little-endian = "_le"
     big-endian = "_be"
 
+    byte = "i8" / "u8"
+```abnf
+
 So, for example, the string `"cf32_le"` specifies `complex 32-bit floating-point
-samples stored in little-endian`, and the string `ru16_be` specifies `real
-unsigned 16-bit samples stored in big-endian`.
+samples stored in little-endian`, the string `"ru16_be"` specifies `real
+unsigned 16-bit samples stored in big-endian`, and the string `"cu8"` specifies
+`complex unsigned byte`.
 
 Note that IEEE-754 single-precision floating-point is supported by the SigMF
 `core` namespace.
