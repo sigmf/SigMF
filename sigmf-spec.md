@@ -312,10 +312,16 @@ annotation segment objects:
 |`sample_count`|true|uint|The number of samples that this segment applies to. |
 |`generator`|false|string|Human-readable name of the entity that created this annotation.|
 |`comment`|false|string|A human-readable comment.|
-|`freq_lower_edge`|false|double|The lower edge of the frequency band of a signal feature that this annotation describes.|
-|`freq_upper_edge`|false|double|The upper edge of the frequency band of a signal feature that this annotation describes. |
-|`latitude`|false|need a standard?| |
-|`longitude`|false|need a standard?| |
+|`freq_lower_edge`|false|double|The frequency (Hz) of the lower edge of the feature described by this annotation.|
+|`freq_upper_edge`|false|double|The frequency (Hz) of the upper edge of the feature described by this annotation.|
+|`latitude`|false|| |
+|`longitude`|false|| |
+
+The `freq_lower_edge` and `freq_upper_edge` fields should be at RF if the
+feature is at a known RF frequency. If there is no known center frequency (as
+defined by the `frequency` field in the relevant `capture segment object`), or
+the center frequency is at baseband, the `freq_lower_edge` and `freq_upper_edge`
+fields may be relative to baseband.
 
 ### Dataset Licensing
 
