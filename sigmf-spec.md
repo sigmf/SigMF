@@ -156,7 +156,7 @@ dataset formats defined in the SigMF `core` namespace:
     big-endian = "_be"
 
     byte = "i8" / "u8"
-```abnf
+```
 
 So, for example, the string `"cf32_le"` specifies `complex 32-bit floating-point
 samples stored in little-endian`, the string `"ru16_be"` specifies `real
