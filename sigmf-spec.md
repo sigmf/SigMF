@@ -20,7 +20,7 @@ the [DARPA Brussels Hackfest](http://www.darpahackfest.com/) in early February
 
 ## Copyright Notice
 
-This document is Copyright of The GNU Radio Foundation, Inc. 
+This document is Copyright of The GNU Radio Foundation, Inc.
 
 This document is available under the [CC-BY-SA License](http://creativecommons.org/licenses/by-sa/4.0/).
 
@@ -46,9 +46,9 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
             - [Datatypes](#datatypes)
             - [Namespaces](#namespaces)
             - [Global Object](#global-object)
-            - [Capture Array](#capture-array)
+            - [Captures Array](#captures-array)
                 - [Capture Segment Objects](#capture-segment-objects)
-            - [Annotation Array](#annotation-array)
+            - [Annotations Array](#annotations-array)
                 - [Annotation Segment Objects](#annotation-segment-objects)
         - [Dataset Licensing](#dataset-licensing)
         - [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
@@ -174,7 +174,7 @@ whitespace, line-endings, `EOF` characters, etc.,).
 
 SigMF is written in JSON and takes the form of JSON name/value pairs which are
 contained within JSON `objects`. There are three types of top-level objects:
-`global`, `capture`, and `annotations`. The names of the name/value pairs must
+`global`, `captures`, and `annotations`. The names of the name/value pairs must
 be namespaced.
 
 The format of the name/value pairs is:
@@ -189,7 +189,7 @@ The format of the name/value pairs is:
    JSON object (i.e., the first character of the file MUST be '{' and the last
    character of the file MUST be '}'. This object is hereafter called the
    `top-level object`.
-3. The top-level object MUST contain three values named `global`, `capture`,
+3. The top-level object MUST contain three values named `global`, `captures`,
    and `annotations`.
 4. Metadata name/value pairs SHALL NOT be assumed to have carried over between
    segments. If a name/value pair applies to a particular segment, then it must
@@ -244,9 +244,9 @@ the `global` object:
 |`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
 
-#### Capture Array
+#### Captures Array
 
-The `capture` value is an array of _capture segment objects_ that describe the
+The `captures` value is an array of _capture segment objects_ that describe the
 parameters of the signal capture. It MUST be sorted by the value of each
 segment's `core:sample_start` key, ascending.
 
@@ -295,10 +295,10 @@ This name/value pair must be an ISO-8601 string, as defined by [RFC
 Thus, timestamps take the form of `YYYY-MM-DDTHH:MM:SS.SSSZ`, where any number
 of digits for fractional seconds is permitted.
 
-#### Annotation Array
+#### Annotations Array
 
-The `annotation` value is an array of _annotation segment objects_ that
-describe anything regarding the signal data not part of the `capture` and
+The `annotations` value is an array of _annotation segment objects_ that
+describe anything regarding the signal data not part of the `captures` and
 `global` objects. It MUST be sorted by the value of each segment's
 `core:sample_start` key, ascending.
 
@@ -347,7 +347,7 @@ requirements:
    `namespaces`, and `names` specified by this document.
 2. Must be able to ignore any `object` or `namespace` not specified by this
    document and still function normally.
-3. `Capture` segments referring to non-existent samples should be ignored.
+3. Capture segments referring to non-existent samples should be ignored.
 4. Must treat consecutive capture segments whose metadata is equivalent for
    purposes of that application (i.e., it may be different in values ignored by
    the application such as optional values or unknown extensions) as it would
@@ -360,4 +360,3 @@ requirements:
 # Acknowledgements
 
 This specification originated at the DARPA Brussels Hackfest 2017.
-
