@@ -10,7 +10,7 @@
         "core:description": "An example metadafile for a SigMF recording.",
     },
     "captures": [
-        # The `captures` object contains a list of segments, sorted by the `sample_start` value
+        # The `captures` array contains capture segment objects, sorted by the `sample_start` value
         {
             "core:sample_start": 0,         # The sample index that these parameters take effect.
             "core:frequency": 900000000,    # The center frequency of the recording (900 MHz, here).
@@ -22,7 +22,7 @@
         },
     ],
     "annotations": [
-        # The `annotations` object contains a list of segments, sorted by the `sample_start` value
+        # The `annotations` array contains annotation segment objects, sorted by the `sample_start` value
         {
             "core:sample_start": 1000000,   # The sample index at which this annotation first applies.
             "core:sample_count": 120000,    # The number of samples that this annotation applies to.
