@@ -192,9 +192,9 @@ The format of the name/value pairs is:
 3. The top-level object MUST contain three values named `global`, `captures`,
    and `annotations`.
 4. Metadata name/value pairs SHALL NOT be assumed to have carried over between
-   segments. If a name/value pair applies to a particular segment, then it must
-   appear in that segment, even if the value is unchanged relative to the
-   previous segment.
+   capture or annotation segments. If a name/value pair applies to a particular
+   segment, then it must appear in that segment, even if the value is unchanged
+   relative to the previous segment.
 
 #### Datatypes
 
@@ -248,7 +248,7 @@ the `global` object:
 
 The `captures` value is an array of _capture segment objects_ that describe the
 parameters of the signal capture. It MUST be sorted by the value of each
-segment's `core:sample_start` key, ascending.
+capture segment's `core:sample_start` key, ascending.
 
 ##### Capture Segment Objects
 
@@ -299,7 +299,7 @@ of digits for fractional seconds is permitted.
 
 The `annotations` value is an array of _annotation segment objects_ that
 describe anything regarding the signal data not part of the `captures` and
-`global` objects. It MUST be sorted by the value of each segment's
+`global` objects. It MUST be sorted by the value of each annotation segment's
 `core:sample_start` key, ascending.
 
 ##### Annotation Segment Objects
