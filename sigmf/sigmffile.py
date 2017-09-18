@@ -71,6 +71,12 @@ class SigMFFile(object):
         if self.data_file:
             self.calculate_hash()
 
+    def __str__(self):
+        return self.dumps()
+
+    def __repr__(self):
+        return "SigMFFile(%s)" % self
+
     def _get_start_offset(self):
         """
         Return the offset of the first sample.
