@@ -336,7 +336,7 @@ You may specify any license of your choosing. Recommended licenses for SigMF
 recordings are:
 
 * [CC0 1.0 Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/)
-* [CC-BY Attrition 2.0 Generic](https://creativecommons.org/licenses/by/2.0/)
+* [CC-BY Attribution 2.0 Generic](https://creativecommons.org/licenses/by/2.0/)
 
 ### SigMF Compliance by Applications
 
