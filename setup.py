@@ -31,6 +31,7 @@ setup(
         'Programming Language :: Python :: 3.7'
     ],
     packages=['sigmf'],
+    package_data = {'sigmf': ['*.json']},
     install_requires=['six', 'numpy'],
     setup_requires=['pytest-runner'],
     tests_require=['pytest>3'],
