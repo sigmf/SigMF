@@ -170,6 +170,9 @@ The samples should be written to the dataset file without separation, and the
 dataset file MUST NOT contain any other characters (e.g., delimiters,
 whitespace, line-endings, `EOF` characters, etc.,).
 
+Complex samples should be interleaved, with the in-phase component first (e.g.
+`IQIQ...` instead of `QIQI...`).
+
 ### Metadata Format
 
 SigMF is written in JSON and takes the form of JSON name/value pairs which are
