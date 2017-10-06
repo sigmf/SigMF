@@ -300,7 +300,7 @@ def fromarchive(archive_path, dir=None):
     if not dir:
         dir = tempfile.mkdtemp()
 
-    archive = tarfile.open(archive_path)
+    archive = tarfile.open(archive_path, mode="r", format=tarfile.PAX_FORMAT)
     members = archive.getmembers()
 
     try:

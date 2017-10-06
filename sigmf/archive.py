@@ -75,7 +75,9 @@ class SigMFArchive(object):
 
         archive_name = self._get_archive_name()
         sigmf_fileobj = self._get_output_fileobj()
-        sigmf_archive = tarfile.TarFile(mode="w", fileobj=sigmf_fileobj)
+        sigmf_archive = tarfile.TarFile(mode="w", 
+                                        fileobj=sigmf_fileobj,
+                                        format=tarfile.PAX_FORMAT)
         tmpdir = tempfile.mkdtemp()
         sigmf_md_filename = archive_name + SIGMF_METADATA_EXT
         sigmf_md_path = os.path.join(tmpdir, sigmf_md_filename)
