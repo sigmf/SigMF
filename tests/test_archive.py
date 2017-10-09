@@ -16,7 +16,7 @@ from .testdata import TEST_FLOAT32_DATA, TEST_METADATA
 
 def create_test_archive(test_sigmffile, tmpfile):
     sigmf_archive = test_sigmffile.archive(fileobj=tmpfile)
-    sigmf_tarfile = tarfile.open(sigmf_archive, mode="r")
+    sigmf_tarfile = tarfile.open(sigmf_archive, mode="r", format=tarfile.PAX_FORMAT)
     return sigmf_tarfile
 
 
@@ -136,3 +136,9 @@ def test_contents(test_sigmffile):
         data = np.fromstring(datfile_reader.read(), dtype=np.float32)
 
         assert np.array_equal(data, TEST_FLOAT32_DATA)
+
+
+def test_tarfile_type(test_sigmffile):
+    with tempfile.NamedTemporaryFile() as t:
+        sigmf_tarfile = create_test_archive(test_sigmffile, t)
+        assert sigmf_tarfile.format == tarfile.PAX_FORMAT
