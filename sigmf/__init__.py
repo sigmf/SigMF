@@ -19,3 +19,12 @@
 # SOFTWARE.
 
 __version__ = "0.0.1"
+
+import archive
+import error
+import schema
+import sigmffile
+import validate
+import utils
+from archive import SigMFArchive
+from sigmffile import SigMFFile
