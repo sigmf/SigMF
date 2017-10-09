@@ -170,8 +170,8 @@ The samples should be written to the dataset file without separation, and the
 dataset file MUST NOT contain any other characters (e.g., delimiters,
 whitespace, line-endings, `EOF` characters, etc.,).
 
-Complex samples should be interleaved, with the in-phase component first (e.g.
-`IQIQ...` instead of `QIQI...`).
+Complex samples should be interleaved, with the in-phase component first (i.e.,
+`I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`).
 
 ### Metadata Format
 
