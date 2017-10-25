@@ -94,22 +94,25 @@ specified.
 
 The SigMF specification fundamentally describes two types of information:
 datasets, and metadata associated with those datasets. Taken together, a dataset
-with its SigMF metadata is a `SigMF recording`.
+with its SigMF metadata is a `SigMF Recording`.
 
-Datasets, for purposes of this specification, are sets of digital samples.
-The samples may be created by digital synthesis (i.e., simulation) or by an
-actual Analog-to-Digital Converter (ADC) that is sampling an analog signal.
+Datasets, for purposes of this specification, are sets of digital measurements
+generically called `samples` in this document. The samples can represent any
+time-varying source of information. They may, for example, be digital samples
+created by digital synthesis or by an Analog-to-Digital Converter. They could
+also be geolocation coordinates from a GNSS receiver, temperature readings
+from a thermal sensor, or any other stored digital measurement information.
 
 Metadata describes the dataset with which it is associated. The metadata
-includes information meant for the human users of the dataset, such as a title and
-description, and information meant for computer applications (tools) that
+includes information meant for the human users of the dataset, such as a title
+and description, and information meant for computer applications (tools) that
 operate on the dataset.
 
 ### Files
 
-A SigMF recording consists of two files: a SigMF `metadata` file and a
-`dataset` file. The dataset file is a binary file of samples, and the metadata
-file contains information that describes the dataset.
+A `SigMF Recording` consists of two files: a SigMF `metadata` file and
+a `dataset` file. The dataset file is a binary file of digital samples, and the
+metadata file contains information that describes the dataset.
 
 1. The metadata and dataset MUST be in separate files.
 2. The metadata file MUST only describe one dataset file.
@@ -119,9 +122,9 @@ file contains information that describes the dataset.
 6. The names of the metadata and dataset files must be identical (excepting
    their extensions).
 
-#### Archive Format
+#### SigMF Archives
 
-The metadata and dataset files that comprise a SigMF recording may be combined
+The metadata and dataset files that comprise a `SigMF Recording` may be combined
 into a file archive.
 
 1. The archive MUST use the `tar` archive format, as specified by POSIX.1-2001.
@@ -130,8 +133,10 @@ into a file archive.
    with some name given here meta-syntactically as `N`, files named `N` (a
    directory), `N/N.sigmf-meta`, and `N/N.sigmf-data`.
 4. The archive MUST NOT contain any other files unless their pathnames begin
-   with `N/N`. for some `N` which has `.sigmf-meta` and `.sigmf-data` files as
+   with `N/N`, for some `N` which has `.sigmf-meta` and `.sigmf-data` files as
    described above.
+
+A `SigMF Archive` may contain multiple `SigMF Recordings`.
 
 ### Dataset Format
 
@@ -163,8 +168,8 @@ samples stored in little-endian`, the string `"ru16_be"` specifies `real
 unsigned 16-bit samples stored in big-endian`, and the string `"cu8"` specifies
 `complex unsigned byte`.
 
-Note that IEEE-754 single-precision floating-point is supported by the SigMF
-`core` namespace.
+Note that only IEEE-754 single-precision floating-point is supported by the
+SigMF `core` namespace.
 
 The samples should be written to the dataset file without separation, and the
 dataset file MUST NOT contain any other characters (e.g., delimiters,
