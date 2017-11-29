@@ -125,7 +125,7 @@ metadata file contains information that describes the dataset.
 #### SigMF Archives
 
 The metadata and dataset files that comprise a `SigMF Recording` may be combined
-into a file archive.
+into a file archive. A `SigMF Archive` may contain multiple `SigMF Recordings`.
 
 1. The archive MUST use the `tar` archive format, as specified by POSIX.1-2001.
 2. The archive file's filename extension MUST be `.sigmf`.
@@ -135,8 +135,14 @@ into a file archive.
 4. The archive MUST NOT contain any other files unless their pathnames begin
    with `N/N`, for some `N` which has `.sigmf-meta` and `.sigmf-data` files as
    described above.
+5. It is RECOMMENDED that if recordings in an archive represent a continuous
+   dataset that has been split into separate recordings, that their filenames
+   reflect the order of the series by appending a hyphenated zero-based index
+   (e.g., `N-0`, `N-1`, `N-2`, etc.,).
 
-A `SigMF Archive` may contain multiple `SigMF Recordings`.
+Each recording in an archive, even if connected to others by being part of
+a larger dataset, MUST be evaluated independently for compliance to the SigMF
+standard, and thus all metadata MAY be different between the recordings.
 
 ### Dataset Format
 
