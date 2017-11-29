@@ -238,8 +238,8 @@ belong in `core`. These canonical extension namespaces can be found in the
 namespaces may be defined by the user as needed.
 
 1. An extension namespace MUST be defined in a single file, named
-   meta-syntactically as `N.sigmf-ext`, where`N` is the name of the extension.
-2. A `N.sigmf-ext` file MUST be a Github-Flavored Markdown file stored in UTF-8
+   meta-syntactically as `N.sigmf-ext.md`, where`N` is the name of the extension.
+2. A `N.sigmf-ext.md` file MUST be a Github-Flavored Markdown file stored in UTF-8
    encoding.
 3. An extension namespace MAY define new top-level SigMF objects, name/value
    pairs, new files, new dataset formats, or new datatypes.
