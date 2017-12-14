@@ -104,21 +104,21 @@ analog-carrier-variant = "WC" / "SC" / "RC"
 digital = [digital-multi-type "-"] [digital-symbols "-"] digital-type ["-" spread-spectrum]
 
 digital-multi-type = (("FD / "OFD") / "TD" / "PD" / "CD" / new-type) [digital-shared-type]
+digital-symbols = 1*32(DIGIT)
 digital-shared-type = "M" / "MA" / new-type
 
-digital-symbols = "2" / "4" / "8" / "16" / "32" / "64" / "128" / "256" / new-type
-
-digital-type = [digital-type-variant] ("QAM" / "ASK" / "FSK" / [common-psk] "PSK" / "OOK" / "CPM" / "MSK" / new-type)
-common-psk = ["B" / "Q"]
+digital-type = [digital-type-variant] ("QAM" / "ASK" / "FSK" / "PSK" / "OOK" / "CPM" / "MSK" / new-type)
 digital-type-variant = "D" / "O" / "S" / new-type
 
 spread-spectrum = "DSSS" / "CSS" / "FHSS" / new-type
 ```
 
-Note: The `common-psk` structure is necessary because the "BPSK" and "QPSK"
-nomenclature is inconsistent with other PSK-modulations when combined with type
-variants. For example, you would write either `4-OPSK` or `OQPSK` - note that
-the symbol count and type variant indicators swap places and there is no hyphen.
+Note: The modulation strings "BPSK" and "QPSK" are _not_ supported by this
+syntax. The canonical way to specify those modulations is "2-PSK" and "4-PSK",
+respectively. One of the primary goals of this specification is to create
+strings that are easily parsed and understood by computers, and allowing for
+the short-hand version of those strings adds complexity to that processing
+logic, especially when combined with other modifiers like "differential".
 
 ##### The `system` Field
 
