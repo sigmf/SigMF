@@ -227,14 +227,39 @@ The values in each name/value pair must be one of the following datatypes:
 
 Namespaces provide a way to further classify name/value pairs within metadata
 objects. This specification defines the `core` namespace, which contains
-commonly used name/value pairs for describing signal data.
+the foundational name/value pairs for describing signal data.
 
 Some keys within the `core` namespace are optional, and others are required. The
 fields that are required are those that are minimally necessary to parse &
 process the dataset, or that have obvious defaults that are valid. Other fields
 are 'optional', even if they are highly encouraged.
 
-Other namespaces may be defined by the user as needed.
+##### Extension Namespaces
+
+Fields not defined in the `core` namespace may be defined in extension
+namespaces. The SigMF specification defines some extension namespaces to
+provide canonical definitions for commonly needed metadata fields that do not
+belong in `core`. These canonical extension namespaces can be found in the
+`extensions/` directory of the official SigMF repository. Other extension
+namespaces may be defined by the user as needed.
+
+1. An extension namespace MUST be defined in a single file, named
+   meta-syntactically as `N.sigmf-ext.md`, where`N` is the name of the extension.
+2. A `N.sigmf-ext.md` file MUST be a Github-Flavored Markdown file stored in UTF-8
+   encoding.
+3. An extension namespace MAY define new top-level SigMF objects, name/value
+   pairs, new files, new dataset formats, or new datatypes.
+4. New name/value pairs defined by an extension namespace MUST be defined in
+   the context of a specific SigMF top-level object (i.e., `global`,
+   `captures`, `annotations`, or a new user-defined object).
+5. It is RECOMMENDED that an extension namespace file follow the structure of
+   the canonical extension namespaces.
+
+##### Canonical Extension Namespaces
+This is a list of the canonical extension namespaces defined by SigMF:
+
+ * `volatile` - Allows for continously time-varying fields, such as a moving receiver or rotating antenna.
+ * `modulation` - Defines how to describe modulations used in wireless communications systems.
 
 #### Global Object
 
@@ -257,6 +282,25 @@ the `global` object:
 |`author`|false |string|The author's name (and optionally e-mail address).|
 |`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
+|`extensions`|false|JSON object|A list of extensions used by this recording.|
+
+##### The `extensions` Field
+The `core:extensions` field in the `global` object is JSON array of name/value
+pairs describing `SigMF Extension` namespaces, where the name is the namespace
+provided by an extension and the value is a string that specifies whether the
+extension is `optional` or `required` to properly parse & process the SigMF
+Recording.
+
+```JSON
+  "global": {
+    ...
+    "core:extensions" : {
+      "extension-01": "optional",
+      "extension-02": "required",
+    }
+    ...
+  }
+```
 
 #### Captures Array
 
@@ -366,6 +410,7 @@ requirements:
    purposes of that application (i.e., it may be different in values ignored by
    the application such as optional values or unknown extensions) as it would
    a single segment.
+5. Supports all fields in the `core` namespace.
 
 ## Example
 
