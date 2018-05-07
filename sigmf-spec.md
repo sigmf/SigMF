@@ -277,7 +277,7 @@ the `global` object:
 |`sample_rate`|false|double|The sample rate of the signal in samples per second.|
 |`version`|true|string|The version of the SigMF specification used to create the metadata file.|
 |`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
-|`offset`|false|uint64|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
+|`offset`|false|uint|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
 |`description`|false|string|A text description of the SigMF recording.|
 |`author`|false |string|The author's name (and optionally e-mail address).|
 |`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
