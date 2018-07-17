@@ -381,6 +381,9 @@ annotation segment objects:
 |`latitude`|false|| |
 |`longitude`|false|| |
 
+There is no limit to the number of annotations that can apply to the same group
+of samples.
+
 The `freq_lower_edge` and `freq_upper_edge` fields should be at RF if the
 feature is at a known RF frequency. If there is no known center frequency (as
 defined by the `frequency` field in the relevant `capture segment object`), or
