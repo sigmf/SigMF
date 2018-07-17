@@ -416,6 +416,6 @@ requirements:
 
 [TODO] Provide an example of metadata file contents.
 
-# Acknowledgements
+## Acknowledgements
 
 This specification originated at the DARPA Brussels Hackfest 2017.
