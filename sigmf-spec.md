@@ -1,4 +1,4 @@
-# Signal Metadata Format Specification v0.0.1
+# Signal Metadata Format Specification v0.0.2
 
 ## Abstract
 
@@ -320,6 +320,7 @@ capture segment objects:
 |name|required|type|description|
 |----|--------------|-------|-----------|
 |`sample_start`|true|uint|The sample index at which this segment takes effect.|
+|`length`|false|uint|The length of this capture segment, in number of samples.|
 |`frequency`|false|double|The center frequency of the signal in Hz.|
 |`datetime`|false|string|An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`. More details, below.|
 
