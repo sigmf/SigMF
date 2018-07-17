@@ -200,9 +200,7 @@ The format of the name/value pairs is:
 1. The metadata MUST be written in [JSON](http://www.json.org/), as specified
    by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 2. The entire contents of the metadata file MUST be contained within a single
-   JSON object (i.e., the first character of the file MUST be '{' and the last
-   character of the file MUST be '}'. This object is hereafter called the
-   `top-level object`.
+   JSON object. This object is hereafter called the `top-level object`.
 3. The top-level object MUST contain three values named `global`, `captures`,
    and `annotations`.
 4. Metadata name/value pairs SHALL NOT be assumed to have carried over between
