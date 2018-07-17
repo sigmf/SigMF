@@ -382,7 +382,8 @@ annotation segment objects:
 |`longitude`|false|| |
 
 There is no limit to the number of annotations that can apply to the same group
-of samples.
+of samples. If two annotations have the same `sample_start`, there is no
+defined ordering between them.
 
 The `freq_lower_edge` and `freq_upper_edge` fields should be at RF if the
 feature is at a known RF frequency. If there is no known center frequency (as
