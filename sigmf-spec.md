@@ -416,6 +416,12 @@ requirements:
 
 [TODO] Provide an example of metadata file contents.
 
+## Citing SigMF
+
+To cite the SigMF specification, we recommend the following format:
+
+    The Signal Metadata Format (SigMF), <release>, <date of release>, https://sigmf.org
+
 ## Acknowledgements
 
 This specification originated at the DARPA Brussels Hackfest 2017.
