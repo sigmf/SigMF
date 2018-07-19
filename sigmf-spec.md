@@ -278,6 +278,7 @@ the `global` object:
 |`offset`|false|uint|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
 |`description`|false|string|A text description of the SigMF recording.|
 |`author`|false |string|The author's name (and optionally e-mail address).|
+|`recorder`|false|string|The name of the software used to make this SigMF recording.|
 |`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
 |`extensions`|false|JSON object|A list of extensions used by this recording.|
