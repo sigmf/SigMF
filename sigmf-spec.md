@@ -286,7 +286,7 @@ the `global` object:
 |`recorder`|false|string|The name of the software used to make this SigMF recording.|
 |`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
-|`extensions`|false|JSON object|A list of extensions used by this recording.|
+|`extensions`|false|object|A list of extensions used by this recording.|
 
 ##### The `extensions` Field
 The `core:extensions` field in the `global` object is JSON array of name/value
