@@ -247,12 +247,14 @@ namespaces may be defined by the user as needed.
    meta-syntactically as `N.sigmf-ext.md`, where`N` is the name of the extension.
 2. A `N.sigmf-ext.md` file MUST be a Github-Flavored Markdown file stored in UTF-8
    encoding.
-3. An extension namespace MAY define new top-level SigMF objects, name/value
+3. Extensions MUST have version numbers. It is RECOMMENDED that extensions use
+   [Semantic Versioning](https://semver.org/).
+4. An extension namespace MAY define new top-level SigMF objects, name/value
    pairs, new files, new dataset formats, or new datatypes.
-4. New name/value pairs defined by an extension namespace MUST be defined in
+5. New name/value pairs defined by an extension namespace MUST be defined in
    the context of a specific SigMF top-level object (i.e., `global`,
    `captures`, `annotations`, or a new user-defined object).
-5. It is RECOMMENDED that an extension namespace file follow the structure of
+6. It is RECOMMENDED that an extension namespace file follow the structure of
    the canonical extension namespaces.
 
 ##### Canonical Extension Namespaces
@@ -289,15 +291,16 @@ the `global` object:
 The `core:extensions` field in the `global` object is JSON array of name/value
 pairs describing `SigMF Extension` namespaces, where the name is the namespace
 provided by an extension and the value is a string that specifies whether the
-extension is `optional` or `required` to properly parse & process the SigMF
-Recording.
+extension is `optional` or the version of the extension required to properly
+parse & process the SigMF Recording. In the example below, `extension-01` is
+used, but not required, and `version 1.2.3` of `extension-02` *is* required.
 
 ```JSON
   "global": {
     ...
     "core:extensions" : {
       "extension-01": "optional",
-      "extension-02": "required",
+      "extension-02": "v1.2.3",
     }
     ...
   }
