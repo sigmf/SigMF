@@ -1,11 +1,11 @@
 # Antenna Extension
 
-The `antenna` namespace extension defines one object for static antenna parameters extending `global` and one object for dynamic antenna parameters extending `annotations`.
+The `antenna` namespace extension defines static antenna parameters extending `global` and dynamic antenna parameters extending `annotations`.
 
 ## Global
 
-### Antenna Object
-The `Antenna` object contains the following name/value pairs:
+The following names are specified in the `antenna` namespace and should be used in
+the `global` object:
 
 |name|required|type|unit|description|
 |----|--------------|-------|-------|-----------|
@@ -23,11 +23,12 @@ The `Antenna` object contains the following name/value pairs:
 |`cable_loss`|false|float|dB|Cable loss for cable connecting antenna and preselector.|
 |`steerable`|false|boolean|N/A|Defines if the antenna is steerable or not.|
 |`mobile`|false|boolean|N/A|Defines if the antenna is mobile or not.|
+|`version`|true|string|The version of the `antenna` extension used to create the metadata file.|
 
 ## Annotations
 
-### DynamicAntennaSettings Object
-The `DynamicAntennaSettings` object contains the following name/value pairs:  
+The following names are specified in the `antenna` namespace and should be used in
+the `annotations` object:
 
 |name|required|type|unit|description|
 |----|--------------|-------|-------|-----------|
