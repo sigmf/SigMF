@@ -1,4 +1,4 @@
-# Antenna Extension
+# Antenna Extension v0.9.0
 
 The `antenna` namespace extension defines static antenna parameters extending `global` and dynamic antenna parameters extending `annotations`.
 
