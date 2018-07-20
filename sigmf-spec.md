@@ -220,6 +220,8 @@ The values in each name/value pair must be one of the following datatypes:
 |string|string|A string of characters, as defined by the JSON standard.|
 |boolean|boolean|Either `true` or `false`, as defined by the JSON standard.|
 |null|null|`null`, as defined by the JSON standard.|
+|array|JSON `array`|an `array` of other values, as defined by the JSON standard.|
+|object|JSON `object`|an `object` of other values, as defined by the JSON standard.|
 
 #### Namespaces
 
