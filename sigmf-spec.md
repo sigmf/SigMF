@@ -260,8 +260,9 @@ namespaces may be defined by the user as needed.
 ##### Canonical Extension Namespaces
 This is a list of the canonical extension namespaces defined by SigMF:
 
- * `volatile` - Allows for continously time-varying fields, such as a moving receiver or rotating antenna.
+ * `antenna` - Used to describe the antenna(s) used to for the recording.
  * `modulation` - Defines how to describe modulations used in wireless communications systems.
+ * `volatile` - Allows for continously time-varying fields, such as a moving receiver or rotating antenna.
 
 #### Global Object
 
