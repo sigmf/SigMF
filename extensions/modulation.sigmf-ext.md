@@ -1,4 +1,4 @@
-# The `modulation` SigMF Extension Namespace v0.0.1
+# The `modulation` SigMF Extension Namespace v0.0.2
 
 ## Description
 
@@ -32,95 +32,165 @@ specified.
 
 ## Specification
 
-This specification defines new name/value fields in the `modulation` namespace
+This specification defines an extension `modulation` namespace
 that can be used in SigMF `annotations` to describe wireless communications
 systems.
 
 ### Annotations
 
+This extension adds the following field to the `annotations` global SigMF object:
+
 |name|required|type|description|
 |----|--------------|-------|-----------|
-|modulation|false|string|Describes a communications modulation.|
-|system|false|string|Describes the communications system at a higher-level.|
+|modulation|false|object|Describes a communications system.|
 
-##### The `modulation` Field
+The field of communications is vast, and there may be communications systems that cannot be described using the names and fields described in this extension. If you need additional or different fields to describe a system, create a new extension that adds the necessary fields to the `modulation` namespace and/or submit the new fields to be upstreamed into this specification.
 
-The following initialisms and acronyms are used in the ABNF form of this
-metadata field:
+#### The `modulation` Object
 
-* `analog-type`:
-    * **am**: amplitude modulation
-    * **fm**: frequency modulation
-    * **pm**: phase modulation
-    * **ssb**: single side-band
-    * **dsb**: dual side-band
-    * **vsb**: vestigial side-band
-* `analog-carrier-variant`:
-    * **wc**: with-carrier
-    * **sc**: suppressed-carrier
-    * **rc**: reduced-carrier
-* `digital-type`:
-    * **ask**: amplitude-shift keying
-    * **fsk**: frequency-shift keying
-    * **psk**: phase-shift keying
-    * **qam**: quadrature-amplitude modulation
-    * **ook**: on-off keying
-    * **cpm**: continuous phase modulation
-    * **msk**: minimum-shift keying
-* `common-psk`:
-    * **b**: binary
-    * **q**: quadrature
-* `digital-type-variants`:
-    * **d**: differential
-    * **o**: offset
-    * **s**: staggered
-* `digital-shared-type`:
-    * **m**: multiplexing
-    * **ma**: multiple-access
-* `digital-multi-type`:
-    * **fd**: frequency-division
-    * **ofd**: orthogonal frequency-division
-    * **td**: time-division
-    * **pd**: phase-division
-    * **cd**: code-division
-* `spread-spectrum`:
-    * **dsss**: direct-sequence spread spectrum
-    * **css**: chirp spread spectrum
-    * **fhss**: frequency-hopping spread spectrum
+`modulation` objects contain name/value pairs that describe the modulations of communications systems. These objects MAY contain the following pairs:
 
-The `modulation` field must be defined according to these rules:
+|name|required|type|
+|----|--------------|-------|
+|`type`|false|string|
+|`class`|false|string|
+|`carrier_variant`|false|string|
+|`symbol_variant`|false|string|
+|`order`|false|uint|
+|`duplexing`|false|string|
+|`multiplexing`|false|string|
+|`multiple_access`|false|string|
+|`spreading`|false|string|
+|`bandwidth`|false|float|
+|`system`|false|string|
 
-```abnf
-modulation = analog / digital
+###### The `type` Pair
 
-new-type = 1*32(DIGIT / ALPHA)
+The `type` name can have the following values:
 
-analog = analog-type ["-" analog-carrier-variant]
+|value|description|
+|----|-------|
+|`analog`|analog modulation scheme|
+|`digital`|digital modulation scheme|
 
-analog-type = amplitude-modulation / "FM" / "PM" / new-type
-amplitude-modulation = "AM" / "DSB" / "SSB" / "VSB"
-analog-carrier-variant = "WC" / "SC" / "RC"
+###### The `class` Pair
 
-digital = [digital-multi-type "-"] [digital-symbols "-"] digital-type ["-" spread-spectrum]
+The `class` name can have the following values:
 
-digital-multi-type = (("FD / "OFD") / "TD" / "PD" / "CD" / new-type) [digital-shared-type]
-digital-symbols = 1*32(DIGIT)
-digital-shared-type = "M" / "MA" / new-type
+|value|description|
+|----|-------|
+|`am`|(analog) amplitude modulation|
+|`fm`|(analog) frequency modulation|
+|`pm`|(analog) phase modulation|
+|`ssb`|(analog) single side-band|
+|`dsb`|(analog) dual side-band|
+|`vsb`|(analog) vestigal side-band|
+|`ask`|(analog) amplitude-shift keying|
+|`fsk`|(digital) frequency-shift keying|
+|`psk`|(digital) phase-shift keying|
+|`qam`|(digital) quadrature-amplitude modulation|
+|`ook`|(digital) on-off keying|
+|`cpm`|(digital) continuous phase modulation|
+|`msk`|(digital) minimum-shift keying|
 
-digital-type = [digital-type-variant] ("QAM" / "ASK" / "FSK" / "PSK" / "OOK" / "CPM" / "MSK" / new-type)
-digital-type-variant = "D" / "O" / "S" / new-type
+###### The `carrier_variant` pair
 
-spread-spectrum = "DSSS" / "CSS" / "FHSS" / new-type
-```
+The `carrier_variant` name can have the following values:
 
-Note: The modulation strings "BPSK" and "QPSK" are _not_ supported by this
-syntax. The canonical way to specify those modulations is "2-PSK" and "4-PSK",
-respectively. One of the primary goals of this specification is to create
-strings that are easily parsed and understood by computers, and allowing for
-the short-hand version of those strings adds complexity to that processing
-logic, especially when combined with other modifiers like "differential".
+|value|type|description|
+|----|----|-------|
+|`with_carrier`|(analog) with-carrier modulation|
+|`suppressed_carrier`|(analog) suppressed-carrier modulation|
+|`reduced_carrier`|(analog) reduced-carrier modulation|
+|`single_carrier`|(digital) single-carrier modulation|
+|`multi_carrier`|(digital) multi-carrier modulation|
 
-##### The `system` Field
+###### The `carrier_variant` pair
 
-TODO 
-describes `802.11ac` or `Wireless Webcam`
+The `symbol_variant` name can have the following values:
+
+|value|type|description|
+|----|----|-------|
+|`differential`|differential modulation|
+|`offset`|offset modulation (sometimes called 'staggered')|
+
+###### The `order` Pair
+
+The `order` name has an unsigned integer value that describes the modulation order, which typically refers to the number of symbols or states in a digital modulation (e.g., QAM64 has 64 symbols, QPSK has 4 symbols).
+
+###### The `duplexing` Pair
+
+The `duplexing` name can have the following values:
+
+|value|description|
+|----|-------|
+|`tdd`|time-division duplexing|
+|`fdd`|frequency-division duplexing|
+
+###### The `multiplexing` Pair
+
+The `multiplexing` name can have the following values:
+
+|value|description|
+|----|-------|
+|`tdm`|time-division multiplexing|
+|`fdm`|frequency-division multiplexing|
+|`cdm`|code-division multiplexing|
+|`ofdm`|orthogonal frequency-division multiplexing|
+|`sdm`|space-division multiplexing|
+|`pdm`|polarization-division multiplexing|
+
+###### The `multiple_access` Pair
+
+The `multiple_access` name can have the following values:
+
+|value|description|
+|----|-------|
+|`fdma`|frequency-division multiple access|
+|`ofdma`|orthogonal frequency-division multiple access|
+|`tdma`|time-division multiple access|
+|`cdma`|code-division multiple access|
+|`sdma`|space-division multiple access|
+|`pdma`|power-division multiple access|
+
+###### The `spreading` Pair
+
+The `spreading` name can have the following values:
+
+|value|description|
+|----|-------|
+|`fhss`|frequency-hopping spread spectrum|
+|`thss`|time-hopping spread spectrum|
+|`dsss`|direct-sequence spread spectrum|
+|`css`|chirp spread spectrum|
+
+###### The `bandwidth` Pair
+
+The `bandwidth` name has a float value that describes the channel bandwidth of the signal. Note that this is different from what is reported in the `core` namespace within an annotation, describing the occupied spectrum of a signal, which may or may not be comparable to the actual channel bandwidth of the communications system.
+
+###### The `system` Pair
+
+The `system` name is meant to provide a way to describe the higher-level system. For example, "802.11ac", "BlueTooth", or "LTE Release 12".
+
+## Examples
+
+Here is an example of a relatively simple modulation label, which describes a 10 kHz FM signal using time-division duplexing:
+
+    "modulation": {
+        "type": "analog",
+        "class": "fm",
+        "duplexing": "tdd",
+        "bandwidth": 10000.0
+    }
+
+Here is a more complex example that describes an LTE 5 MHz SC-OFDMA downlink:
+
+    "modulation": {
+        "type": "digital",
+        "class": "qam",
+        "carrier_variant": "single_carrier",
+        "order": 16,
+        "multiple_access": "ofdma",
+        "bandwidth": 5000000.0,
+        "system": "LTE Release 12"
+    }
