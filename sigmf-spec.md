@@ -326,10 +326,17 @@ capture segment objects:
 
 |name|required|type|description|
 |----|--------------|-------|-----------|
-|`sample_start`|true|uint|The sample index at which this segment takes effect.|
+|`sample_start`|true|uint|The sample index in the dataset file at which this segment takes effect.|
+|`sample_number`|false|If the hardware-provided number of the sample indexed by `sample_start`.|
 |`length`|false|uint|The length of this capture segment, in number of samples.|
 |`frequency`|false|double|The center frequency of the signal in Hz.|
 |`datetime`|false|string|An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`. More details, below.|
+
+###### The `sample_number` Pair
+
+Some hardware devices are capable of 'counting' samples, or assigning sample indices relative to the sample stream produced or consumed by the device. Note this is different from the sample index used to reference a sample in the SigMF dataset file.
+
+These numbers are most commonly used to indicate that data was dropped by the hardware device. For example, if the hardware driver provides a packet of data, labeled with samples 0 to 1000, and the following packet indicates that the first sample is number 1500, that indicates that 500 samples were dropped in the processing chain. This field allows you to indicate such a discontinuity in the stored sample stream.
 
 ###### The `datetime` Pair
 
