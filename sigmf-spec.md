@@ -28,34 +28,34 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
 
 ## Table of Contents
 
-<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
-**Table of Contents**
-
-- [Signal Metadata Format Specification v0.0.1](#signal-metadata-format-specification-v001)
-    - [Abstract](#abstract)
-    - [Status of this Document](#status-of-this-document)
-    - [Copyright Notice](#copyright-notice)
-    - [Table of Contents](#table-of-contents)
-    - [Introduction](#introduction)
-    - [Conventions Used in this Document](#conventions-used-in-this-document)
-    - [Specification](#specification)
-        - [Files](#files)
-            - [Archive Format](#archive-format)
-        - [Dataset Format](#dataset-format)
-        - [Metadata Format](#metadata-format)
-            - [Datatypes](#datatypes)
-            - [Namespaces](#namespaces)
-            - [Global Object](#global-object)
-            - [Captures Array](#captures-array)
-                - [Capture Segment Objects](#capture-segment-objects)
-            - [Annotations Array](#annotations-array)
-                - [Annotation Segment Objects](#annotation-segment-objects)
-        - [Dataset Licensing](#dataset-licensing)
-        - [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
-    - [Example](#example)
-- [Acknowledgements](#acknowledgements)
-
-<!-- markdown-toc end -->
+* [Signal Metadata Format Specification v0.0.2](#signal-metadata-format-specification-v002)
+    * [Abstract](#abstract)
+    * [Status of this Document](#status-of-this-document)
+    * [Copyright Notice](#copyright-notice)
+    * [Table of Contents](#table-of-contents)
+    * [Introduction](#introduction)
+    * [Conventions Used in this Document](#conventions-used-in-this-document)
+    * [Specification](#specification)
+        * [Files](#files)
+            * [SigMF Archives](#sigmf-archives)
+        * [Dataset Format](#dataset-format)
+        * [Metadata Format](#metadata-format)
+            * [Datatypes](#datatypes)
+            * [Namespaces](#namespaces)
+                * [Extension Namespaces](#extension-namespaces)
+                * [Canonical Extension Namespaces](#canonical-extension-namespaces)
+            * [Global Object](#global-object)
+                * [The `extensions` Field](#the-extensions-field)
+            * [Captures Array](#captures-array)
+                * [Capture Segment Objects](#capture-segment-objects)
+                    * [The `datetime` Pair](#the-datetime-pair)
+            * [Annotations Array](#annotations-array)
+                * [Annotation Segment Objects](#annotation-segment-objects)
+        * [Dataset Licensing](#dataset-licensing)
+        * [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
+    * [Example](#example)
+    * [Citing SigMF](#citing-sigmf)
+    * [Acknowledgements](#acknowledgements)
 
 ## Introduction
 
@@ -129,12 +129,13 @@ into a file archive. A `SigMF Archive` may contain multiple `SigMF Recordings`.
 
 1. The archive MUST use the `tar` archive format, as specified by POSIX.1-2001.
 2. The archive file's filename extension MUST be `.sigmf`.
-3. The archive MUST contain the following files: for each contained recording
-   with some name given here meta-syntactically as `N`, files named `N` (a
-   directory), `N/N.sigmf-meta`, and `N/N.sigmf-data`.
-4. The archive MUST NOT contain any other files unless their pathnames begin
-   with `N/N`, for some `N` which has `.sigmf-meta` and `.sigmf-data` files as
-   described above.
+3. The archive MAY be compressed. If it is compressed, it MUST have a double
+   extension, where the second extension reflects the compression format
+   (e.g., `N.sigmf.gz`).
+4. It is RECOMMENDED that if there is a "primary" or "top-level" recording in
+   an archive, that it have the same name as the archive directory (given an
+   archive name `N.sigmf`, `N/N.sigmf-meta` and `N/N.sigmf-data` represent the
+   primary recording in the archive).
 5. It is RECOMMENDED that if recordings in an archive represent a continuous
    dataset that has been split into separate recordings, that their filenames
    reflect the order of the series by appending a hyphenated zero-based index
@@ -193,7 +194,7 @@ be namespaced.
 
 The format of the name/value pairs is:
 
-```
+```json
 "namespace:name": value,
 ```
 
@@ -212,16 +213,16 @@ The format of the name/value pairs is:
 
 The values in each name/value pair must be one of the following datatypes:
 
-|type|long-form name|description|
-|----|----|-----------|
-|int|integer|Signed 64-bit integer.|
-|uint|unsigned long|Unsigned 64-bit integer.|
-|double|double-precision floating-point number|A 64-bit float as defined by IEEE 754.|
-|string|string|A string of characters, as defined by the JSON standard.|
-|boolean|boolean|Either `true` or `false`, as defined by the JSON standard.|
-|null|null|`null`, as defined by the JSON standard.|
-|array|JSON `array`|an `array` of other values, as defined by the JSON standard.|
-|object|JSON `object`|an `object` of other values, as defined by the JSON standard.|
+| type    | long-form name                         | description                                                   |
+| ------- | -------------------------------------- | ------------------------------------------------------------- |
+| int     | integer                                | Signed 64-bit integer.                                        |
+| uint    | unsigned long                          | Unsigned 64-bit integer.                                      |
+| double  | double-precision floating-point number | A 64-bit float as defined by IEEE 754.                        |
+| string  | string                                 | A string of characters, as defined by the JSON standard.      |
+| boolean | boolean                                | Either `true` or `false`, as defined by the JSON standard.    |
+| null    | null                                   | `null`, as defined by the JSON standard.                      |
+| array   | JSON `array`                           | an `array` of other values, as defined by the JSON standard.  |
+| object  | JSON `object`                          | an `object` of other values, as defined by the JSON standard. |
 
 #### Namespaces
 
@@ -258,11 +259,13 @@ namespaces may be defined by the user as needed.
    the canonical extension namespaces.
 
 ##### Canonical Extension Namespaces
+
 This is a list of the canonical extension namespaces defined by SigMF:
 
- * `antenna` - Used to describe the antenna(s) used to for the recording.
- * `modulation` - Defines how to describe modulations used in wireless communications systems.
- * `volatile` - Allows for continously time-varying fields, such as a moving receiver or rotating antenna.
+* `antenna` - Used to describe the antenna(s) used to for the recording.
+* `modulation` - Defines how to describe modulations used in wireless communications systems.
+* `multirecordings` - Allows for continously time-varying fields, such as a
+   moving receiver or rotating antenna, and multi-channel recordings.
 
 #### Global Object
 
@@ -274,21 +277,22 @@ about the recording itself.
 The following names are specified in the `core` namespace and should be used in
 the `global` object:
 
-|name|required|type|description|
-|----|--------------|-------|-----------|
-|`datatype`|true|string|The format of the stored samples in the dataset file. Its value must be a valid SigMF dataset format type string.|
-|`sample_rate`|false|double|The sample rate of the signal in samples per second.|
-|`version`|true|string|The version of the SigMF specification used to create the metadata file.|
-|`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
-|`offset`|false|uint|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
-|`description`|false|string|A text description of the SigMF recording.|
-|`author`|false |string|The author's name (and optionally e-mail address).|
-|`recorder`|false|string|The name of the software used to make this SigMF recording.|
-|`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
-|`hw`|false |string|A text description of the hardware used to make the recording.|
-|`extensions`|false|object|A list of extensions used by this recording.|
+| name          | required | type   | description                                                                                                                                                                        |
+| ------------- | -------- | ------ | ----------------------------------- |
+| `datatype`    | true     | string | The format of the stored samples in the dataset file. Its value must be a valid SigMF dataset format type string.|
+| `sample_rate` | false    | double | The sample rate of the signal in samples per second.|
+| `version`     | true     | string | The version of the SigMF specification used to create the metadata file.|
+| `sha512`      | false    | string | The SHA512 hash of the dataset file associated with the SigMF file.|
+| `offset`      | false    | uint   | The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
+| `description` | false    | string | A text description of the SigMF recording.|
+| `author`      | false    | string | The author's name (and optionally e-mail address).|
+| `recorder`    | false    | string | The name of the software used to make this SigMF recording.|
+| `license`     | false    | string | A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
+| `hw`          | false    | string | A text description of the hardware used to make the recording.|
+| `extensions`  | false    | object | A list of extensions used by this recording.|
 
 ##### The `extensions` Field
+
 The `core:extensions` field in the `global` object is JSON array of name/value
 pairs describing `SigMF Extension` namespaces, where the name is the namespace
 provided by an extension and the value is a string that specifies whether the
@@ -296,7 +300,7 @@ extension is `optional` or the version of the extension required to properly
 parse & process the SigMF Recording. In the example below, `extension-01` is
 used, but not required, and `version 1.2.3` of `extension-02` *is* required.
 
-```JSON
+```json
   "global": {
     ...
     "core:extensions" : {
@@ -324,12 +328,12 @@ pairs apply.
 The following names are specified in the `core` namespace and should be used in
 capture segment objects:
 
-|name|required|type|description|
-|----|--------------|-------|-----------|
-|`sample_start`|true|uint|The sample index at which this segment takes effect.|
-|`length`|false|uint|The length of this capture segment, in number of samples.|
-|`frequency`|false|double|The center frequency of the signal in Hz.|
-|`datetime`|false|string|An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`. More details, below.|
+| name           | required | type   | description  |
+| -------------- | -------- | ------ | ------------ |
+| `sample_start` | true     | uint   | The sample index at which this segment takes effect.|
+| `length`       | false    | uint   | The length of this capture segment, in number of samples.|
+| `frequency`    | false    | double | The center frequency of the signal in Hz.|
+| `datetime`     | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`. More details, below.|
 
 ###### The `datetime` Pair
 
@@ -377,16 +381,16 @@ name/value pairs apply.
 The following names are specified in the `core` namespace and should be used in
 annotation segment objects:
 
-|name|required|type|description|
-|----|--------------|-------|-----------|
-|`sample_start`|true|uint|The sample index at which this segment takes effect.|
-|`sample_count`|true|uint|The number of samples that this segment applies to. |
-|`generator`|false|string|Human-readable name of the entity that created this annotation.|
-|`comment`|false|string|A human-readable comment.|
-|`freq_lower_edge`|false|double|The frequency (Hz) of the lower edge of the feature described by this annotation.|
-|`freq_upper_edge`|false|double|The frequency (Hz) of the upper edge of the feature described by this annotation.|
-|`latitude`|false|| |
-|`longitude`|false|| |
+| name              | required | type   | description                                                                       |
+| ----------------- | -------- | ------ | --------------------------------------------------------------------------------- |
+| `sample_start`    | true     | uint   | The sample index at which this segment takes effect.                              |
+| `sample_count`    | true     | uint   | The number of samples that this segment applies to.                               |
+| `generator`       | false    | string | Human-readable name of the entity that created this annotation.                   |
+| `comment`         | false    | string | A human-readable comment.                                                         |
+| `freq_lower_edge` | false    | double | The frequency (Hz) of the lower edge of the feature described by this annotation. |
+| `freq_upper_edge` | false    | double | The frequency (Hz) of the upper edge of the feature described by this annotation. |
+| `latitude`        | false    |        |
+| `longitude`       | false    |        |
 
 There is no limit to the number of annotations that can apply to the same group
 of samples. If two annotations have the same `sample_start`, there is no

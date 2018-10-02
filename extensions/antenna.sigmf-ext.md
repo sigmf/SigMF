@@ -35,3 +35,12 @@ the `annotations` object:
 |`azimuth_angle`|false|float|degrees|Angle of main beam in azimuthal plane from North.|
 |`elevation_angle`|false|float|degrees|Angle of main beam in elevation plane from horizontal.|
 |`polarization`|false|float|string|E.g. `"vertical"`, `"horizontal"`, `"slant-45"`, `"left-hand circular"`, `"right-hand circular"`.|
+
+### `multirecordings` Compatibility
+
+If both the `antenna` and `multirecordings` extensions are supported, the
+following fields in the `antenna` namespace MAY use the `recording` datatype in
+the `annotations` object:
+
+* `azimuth_angle`
+* `elevation_angle`
