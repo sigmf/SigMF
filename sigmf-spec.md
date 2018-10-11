@@ -31,29 +31,35 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
 **Table of Contents**
 
-- [Signal Metadata Format Specification v0.0.1](#signal-metadata-format-specification-v001)
-    - [Abstract](#abstract)
-    - [Status of this Document](#status-of-this-document)
-    - [Copyright Notice](#copyright-notice)
-    - [Table of Contents](#table-of-contents)
-    - [Introduction](#introduction)
-    - [Conventions Used in this Document](#conventions-used-in-this-document)
-    - [Specification](#specification)
-        - [Files](#files)
-            - [Archive Format](#archive-format)
-        - [Dataset Format](#dataset-format)
-        - [Metadata Format](#metadata-format)
-            - [Datatypes](#datatypes)
-            - [Namespaces](#namespaces)
-            - [Global Object](#global-object)
-            - [Captures Array](#captures-array)
-                - [Capture Segment Objects](#capture-segment-objects)
-            - [Annotations Array](#annotations-array)
-                - [Annotation Segment Objects](#annotation-segment-objects)
-        - [Dataset Licensing](#dataset-licensing)
-        - [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
-    - [Example](#example)
-- [Acknowledgements](#acknowledgements)
+* [Signal Metadata Format Specification v0.0.2](#signal-metadata-format-specification-v002)
+    * [Abstract](#abstract)
+    * [Status of this Document](#status-of-this-document)
+    * [Copyright Notice](#copyright-notice)
+    * [Table of Contents](#table-of-contents)
+    * [Introduction](#introduction)
+    * [Conventions Used in this Document](#conventions-used-in-this-document)
+    * [Specification](#specification)
+        * [Files](#files)
+            * [SigMF Archives](#sigmf-archives)
+        * [Dataset Format](#dataset-format)
+        * [Metadata Format](#metadata-format)
+            * [Datatypes](#datatypes)
+            * [Namespaces](#namespaces)
+                * [Extension Namespaces](#extension-namespaces)
+                * [Canonical Extension Namespaces](#canonical-extension-namespaces)
+            * [Global Object](#global-object)
+                * [The `meta-doi` and `data-doi` Fields](#the-meta-doi-and-data-doi-fields)
+                * [The `extensions` Field](#the-extensions-field)
+            * [Captures Array](#captures-array)
+                * [Capture Segment Objects](#capture-segment-objects)
+                    * [The `datetime` Pair](#the-datetime-pair)
+            * [Annotations Array](#annotations-array)
+                * [Annotation Segment Objects](#annotation-segment-objects)
+        * [Dataset Licensing](#dataset-licensing)
+        * [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
+    * [Example](#example)
+    * [Citing SigMF](#citing-sigmf)
+    * [Acknowledgements](#acknowledgements)
 
 <!-- markdown-toc end -->
 
@@ -282,11 +288,25 @@ the `global` object:
 |`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
 |`offset`|false|uint|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
 |`description`|false|string|A text description of the SigMF recording.|
-|`author`|false |string|The author's name (and optionally e-mail address).|
+|`author`|false|string|The author's name (and optionally e-mail address).|
+|`meta-doi`|false|string|The registered DOI for a recording's metadata file.|
+|`data-doi`|false|string|The registered DOI for a recording's dataset file.|
 |`recorder`|false|string|The name of the software used to make this SigMF recording.|
 |`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
 |`extensions`|false|object|A list of extensions used by this recording.|
+
+##### The `meta-doi` and `data-doi` Fields
+Digital Object Identifiers (DOI) ([International DOI
+Foundation](https://www.doi.org/), ISO 26324) are the standard method for
+identifying, resolving, and citing digital data in the scientific community. We
+recommend providing DOIs for all publicly distributed datasets to facilitate
+open & reproducible science and properly cite & give attribution to original
+authors.
+
+The `meta-doi` field holds the registered DOI for the metadata file, and the
+`data-doi` holds the same for the dataset file.
+
 
 ##### The `extensions` Field
 The `core:extensions` field in the `global` object is JSON array of name/value
