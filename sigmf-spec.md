@@ -48,7 +48,6 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
                 * [Extension Namespaces](#extension-namespaces)
                 * [Canonical Extension Namespaces](#canonical-extension-namespaces)
             * [Global Object](#global-object)
-                * [The `meta-doi` and `data-doi` Fields](#the-meta-doi-and-data-doi-fields)
                 * [The `extensions` Field](#the-extensions-field)
             * [Captures Array](#captures-array)
                 * [Capture Segment Objects](#capture-segment-objects)
@@ -289,24 +288,12 @@ the `global` object:
 |`offset`|false|uint|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
 |`description`|false|string|A text description of the SigMF recording.|
 |`author`|false|string|The author's name (and optionally e-mail address).|
-|`meta-doi`|false|string|The registered DOI for a recording's metadata file.|
-|`data-doi`|false|string|The registered DOI for a recording's dataset file.|
+|`meta-doi`|false|string|The registered DOI (ISO 26324) for a recording's metadata file.|
+|`data-doi`|false|string|The registered DOI (ISO 26324) for a recording's dataset file.|
 |`recorder`|false|string|The name of the software used to make this SigMF recording.|
 |`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
 |`extensions`|false|object|A list of extensions used by this recording.|
-
-##### The `meta-doi` and `data-doi` Fields
-Digital Object Identifiers (DOI) ([International DOI
-Foundation](https://www.doi.org/), ISO 26324) are the standard method for
-identifying, resolving, and citing digital data in the scientific community. We
-recommend providing DOIs for all publicly distributed datasets to facilitate
-open & reproducible science and properly cite & give attribution to original
-authors.
-
-The `meta-doi` field holds the registered DOI for the metadata file, and the
-`data-doi` holds the same for the dataset file.
-
 
 ##### The `extensions` Field
 The `core:extensions` field in the `global` object is JSON array of name/value
