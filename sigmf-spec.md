@@ -28,7 +28,6 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
 
 ## Table of Contents
 
-<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
 **Table of Contents**
 
 * [Signal Metadata Format Specification v0.0.2](#signal-metadata-format-specification-v002)
@@ -51,6 +50,7 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
                 * [The `extensions` Field](#the-extensions-field)
             * [Captures Array](#captures-array)
                 * [Capture Segment Objects](#capture-segment-objects)
+                    * [The `global_index` Pair](#the-globalindex-pair)
                     * [The `datetime` Pair](#the-datetime-pair)
             * [Annotations Array](#annotations-array)
                 * [Annotation Segment Objects](#annotation-segment-objects)
@@ -59,8 +59,6 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
     * [Example](#example)
     * [Citing SigMF](#citing-sigmf)
     * [Acknowledgements](#acknowledgements)
-
-<!-- markdown-toc end -->
 
 ## Introduction
 
@@ -334,7 +332,7 @@ capture segment objects:
 |name|required|type|description|
 |----|--------------|-------|-----------|
 |`sample_start`|true|uint|The sample index in the dataset file at which this segment takes effect.|
-|`global_index`|false|If the sample source provides a global sample count, this is the global index that maps to `sample_start`.|
+|`global_index`|false|uint|If the sample source provides a global sample count, this is the global index that maps to `sample_start`.|
 |`frequency`|false|double|The center frequency of the signal in Hz.|
 |`datetime`|false|string|An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`. More details, below.|
 
