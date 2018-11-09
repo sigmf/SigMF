@@ -333,9 +333,24 @@ capture segment objects:
 
 |name|required|type|description|
 |----|--------------|-------|-----------|
-|`sample_start`|true|uint|The sample index at which this segment takes effect.|
+|`sample_start`|true|uint|The sample index in the dataset file at which this segment takes effect.|
+|`global_index`|false|If the sample source provides a global sample count, this is the global index that maps to `sample_start`.|
 |`frequency`|false|double|The center frequency of the signal in Hz.|
 |`datetime`|false|string|An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`. More details, below.|
+
+###### The `global_index` Pair
+
+Some hardware devices are capable of 'counting' samples, or assigning sample
+indices relative to the sample stream produced or consumed by the device. Note 
+this is different from the sample index used to reference a sample in the SigMF 
+dataset file.
+
+These numbers are most commonly used to indicate that data was dropped by the 
+hardware device. For example, if the hardware driver provides a packet of data,
+labeled with samples 0 to 1000, and the following packet labels its first sample
+as number 1500, that indicates that 500 samples were dropped between those two 
+packets. This field allows you to indicate such a discontinuity in the recorded
+sample stream as seen by the application (e.g., a SigMF writer or reader).
 
 ###### The `datetime` Pair
 
