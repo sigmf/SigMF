@@ -31,29 +31,34 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
 **Table of Contents**
 
-- [Signal Metadata Format Specification v0.0.1](#signal-metadata-format-specification-v001)
-    - [Abstract](#abstract)
-    - [Status of this Document](#status-of-this-document)
-    - [Copyright Notice](#copyright-notice)
-    - [Table of Contents](#table-of-contents)
-    - [Introduction](#introduction)
-    - [Conventions Used in this Document](#conventions-used-in-this-document)
-    - [Specification](#specification)
-        - [Files](#files)
-            - [Archive Format](#archive-format)
-        - [Dataset Format](#dataset-format)
-        - [Metadata Format](#metadata-format)
-            - [Datatypes](#datatypes)
-            - [Namespaces](#namespaces)
-            - [Global Object](#global-object)
-            - [Captures Array](#captures-array)
-                - [Capture Segment Objects](#capture-segment-objects)
-            - [Annotations Array](#annotations-array)
-                - [Annotation Segment Objects](#annotation-segment-objects)
-        - [Dataset Licensing](#dataset-licensing)
-        - [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
-    - [Example](#example)
-- [Acknowledgements](#acknowledgements)
+* [Signal Metadata Format Specification v0.0.2](#signal-metadata-format-specification-v002)
+    * [Abstract](#abstract)
+    * [Status of this Document](#status-of-this-document)
+    * [Copyright Notice](#copyright-notice)
+    * [Table of Contents](#table-of-contents)
+    * [Introduction](#introduction)
+    * [Conventions Used in this Document](#conventions-used-in-this-document)
+    * [Specification](#specification)
+        * [Files](#files)
+            * [SigMF Archives](#sigmf-archives)
+        * [Dataset Format](#dataset-format)
+        * [Metadata Format](#metadata-format)
+            * [Datatypes](#datatypes)
+            * [Namespaces](#namespaces)
+                * [Extension Namespaces](#extension-namespaces)
+                * [Canonical Extension Namespaces](#canonical-extension-namespaces)
+            * [Global Object](#global-object)
+                * [The `extensions` Field](#the-extensions-field)
+            * [Captures Array](#captures-array)
+                * [Capture Segment Objects](#capture-segment-objects)
+                    * [The `datetime` Pair](#the-datetime-pair)
+            * [Annotations Array](#annotations-array)
+                * [Annotation Segment Objects](#annotation-segment-objects)
+        * [Dataset Licensing](#dataset-licensing)
+        * [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
+    * [Example](#example)
+    * [Citing SigMF](#citing-sigmf)
+    * [Acknowledgements](#acknowledgements)
 
 <!-- markdown-toc end -->
 
@@ -282,7 +287,9 @@ the `global` object:
 |`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
 |`offset`|false|uint|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
 |`description`|false|string|A text description of the SigMF recording.|
-|`author`|false |string|The author's name (and optionally e-mail address).|
+|`author`|false|string|The author's name (and optionally e-mail address).|
+|`meta-doi`|false|string|The registered DOI (ISO 26324) for a recording's metadata file.|
+|`data-doi`|false|string|The registered DOI (ISO 26324) for a recording's dataset file.|
 |`recorder`|false|string|The name of the software used to make this SigMF recording.|
 |`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
@@ -327,16 +334,23 @@ capture segment objects:
 |name|required|type|description|
 |----|--------------|-------|-----------|
 |`sample_start`|true|uint|The sample index in the dataset file at which this segment takes effect.|
-|`sample_number`|false|If the hardware-provided number of the sample indexed by `sample_start`.|
-|`length`|false|uint|The length of this capture segment, in number of samples.|
+|`global_index`|false|If the sample source provides a global sample count, this is the global index that maps to `sample_start`.|
 |`frequency`|false|double|The center frequency of the signal in Hz.|
 |`datetime`|false|string|An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`. More details, below.|
 
-###### The `sample_number` Pair
+###### The `global_index` Pair
 
-Some hardware devices are capable of 'counting' samples, or assigning sample indices relative to the sample stream produced or consumed by the device. Note this is different from the sample index used to reference a sample in the SigMF dataset file.
+Some hardware devices are capable of 'counting' samples, or assigning sample
+indices relative to the sample stream produced or consumed by the device. Note 
+this is different from the sample index used to reference a sample in the SigMF 
+dataset file.
 
-These numbers are most commonly used to indicate that data was dropped by the hardware device. For example, if the hardware driver provides a packet of data, labeled with samples 0 to 1000, and the following packet indicates that the first sample is number 1500, that indicates that 500 samples were dropped in the processing chain. This field allows you to indicate such a discontinuity in the stored sample stream.
+These numbers are most commonly used to indicate that data was dropped by the 
+hardware device. For example, if the hardware driver provides a packet of data,
+labeled with samples 0 to 1000, and the following packet labels its first sample
+as number 1500, that indicates that 500 samples were dropped between those two 
+packets. This field allows you to indicate such a discontinuity in the recorded
+sample stream as seen by the application (e.g., a SigMF writer or reader).
 
 ###### The `datetime` Pair
 
