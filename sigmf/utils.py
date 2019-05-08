@@ -34,33 +34,35 @@ def get_sigmf_iso8601_datetime_now():
     return datetime.isoformat(datetime.utcnow()) + 'Z'
 
 
-def parse_iso8601_datetime(d):
-    return datetime.strptime(d, SIGMF_DATETIME_ISO8601_FMT)
+def parse_iso8601_datetime(datestr):
+    return datetime.strptime(datestr, SIGMF_DATETIME_ISO8601_FMT)
 
 
-def dict_merge(a, b):
+def dict_merge(a_dict, b_dict):
     """
-    Recursively merge b into a. b[k] will overwrite a[k] if it exists.
+    Recursively merge b_dict into a_dict. b_dict[key] will overwrite a_dict[key] if it exists.
     """
-    if not isinstance(b, dict):
-        return b
-    result = deepcopy(a)
-    for k, v in iteritems(b):
-        if k in result and isinstance(result[k], dict):
-            result[k] = dict_merge(result[k], v)
+    if not isinstance(b_dict, dict):
+        return b_dict
+    result = deepcopy(a_dict)
+    for key, value in iteritems(b_dict):
+        if key in result and isinstance(result[key], dict):
+            result[key] = dict_merge(result[key], value)
         else:
-            result[k] = deepcopy(v)
+            result[key] = deepcopy(value)
     return result
 
-def insert_sorted_dict_list(dict_list, new_entry, key):
+def insert_sorted_dict_list(dict_list, new_entry, key, force_insertion=False):
     """
     Insert new_entry (which must be a dict) into a sorted list of other dicts.
+    If force_insertion is True, new_entry will NOT overwrite an existing entry
+    with the same key.
     Returns the new list, which is still sorted.
     """
     for index, entry in enumerate(dict_list):
         if not entry:
             continue
-        if entry[key] == new_entry[key]:
+        if entry[key] == new_entry[key] and not force_insertion:
             dict_list[index] = dict_merge(entry, new_entry)
             return dict_list
         if entry[key] > new_entry[key]:

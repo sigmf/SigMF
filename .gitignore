@@ -1,3 +1,15 @@
+# temp files
 *.swp
 *.pyc
 .cache
+
+# setuptools related
+build/*
+.eggs/*
+SigMF.egg-info/*
+
+# pytest & coverage related
+.coverage
+pytest.xml
+coverage.xml
+htmlcov/*

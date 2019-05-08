@@ -1,6 +1,5 @@
 import codecs
 import json
-import os
 import tarfile
 import tempfile
 from os import path
@@ -22,32 +21,32 @@ def create_test_archive(test_sigmffile, tmpfile):
 
 def test_without_data_file_throws_fileerror(test_sigmffile):
     test_sigmffile.data_file = None
-    with tempfile.NamedTemporaryFile() as t:
+    with tempfile.NamedTemporaryFile() as temp:
         with pytest.raises(error.SigMFFileError):
-            test_sigmffile.archive(name=t.name)
+            test_sigmffile.archive(name=temp.name)
 
 
 def test_invalid_md_throws_validationerror(test_sigmffile):
     del test_sigmffile._metadata["global"]["core:datatype"]  # required field
-    with tempfile.NamedTemporaryFile() as t:
+    with tempfile.NamedTemporaryFile() as temp:
         with pytest.raises(error.SigMFValidationError):
-            test_sigmffile.archive(name=t.name)
+            test_sigmffile.archive(name=temp.name)
 
 
 def test_name_wrong_extension_throws_fileerror(test_sigmffile):
-    with tempfile.NamedTemporaryFile() as t:
+    with tempfile.NamedTemporaryFile() as temp:
         with pytest.raises(error.SigMFFileError):
-            test_sigmffile.archive(name=t.name + ".zip")
+            test_sigmffile.archive(name=temp.name + ".zip")
 
 
 def test_fileobj_extension_ignored(test_sigmffile):
-    with tempfile.NamedTemporaryFile(suffix=".tar") as t:
-        test_sigmffile.archive(fileobj=t)
+    with tempfile.NamedTemporaryFile(suffix=".tar") as temp:
+        test_sigmffile.archive(fileobj=temp)
 
 
 def test_name_used_in_fileobj(test_sigmffile):
-    with tempfile.NamedTemporaryFile() as t:
-        sigmf_archive = test_sigmffile.archive(name="testarchive", fileobj=t)
+    with tempfile.NamedTemporaryFile() as temp:
+        sigmf_archive = test_sigmffile.archive(name="testarchive", fileobj=temp)
         sigmf_tarfile = tarfile.open(sigmf_archive, mode="r")
         basedir, file1, file2 = sigmf_tarfile.getmembers()
         assert basedir.name == "testarchive"
@@ -61,26 +60,28 @@ def test_name_used_in_fileobj(test_sigmffile):
 
 
 def test_fileobj_not_closed(test_sigmffile):
-    with tempfile.NamedTemporaryFile() as t:
-        test_sigmffile.archive(fileobj=t)
-        assert not t.file.closed
+    with tempfile.NamedTemporaryFile() as temp:
+        test_sigmffile.archive(fileobj=temp)
+        assert not temp.file.closed
 
 
 def test_unwritable_fileobj_throws_fileerror(test_sigmffile):
-    with tempfile.NamedTemporaryFile(mode="rb") as t:
+    with tempfile.NamedTemporaryFile(mode="rb") as temp:
         with pytest.raises(error.SigMFFileError):
-            test_sigmffile.archive(fileobj=t)
+            test_sigmffile.archive(fileobj=temp)
 
 
 def test_unwritable_name_throws_fileerror(test_sigmffile):
-    unwritable_file = "/root/unwritable.sigmf"  # assumes root is unwritable
+    # Cannot assume /root/ is unwritable (e.g. Docker environment)
+    # so use invalid filename
+    unwritable_file = '/bad_name/'
     with pytest.raises(error.SigMFFileError):
         test_sigmffile.archive(name=unwritable_file)
 
 
 def test_tarfile_layout(test_sigmffile):
-    with tempfile.NamedTemporaryFile() as t:
-        sigmf_tarfile = create_test_archive(test_sigmffile, t)
+    with tempfile.NamedTemporaryFile() as temp:
+        sigmf_tarfile = create_test_archive(test_sigmffile, temp)
         basedir, file1, file2 = sigmf_tarfile.getmembers()
         assert tarfile.TarInfo.isdir(basedir)
         assert tarfile.TarInfo.isfile(file1)
@@ -88,11 +89,11 @@ def test_tarfile_layout(test_sigmffile):
 
 
 def test_tarfile_names_and_extensions(test_sigmffile):
-    with tempfile.NamedTemporaryFile() as t:
-        sigmf_tarfile = create_test_archive(test_sigmffile, t)
+    with tempfile.NamedTemporaryFile() as temp:
+        sigmf_tarfile = create_test_archive(test_sigmffile, temp)
         basedir, file1, file2 = sigmf_tarfile.getmembers()
         archive_name = basedir.name
-        assert archive_name == path.split(t.name)[-1]
+        assert archive_name == path.split(temp.name)[-1]
         file_extensions = {SIGMF_DATASET_EXT, SIGMF_METADATA_EXT}
 
         file1_name, file1_ext = path.splitext(file1.name)
@@ -107,8 +108,8 @@ def test_tarfile_names_and_extensions(test_sigmffile):
 
 
 def test_tarfile_persmissions(test_sigmffile):
-    with tempfile.NamedTemporaryFile() as t:
-        sigmf_tarfile = create_test_archive(test_sigmffile, t)
+    with tempfile.NamedTemporaryFile() as temp:
+        sigmf_tarfile = create_test_archive(test_sigmffile, temp)
         basedir, file1, file2 = sigmf_tarfile.getmembers()
         assert basedir.mode == 0o755
         assert file1.mode == 0o644
@@ -116,8 +117,8 @@ def test_tarfile_persmissions(test_sigmffile):
 
 
 def test_contents(test_sigmffile):
-    with tempfile.NamedTemporaryFile() as t:
-        sigmf_tarfile = create_test_archive(test_sigmffile, t)
+    with tempfile.NamedTemporaryFile() as temp:
+        sigmf_tarfile = create_test_archive(test_sigmffile, temp)
         basedir, file1, file2 = sigmf_tarfile.getmembers()
         if file1.name.endswith(SIGMF_METADATA_EXT):
             mdfile = file1
@@ -133,12 +134,12 @@ def test_contents(test_sigmffile):
         datfile_reader = sigmf_tarfile.extractfile(datfile)
         # calling `fileno` on `tarfile.ExFileObject` throws error (?), but
         # np.fromfile requires it, so we need this extra step
-        data = np.fromstring(datfile_reader.read(), dtype=np.float32)
+        data = np.frombuffer(datfile_reader.read(), dtype=np.float32)
 
         assert np.array_equal(data, TEST_FLOAT32_DATA)
 
 
 def test_tarfile_type(test_sigmffile):
-    with tempfile.NamedTemporaryFile() as t:
-        sigmf_tarfile = create_test_archive(test_sigmffile, t)
+    with tempfile.NamedTemporaryFile() as temp:
+        sigmf_tarfile = create_test_archive(test_sigmffile, temp)
         assert sigmf_tarfile.format == tarfile.PAX_FORMAT

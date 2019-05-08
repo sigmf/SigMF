@@ -18,18 +18,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import pytest
-
-from sigmf.error import SigMFValidationError
 from sigmf.sigmffile import SigMFFile
-
+from sigmf import __version__
 
 MD_VALID = """
 {
     "global": {
         "core:datatype": "cf32",
         "core:offset": 0,
-        "core:version": "0.0.1",
+        "core:version": "X.X.X",
         "core:license": "CC0",
         "core:date": "foo",
         "core:url": "foo",
@@ -59,6 +56,7 @@ MD_VALID = """
     ]
 }
 """
+MD_VALID = MD_VALID.replace("X.X.X", __version__)
 
 MD_INVALID_SEQUENCE_CAP = """
 {
@@ -76,6 +74,7 @@ MD_INVALID_SEQUENCE_CAP = """
     "annotations": [
         {
             "core:sample_start": 100000,
+            "core:sample_count": 120000,
             "core:comment": "stuff"
         }
     ]
@@ -95,10 +94,12 @@ MD_INVALID_SEQUENCE_ANN = """
     "annotations": [
         {
             "core:sample_start": 2,
+            "core:sample_count": 120000,
             "core:comment": "stuff"
         },
         {
             "core:sample_start": 1,
+            "core:sample_count": 120000,
             "core:comment": "stuff"
         }
     ]
