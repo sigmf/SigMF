@@ -443,9 +443,9 @@ requirements:
 
 ## Citing SigMF
 
-To cite the SigMF specification, we recommend the following format:
+To cite this version of the SigMF specification, we recommend the following format:
 
-    The Signal Metadata Format (SigMF), <release>, <date of release>, https://sigmf.org
+    The GNU Radio Foundation, Inc. 2018, The Signal Metadata Format (SigMF), v0.0.1, http://doi.org/10.5281/zenodo.1418396
 
 ## Acknowledgements
 
