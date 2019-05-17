@@ -59,7 +59,8 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
     - [Collection Format](#collection-format)
     - [Licensing](#licensing)
     - [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
-  - [Example](#example)
+  - [Examples](#examples)
+      - [Example of the `global` `core:offset` field usage:](#example-of-the-global-coreoffset-field-usage)
   - [Citing SigMF](#citing-sigmf)
   - [Acknowledgements](#acknowledgements)
 
@@ -544,11 +545,7 @@ Example `top-level.sigmf-collection` file:
 
 ### Licensing
 
-You may specify any license of your choosing. Recommended licenses for SigMF
-Recordings and Collections are:
-
-* [CC0 1.0 Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/)
-* [CC-BY Attribution 2.0 Generic](https://creativecommons.org/licenses/by/2.0/)
+Open licenses are recommended but you can specify any license. You can refer to resources provided by the [Open Data Commons](https://opendatacommons.org/) when deciding which open license fits your needs best. Cornell University has also created [a guide](https://data.research.cornell.edu/content/intellectual-property#data-licensing) to help you make these choices.
 
 ### SigMF Compliance by Applications
 
