@@ -135,10 +135,11 @@ into a file archive. A `SigMF Archive` may contain multiple `SigMF Recordings`.
 3. The archive MUST contain the following files: for each contained recording
    with some name given here meta-syntactically as `N`, files named `N` (a
    directory), `N/N.sigmf-meta`, and `N/N.sigmf-data`.
-4. The archive MUST NOT contain any other files unless their pathnames begin
+4. The `N/N.sigmf-meta` MUST come before the `N/N.sigmf-data` member.
+5. The archive MUST NOT contain any other files unless their pathnames begin
    with `N/N`, for some `N` which has `.sigmf-meta` and `.sigmf-data` files as
    described above.
-5. It is RECOMMENDED that if recordings in an archive represent a continuous
+6. It is RECOMMENDED that if recordings in an archive represent a continuous
    dataset that has been split into separate recordings, that their filenames
    reflect the order of the series by appending a hyphenated zero-based index
    (e.g., `N-0`, `N-1`, `N-2`, etc.,).
