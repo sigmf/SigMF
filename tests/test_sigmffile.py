@@ -87,3 +87,11 @@ def test_add_multiple_captures_and_annotations():
     sigf = SigMFFile()
     for idx in range(3):
         simulate_capture(sigf, idx, 1024)
+
+def test_ordered_metadata():
+    '''check to make sure the metadata is sorted as expected'''
+    sigf = SigMFFile()
+    top_sort_order = ['global', 'captures', 'annotations']
+    for kdx, key in enumerate(sigf.ordered_metadata()):
+        assert kdx == top_sort_order.index(key)
+
