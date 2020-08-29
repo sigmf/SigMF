@@ -17,7 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+from collections import OrderedDict
 import codecs
 import json
 import tarfile
@@ -75,6 +75,7 @@ class SigMFFile(object):
             metadata=None,
             data_file=None,
             global_info=None,
+            skip_checksum=False,
     ):
         self.version = None
         self.schema = None
@@ -89,7 +90,7 @@ class SigMFFile(object):
         if global_info is not None:
             self.set_global_info(global_info)
         self.data_file = data_file
-        if self.data_file:
+        if self.data_file and not skip_checksum:
             self.calculate_hash()
         self._count_samples()
 
@@ -293,32 +294,65 @@ class SigMFFile(object):
             self._metadata,
             schema.get_schema(schema_version),
         )
+    def ordered_metadata(self):
+        '''
+        Get a nicer representation of _metadata. Will sort keys, but put the
+        top-level fields 'global', 'captures', 'annotations' in front.
 
-    def dump(self, filep, pretty=False):
-        """
+        Returns
+        -------
+        ordered_meta : OrderedDict
+            Cleaner representation of _metadata with top-level keys correctly
+            ordered and the rest of the keys sorted.
+        '''
+        ordered_meta = OrderedDict()
+        top_sort_order = ['global', 'captures', 'annotations']
+        for top_key in top_sort_order:
+            assert top_key in self._metadata
+            ordered_meta[top_key] = json.loads(json.dumps(self._metadata[top_key], sort_keys=True))
+        # If there are other top-level keys, they go later
+        # TODO: sort these `other` top-level keys
+        for oth_key, oth_val in self._metadata.items():
+            if oth_key not in top_sort_order:
+                ordered_meta[oth_key] = json.loads(json.dumps(oth_val, sort_keys=True))
+        return ordered_meta
+
+    def dump(self, filep, pretty=True):
+        '''
         Write metadata to a file.
 
-        Parameters:
-        filep -- File pointer or something that json.dump() can handle
-        pretty -- If true, output will be formatted extra nicely.
-        """
+        Parameters
+        ----------
+        filep : object
+            File pointer or something that json.dump() can handle
+        pretty : bool, optional
+            Is true by default.
+        '''
         json.dump(
-            self._metadata,
+            self.ordered_metadata(),
             filep,
-            sort_keys=True if pretty else False,
             indent=4 if pretty else None,
             separators=(',', ': ') if pretty else None,
         )
 
-    def dumps(self, pretty=False):
-        """
-        Return a string representation of the metadata file.
+    def dumps(self, pretty=True):
+        '''
+        Get a string representation of the metadata.
 
-        Parameters:
-        pretty -- If true, output will be formatted extra nicely.
-        """
+        Parameters
+        ----------
+        filep : object
+            File pointer or something that json.dump() can handle
+        pretty : bool, optional
+            Is true by default.
+
+        Returns
+        -------
+        string
+            String representation of the metadata using json formatter.
+        '''
         return json.dumps(
-            self._metadata,
+            self.ordered_metadata(),
             indent=4 if pretty else None,
             separators=(',', ': ') if pretty else None,
         )
@@ -486,7 +520,7 @@ def fromarchive(archive_path, dir=None):
 
     return SigMFFile(metadata=metadata, data_file=data_file)
 
-def fromfile(filename):
+def fromfile(filename, skip_checksum=False):
     """
     Creates and returns a returns a SigMFFile instance with metadata loaded from the specified file.
     The filename may be that of either a sigmf-meta file, a sigmf-data file, or a sigmf archive.
@@ -509,7 +543,7 @@ def fromfile(filename):
     mdfile_reader = bytestream_reader(meta_fp)
     metadata = json.load(mdfile_reader)
     meta_fp.close()
-    return SigMFFile(metadata=metadata, data_file=data_fn)
+    return SigMFFile(metadata=metadata, data_file=data_fn, skip_checksum=skip_checksum)
 
 def get_sigmf_filenames(filename):
     """

@@ -1,5 +1,6 @@
 from setuptools import setup
 import os
+import re
 
 shortdesc = "Signal Metadata Format Specification"
 longdesc = """
@@ -10,13 +11,12 @@ of samples, the characteristics of the system that generated the
 samples, and features of the signal itself.
 """
 
-# exec version.py to get __version__ (version.py is the single source of the version)
-version_file = os.path.join(os.path.dirname(__file__), 'sigmf', 'version.py')
-exec(open(version_file).read())
+with open(os.path.join('sigmf', '__init__.py')) as handle:
+    version = re.search(r'__version__\s*=\s*[\'"]([^\'"]*)[\'"]', handle.read()).group(1)
 
 setup(
     name='SigMF',
-    version=__version__,
+    version=version,
     description=shortdesc,
     long_description=longdesc,
     url='https://github.com/gnuradio/SigMF',
