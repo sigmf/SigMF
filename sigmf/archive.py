@@ -75,7 +75,7 @@ class SigMFArchive(object):
 
         archive_name = self._get_archive_name()
         sigmf_fileobj = self._get_output_fileobj()
-        sigmf_archive = tarfile.TarFile(mode="w", 
+        sigmf_archive = tarfile.TarFile(mode="w",
                                         fileobj=sigmf_fileobj,
                                         format=tarfile.PAX_FORMAT)
         tmpdir = tempfile.mkdtemp()
@@ -150,11 +150,11 @@ class SigMFArchive(object):
             fileobj = self._get_open_fileobj()
         except:
             if self.fileobj:
-                e = "fileobj {!r} is not byte-writable".format(self.fileobj)
+                err = "fileobj {!r} is not byte-writable".format(self.fileobj)
             else:
-                e = "can't open {!r} for writing".format(self.name)
+                err = "can't open {!r} for writing".format(self.name)
 
-            raise error.SigMFFileError(e)
+            raise error.SigMFFileError(err)
 
         return fileobj
 

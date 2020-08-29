@@ -52,20 +52,20 @@ def test_default_constructor():
 
 
 def test_set_non_required_global_field():
-    f = SigMFFile()
-    f.set_global_field('this_is:not_in_the_schema', None)
+    sigf = SigMFFile()
+    sigf.set_global_field('this_is:not_in_the_schema', None)
 
 
 def test_add_capture():
-    f = SigMFFile()
-    f.add_capture(start_index=0, metadata={})
+    sigf = SigMFFile()
+    sigf.add_capture(start_index=0, metadata={})
 
 
 def test_add_annotation():
-    f = SigMFFile()
-    f.add_capture(start_index=0)
-    m = {"latitude": 40.0, "longitude": -105.0}
-    f.add_annotation(start_index=0, length=128, metadata=m)
+    sigf = SigMFFile()
+    sigf.add_capture(start_index=0)
+    meta = {"latitude": 40.0, "longitude": -105.0}
+    sigf.add_annotation(start_index=0, length=128, metadata=meta)
 
 
 def test_fromarchive(test_sigmffile):
@@ -84,6 +84,6 @@ def test_fromarchive(test_sigmffile):
 
 
 def test_add_multiple_captures_and_annotations():
-    f = SigMFFile()
-    for i in range(3):
-        simulate_capture(f, i, 1024)
+    sigf = SigMFFile()
+    for idx in range(3):
+        simulate_capture(sigf, idx, 1024)

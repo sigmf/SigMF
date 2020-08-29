@@ -1,7 +1,5 @@
 from setuptools import setup
-
-import sigmf
-
+import os
 
 shortdesc = "Signal Metadata Format Specification"
 longdesc = """
@@ -10,12 +8,15 @@ sets of recorded digital signal samples with metadata written in JSON.
 SigMF can be used to describe general information about a collection
 of samples, the characteristics of the system that generated the
 samples, and features of the signal itself.
-
 """
+
+# exec version.py to get __version__ (version.py is the single source of the version)
+version_file = os.path.join(os.path.dirname(__file__), 'sigmf', 'version.py')
+exec(open(version_file).read())
 
 setup(
     name='SigMF',
-    version=sigmf.__version__,
+    version=__version__,
     description=shortdesc,
     long_description=longdesc,
     url='https://github.com/gnuradio/SigMF',

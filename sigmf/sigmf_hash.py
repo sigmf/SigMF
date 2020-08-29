@@ -28,8 +28,7 @@ def calculate_sha512(filename):
     Returns sha512 of filename
     """
     the_hash = hashlib.sha512()
-    with open(filename, "rb") as f:
-        for buff in iter(lambda: f.read(4096), b""):
+    with open(filename, "rb") as handle:
+        for buff in iter(lambda: handle.read(4096), b""):
             the_hash.update(buff)
     return the_hash.hexdigest()
-
