@@ -53,8 +53,8 @@ The field of communications is vast, and there may be communications systems tha
 |name|required|type|description|
 |----|--------------|-------|----------|
 |`label`|false|string|e.g., wifi|
-|`detail`|false|[Detail](modulation.sigmf-ext.md#the-detail-object)|Emission details (standard, modulation, etc.)|
-|`emitter`|false|[Emitter](modulation.sigmf-ext.md#the-emitter-object)|Emitter details (manufacturer, geo coordinates, etc.)|
+|`detail`|false|[Detail](signal.sigmf-ext.md#the-detail-object)|Emission details (standard, modulation, etc.)|
+|`emitter`|false|[Emitter](signal.sigmf-ext.md#the-emitter-object)|Emitter details (manufacturer, geo coordinates, etc.)|
 
 ##### The Emitter Object
 
@@ -69,19 +69,19 @@ The field of communications is vast, and there may be communications systems tha
 
 |name|required|type|description|
 |----|--------|----|-----------|
-|`type`|false|string|[type](modulation.sigmf-ext.md#the-type-field)|
-|`class`|false|string|[class](modulation.sigmf-ext.md#the-class-field)|
+|`type`|false|string|[type](signal.sigmf-ext.md#the-type-field)|
+|`class`|false|string|[class](signal.sigmf-ext.md#the-class-field)|
 |`standard`|false|string|Communication standard (e.g., 802.11ac)|
-|`carrier_variant`|false|string|[carrier variant](modulation.sigmf-ext.md#the-carrier-variant-field)|
-|`symbol_variant`|false|string|[symbol variant](modulation.sigmf-ext.md#the-symbol-variant-field)|
-|`order`|false|uint|[order](modulation.sigmf-ext.md#the-order-field)|
-|`duplexing`|false|string|[duplexing](modulation.sigmf-ext.md#the-duplexing-field)|
-|`multiplexing`|false|string|[multiplexing](modulation.sigmf-ext.md#the-multiplexing-field)|
-|`multiple_access`|false|string|[multiple access](modulation.sigmf-ext.md#the-multiple-access-field)|
-|`spreading`|false|string|[spreading](modulation.sigmf-ext.md#the-spreading-field)|
-|`bandwidth`|false|float|[bandwidth](modulation.sigmf-ext.md#the-bandwidth-field)|
-|`channel`|false|uint|[channel](modulation.sigmf-ext.md#the-channel-field)|
-|`class_variant`|false|string|[class variant](modulation.sigmf-ext.md#the-class-variant-field)|
+|`carrier_variant`|false|string|[carrier variant](signal.sigmf-ext.md#the-carrier_variant-field)|
+|`symbol_variant`|false|string|[symbol variant](signal.sigmf-ext.md#the-symbol_variant-field)|
+|`order`|false|uint|[order](signal.sigmf-ext.md#the-order-field)|
+|`duplexing`|false|string|[duplexing](signal.sigmf-ext.md#the-duplexing-field)|
+|`multiplexing`|false|string|[multiplexing](signal.sigmf-ext.md#the-multiplexing-field)|
+|`multiple_access`|false|string|[multiple access](signal.sigmf-ext.md#the-multiple_access-field)|
+|`spreading`|false|string|[spreading](signal.sigmf-ext.md#the-spreading-field)|
+|`bandwidth`|false|float|[bandwidth](signal.sigmf-ext.md#the-bandwidth-field)|
+|`channel`|false|uint|[channel](signal.sigmf-ext.md#the-channel-field)|
+|`class_variant`|false|string|[class variant](signal.sigmf-ext.md#the-class_variant-field)|
 
 ###### The `type` Field
 
