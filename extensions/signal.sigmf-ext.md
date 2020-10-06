@@ -277,7 +277,7 @@ A class variant example describing a pi/4-DQPSK signal
                 "class": "psk",
                 "order": 4,
                 "symbol_variant": "differential",
-                "class variant": "pi/4"
+                "class_variant": "pi/4"
             }
         }
     }]
