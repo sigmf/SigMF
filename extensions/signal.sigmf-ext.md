@@ -52,7 +52,7 @@ The field of communications is vast, and there may be communications systems tha
 
 |name|required|type|description|
 |----|--------------|-------|----------|
-|`label`|false|string|e.g., wifi|
+|`label`|false|string|A high-level shortform description useful to human readers (e.g., "wifi", "LTE")|
 |`detail`|false|[Detail](signal.sigmf-ext.md#the-detail-object)|Emission details (standard, modulation, etc.)|
 |`emitter`|false|[Emitter](signal.sigmf-ext.md#the-emitter-object)|Emitter details (manufacturer, geo coordinates, etc.)|
 
@@ -62,8 +62,8 @@ The field of communications is vast, and there may be communications systems tha
 |----|--------|----|-----------|
 |`seid`|false|uint|Unique ID of the emitter|
 |`manufacturer`|false|string|Manufacterer of the hardware used to emit the signal|
-|`latitude`|false|float|Latitude|
-|`longitude`|false|float|longitude|
+|`latitude`|false|float|Latitude (decimal degrees)|
+|`longitude`|false|float|Longitude (decimal degrees)|
 
 ##### The Detail Object
 
