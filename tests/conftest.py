@@ -29,17 +29,17 @@ from .testdata import TEST_FLOAT32_DATA, TEST_METADATA
 
 @pytest.yield_fixture
 def test_data_file():
-    with tempfile.NamedTemporaryFile() as t:
-        TEST_FLOAT32_DATA.tofile(t.name)
-        yield t
+    with tempfile.NamedTemporaryFile() as temp:
+        TEST_FLOAT32_DATA.tofile(temp.name)
+        yield temp
 
 
 @pytest.fixture
 def test_sigmffile(test_data_file):
-    f = SigMFFile()
-    f.set_global_field("core:datatype", "f32")
-    f.add_annotation(start_index=0, length=len(TEST_FLOAT32_DATA))
-    f.add_capture(start_index=0)
-    f.set_data_file(test_data_file.name)
-    assert f._metadata == TEST_METADATA
-    return f
+    sigf = SigMFFile()
+    sigf.set_global_field("core:datatype", "rf32_le")
+    sigf.add_annotation(start_index=0, length=len(TEST_FLOAT32_DATA))
+    sigf.add_capture(start_index=0)
+    sigf.set_data_file(test_data_file.name)
+    assert sigf._metadata == TEST_METADATA
+    return sigf

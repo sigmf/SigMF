@@ -39,6 +39,58 @@ maintained for posterity.
 Anyone is welcome to get involved - indeed, the more people involved in the
 discussions, the more useful the standard is likely to be.
 
+## Installation
+After cloning, simply run the setup script for a static installation.
+
+```
+python setup.py
+```
+
+Alternatively, install the module in developer mode if you plan to experiment
+with your own changes.
+
+```
+python setup.py develop
+```
+
+## Usage example
+#### Load a SigMF dataset; read its annotation, metadata, and samples
+```python
+from sigmf import SigMFFile, sigmffile
+
+# Load a dataset
+sigmf_filename = 'datasets/my_dataset.sigmf-meta' # extension is optional
+signal = sigmffile.fromfile(sigmf_filename)
+
+# Get some metadata and all annotations
+sample_rate = signal.get_global_field(SigMFFile.SAMPLE_RATE_KEY)
+sample_count = signal.sample_count
+signal_duration = sample_count / sample_rate
+annotations = signal.get_annotations()
+
+# Iterate over annotations
+for annotation_idx, annotation in enumerate(annotations):
+    annotation_start_idx = annotation[SigMFFile.START_INDEX_KEY]
+    annotation_length = annotation[SigMFFile.LENGTH_INDEX_KEY]
+    annotation_comment = annotation.get(SigMFFile.COMMENT_KEY,
+                                        "[annotation {}]".format(annotation_idx))
+
+    # Get capture info associated with the start of annotation
+    capture = signal.get_capture_info(annotation_start_idx)
+    freq_center = capture.get(SigMFFile.FREQUENCY_KEY, 0)
+    freq_min = freq_center - 0.5*sample_rate
+    freq_max = freq_center + 0.5*sample_rate
+
+    # Get frequency edges of annotation (default to edges of capture)
+    freq_start = annotation.get(SigMFFile.FLO_KEY, f_min)
+    freq_stop = annotation.get(SigMFFile.FHI_KEY, f_max)
+
+    # Get the samples corresponding to annotation
+    samples = signal.read_samples(annotation_start_idx, annotation_length)
+```
+
+
+
 ## Frequently Asked Questions
 
 #### Is this a GNU Radio effort?

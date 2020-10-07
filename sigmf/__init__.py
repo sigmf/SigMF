@@ -18,13 +18,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__ = "0.0.1"
+# Use version.py to get the version
+# Never define in the __init__.py and import it in setup.py because you can't
+# import sigmf in setup.py because you won't have the dependencies yet.
+# https://packaging.python.org/guides/single-sourcing-package-version/
 
-import archive
-import error
-import schema
-import sigmffile
-import validate
-import utils
-from archive import SigMFArchive
-from sigmffile import SigMFFile
+from .version import __version__
+from .archive import SigMFArchive
+from .sigmffile import SigMFFile
+
+from . import archive
+from . import error
+from . import schema
+from . import sigmffile
+from . import validate
+from . import utils
