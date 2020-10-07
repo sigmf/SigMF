@@ -39,28 +39,22 @@ maintained for posterity.
 Anyone is welcome to get involved - indeed, the more people involved in the
 discussions, the more useful the standard is likely to be.
 
-## Installation
-After cloning, simply run the setup script for a static installation.
+## Getting Started
 
-```
-python setup.py
-```
-
-Alternatively, install the module in developer mode if you plan to experiment
-with your own changes.
-
-```
-python setup.py develop
+This module can be installed the typical way:
+```bash
+pip install .
 ```
 
-## Usage example
-#### Load a SigMF dataset; read its annotation, metadata, and samples
+## Use Cases
+### Load a SigMF dataset; read its annotation, metadata, and samples
+
 ```python
 from sigmf import SigMFFile, sigmffile
 
 # Load a dataset
-sigmf_filename = 'datasets/my_dataset.sigmf-meta' # extension is optional
-signal = sigmffile.fromfile(sigmf_filename)
+filename = 'example.sigmf-meta' # extension is optional
+signal = sigmffile.fromfile(filename)
 
 # Get some metadata and all annotations
 sample_rate = signal.get_global_field(SigMFFile.SAMPLE_RATE_KEY)
@@ -69,11 +63,10 @@ signal_duration = sample_count / sample_rate
 annotations = signal.get_annotations()
 
 # Iterate over annotations
-for annotation_idx, annotation in enumerate(annotations):
+for adx, annotation in enumerate(annotations):
     annotation_start_idx = annotation[SigMFFile.START_INDEX_KEY]
     annotation_length = annotation[SigMFFile.LENGTH_INDEX_KEY]
-    annotation_comment = annotation.get(SigMFFile.COMMENT_KEY,
-                                        "[annotation {}]".format(annotation_idx))
+    annotation_comment = annotation.get(SigMFFile.COMMENT_KEY, "[annotation {}]".format(adx))
 
     # Get capture info associated with the start of annotation
     capture = signal.get_capture_info(annotation_start_idx)
@@ -82,14 +75,54 @@ for annotation_idx, annotation in enumerate(annotations):
     freq_max = freq_center + 0.5*sample_rate
 
     # Get frequency edges of annotation (default to edges of capture)
-    freq_start = annotation.get(SigMFFile.FLO_KEY, f_min)
-    freq_stop = annotation.get(SigMFFile.FHI_KEY, f_max)
+    freq_start = annotation.get(SigMFFile.FLO_KEY)
+    freq_stop = annotation.get(SigMFFile.FHI_KEY)
 
     # Get the samples corresponding to annotation
     samples = signal.read_samples(annotation_start_idx, annotation_length)
 ```
 
+### Write a SigMF file from a numpy array
 
+```python
+import datetime as dt
+from sigmf import SigMFFile
+
+# suppose we have an complex timeseries signal
+data = np.zeros(1024, dtype=np.complex64)
+
+# write those samples to file in cf32_le
+data.tofile('example.sigmf-data')
+
+# create the metadata
+meta = SigMFFile(
+    data_file='example.sigmf-data', # extension is optional
+    global_info = {
+        SigMFFile.DATATYPE_KEY: 'cf32_le',
+        SigMFFile.SAMPLE_RATE_KEY: 48000,
+        SigMFFile.AUTHOR_KEY: 'jane.doe@domain.org',
+        SigMFFile.DESCRIPTION_KEY: 'All zero example file.',
+        SigMFFile.VERSION_KEY: sigmf.__version__,
+    }
+)
+
+# create a capture key at time index 0
+meta.add_capture(0, metadata={
+    SigMFFile.FREQUENCY_KEY: 915000000,
+    SigMFFile.DATETIME_KEY: dt.datetime.utcnow().isoformat()+'Z',
+})
+
+# add an annotation at sample 100 with length 200 & 10 KHz width
+meta.add_annotation(100, 200, metadata = {
+    SigMFFile.FLO_KEY: 914995000.0,
+    SigMFFile.FHI_KEY: 915005000.0,
+    SigMFFile.COMMENT_KEY: 'example annotation',
+})
+
+# check for mistakes & write to disk
+assert meta.validate()
+meta.tofile('example.sigmf-meta') # extension is optional
+```
 
 ## Frequently Asked Questions
 
