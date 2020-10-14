@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2020 The Johns Hopkins University Applied Physics Laboratory LLC.  All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -140,7 +141,7 @@ class WindowInput(WindowElementGroup):
         el_help = {WindowInput.DATA_BYTE_ORDER: 'Data Type Help'}
         el_multiline = [DESCRIPTION]
         el_selector = {WindowInput.DATA_SAMPLE_SIZE: [8, 16, 32],
-                       WindowInput.DATA_BYTE_ORDER: ['big endian', 'little endian']}
+                       WindowInput.DATA_BYTE_ORDER: ['little endian', 'big endian']}
         el_checkbox = [WindowInput.DATA_TYPE_COMPLEX, WindowInput.DATA_TYPE_UNSIGNED, WindowInput.DATA_TYPE_FIXEDPOINT]
         el_size = {WindowInput.DATA_TYPE_COMPLEX: (3, 1), WindowInput.DATA_TYPE_UNSIGNED: (3, 1),
                    WindowInput.DATA_TYPE_FIXEDPOINT: (3, 1), WindowInput.DATA_SAMPLE_SIZE: (4, 1),
