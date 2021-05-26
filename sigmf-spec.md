@@ -285,7 +285,7 @@ the `global` object:
 |`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
 |`offset`|false|uint|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
 |`description`|false|string|A text description of the SigMF recording.|
-|`author`|false|string|The author's name (and optionally e-mail address).|
+|`author`|false|string|The author's name (and optionally e-mail address) of the form "Bruce Wayne <wayne@example.com>".|
 |`meta_doi`|false|string|The registered DOI (ISO 26324) for a recording's metadata file.|
 |`data_doi`|false|string|The registered DOI (ISO 26324) for a recording's dataset file.|
 |`recorder`|false|string|The name of the software used to make this SigMF recording.|
