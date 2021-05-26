@@ -185,7 +185,9 @@ dataset file MUST NOT contain any other characters (e.g., delimiters,
 whitespace, line-endings, `EOF` characters, etc.,).
 
 Complex samples should be interleaved, with the in-phase component first (i.e.,
-`I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`).
+`I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`).  Also note that the `type`
+applies to not only the real but also the imaginary component of a complex
+sample.
 
 ### Metadata Format
 
