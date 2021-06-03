@@ -326,7 +326,9 @@ Capture segment objects are composed of name/value pairs.
 
 Each capture segment object must contain a `core:sample_start` name/value pair,
 which indicates the first index at which the rest of the segment's name/value
-pairs apply.
+pairs apply. The fields that are described within a `captures` segment are
+scoped to that segment only and must be declared again if they are valid in
+subsequent segments.
 
 The following names are specified in the `core` namespace and should be used in
 capture segment objects:
