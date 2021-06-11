@@ -419,7 +419,9 @@ The `freq_lower_edge` and `freq_upper_edge` fields should be at RF if the
 feature is at a known RF frequency. If there is no known center frequency (as
 defined by the `frequency` field in the relevant `capture segment object`), or
 the center frequency is at baseband, the `freq_lower_edge` and `freq_upper_edge`
-fields may be relative to baseband.
+fields may be relative to baseband. It is required that both `freq_lower_edge`
+and `freq_upper_edge` be provided, or neither; the use of just one field is not
+allowed.
 
 ### Dataset Licensing
 
