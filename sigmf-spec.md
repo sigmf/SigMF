@@ -403,7 +403,7 @@ annotation segment objects:
 |name|required|type|description|
 |----|--------------|-------|-----------|
 |`sample_start`|true|uint|The sample index at which this segment takes effect.|
-|`sample_count`|true|uint|The number of samples that this segment applies to. |
+|`sample_count`|false|uint|The number of samples that this segment applies to. |
 |`generator`|false|string|Human-readable name of the entity that created this annotation.|
 |`comment`|false|string|A human-readable comment.|
 |`freq_lower_edge`|false|double|The frequency (Hz) of the lower edge of the feature described by this annotation.|
@@ -413,7 +413,9 @@ annotation segment objects:
 
 There is no limit to the number of annotations that can apply to the same group
 of samples. If two annotations have the same `sample_start`, there is no
-defined ordering between them.
+defined ordering between them. If `sample_count` is not provided, it should
+be assumed that the annotation applies from `sample_start` through the end of
+the dataset, in all other cases `sample_count` should be provided.
 
 The `freq_lower_edge` and `freq_upper_edge` fields should be at RF if the
 feature is at a known RF frequency. If there is no known center frequency (as
