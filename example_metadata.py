@@ -15,7 +15,7 @@ from sigmf import __version__
         {
             "core:sample_start": 0,         # The sample index that these parameters take effect.
             "core:frequency": 900000000,    # The center frequency of the recording (900 MHz, here).
-            "core:time": "2017-02-01T11:33:17053240428Z"
+            "core:datetime": "2017-02-01T11:33:17053240428Z"
         },
         {
             "core:sample_start": 100000,    # Mandatory
