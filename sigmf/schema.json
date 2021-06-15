@@ -28,7 +28,7 @@
                 "required": false,
                 "help": "Sample data license"
             },
-            "core:date": {
+            "core:datetime": {
                 "type": "string",
                 "required": false,
                 "pattern": "",
@@ -68,12 +68,12 @@
                 "required": false,
                 "help": "Center frequency of signal (Hz)"
             },
-            "core:sampling_rate": {
+            "core:sample_rate": {
                 "type": "double",
                 "required": false,
                 "help": "Sampling rate of signal (Sps)"
             },
-            "core:time": {
+            "core:datetime": {
                 "type": "string",
                 "required": false,
                 "help": "Start time of chunk"

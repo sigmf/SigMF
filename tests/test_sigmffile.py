@@ -33,7 +33,7 @@ from .testdata import TEST_FLOAT32_DATA, TEST_METADATA
 def simulate_capture(sigmf_md, n, capture_len):
     start_index = capture_len * n
 
-    capture_md = {"core:time": utils.get_sigmf_iso8601_datetime_now()}
+    capture_md = {"core:datetime": utils.get_sigmf_iso8601_datetime_now()}
 
     sigmf_md.add_capture(start_index=start_index, metadata=capture_md)
 

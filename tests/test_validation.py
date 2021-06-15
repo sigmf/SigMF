@@ -28,16 +28,16 @@ MD_VALID = """
         "core:offset": 0,
         "core:version": "X.X.X",
         "core:license": "CC0",
-        "core:date": "foo",
+        "core:datetime": "foo",
         "core:url": "foo",
         "core:sha512": "69a014f8855058d25b30b1caf4f9d15bb7b38afa26e28b24a63545734e534a861d658eddae1dbc666b33ca1d18c1ca85722f1f2f010703a7dbbef08189a1d0e5"
     },
     "captures": [
         {
             "core:sample_start": 0,
-            "core:sampling_rate": 10000000,
+            "core:sample_rate": 10000000,
             "core:frequency": 950000000,
-            "core:time": "2017-02-01T11:33:17,053240428+01:00",
+            "core:datetime": "2017-02-01T11:33:17,053240428+01:00",
             "uhd:gain": 34
         },
         {
