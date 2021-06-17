@@ -324,7 +324,7 @@ class SigMFFile(object):
         Parameters
         ----------
         filep : object
-            File pointer or something that json.dump() can handle
+            File pointer or something that json.dump() can handle.
         pretty : bool, optional
             Is true by default.
         '''
@@ -341,8 +341,6 @@ class SigMFFile(object):
 
         Parameters
         ----------
-        filep : object
-            File pointer or something that json.dump() can handle
         pretty : bool, optional
             Is true by default.
 
@@ -366,7 +364,7 @@ class SigMFFile(object):
         archive = SigMFArchive(self, name, fileobj)
         return archive.path
 
-    def tofile(self, file_path, pretty=False, toarchive=False):
+    def tofile(self, file_path, pretty=True, toarchive=False):
         """
         Dump contents to file.
         """
