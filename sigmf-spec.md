@@ -85,9 +85,8 @@ interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 JSON keywords are used as defined in [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 
-Augmented Backus-Naur form (ABNF) is used as defined by [RFC
-5234](https://tools.ietf.org/html/rfc5234) and updated by [RFC
-7405](https://tools.ietf.org/html/rfc7405).
+Augmented Backus-Naur form (ABNF) is used as defined by [RFC 5234](https://tools.ietf.org/html/rfc5234)
+and updated by [RFC 7405](https://tools.ietf.org/html/rfc7405).
 
 Fields defined as "human-readable", a "string", or simply as "text" shall be
 treated as plaintext where whitespace is significant, unless otherwise
@@ -233,8 +232,9 @@ The values in each name/value pair must be one of the following datatypes:
 |string|string|A string of characters, as defined by the JSON standard.|
 |boolean|boolean|Either `true` or `false`, as defined by the JSON standard.|
 |null|null|`null`, as defined by the JSON standard.|
-|array|JSON `array`|an `array` of other values, as defined by the JSON standard.|
-|object|JSON `object`|an `object` of other values, as defined by the JSON standard.|
+|array|JSON `array`|An `array` of other values, as defined by the JSON standard.|
+|object|JSON `object`|An `object` of other values, as defined by the JSON standard.|
+|GeoJSON|GeoJSON `point` object|A single GeoJSON `point` object as defined by RFC 7946.|
 
 #### Namespaces
 
@@ -257,7 +257,7 @@ belong in `core`. These canonical extension namespaces can be found in the
 namespaces may be defined by the user as needed.
 
 1. An extension namespace MUST be defined in a single file, named
-   meta-syntactically as `N.sigmf-ext.md`, where`N` is the name of the extension.
+   meta-syntactically as `N.sigmf-ext.md`, where `N` is the name of the extension.
 2. A `N.sigmf-ext.md` file MUST be a Github-Flavored Markdown file stored in UTF-8
    encoding.
 3. Extensions MUST have version numbers. It is RECOMMENDED that extensions use
@@ -275,7 +275,7 @@ This is a list of the canonical extension namespaces defined by SigMF:
 
  * `antenna` - Used to describe the antenna(s) used to for the recording.
  * `modulation` - Defines how to describe modulations used in wireless communications systems.
- * `volatile` - Allows for continously time-varying fields, such as a moving receiver or rotating antenna.
+ * `volatile` - Allows for continuously time-varying fields, such as a moving receiver or rotating antenna.
 
 #### Global Object
 
@@ -302,7 +302,30 @@ the `global` object:
 |`recorder`|false|string|The name of the software used to make this SigMF recording.|
 |`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
 |`hw`|false |string|A text description of the hardware used to make the recording.|
+|`geolocation`|false|GeoJSON `point` object|The location of the recording system.|
+|`hagl`|false|double|Antenna height above ground level (in meters).|
 |`extensions`|false|object|A list of extensions used by this recording.|
+
+##### The `geolocation` Field
+The `core:geolocation` field in the `global` object is used to store the
+location of the recording system. The location is stored as a single
+[RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` object
+using the convention defined by [RFC 5870](https://www.rfc-editor.org/rfc/rfc5870.txt).
+Per the GeoJSON specification, the point coordinates use the WGS84 coordinate
+reference system and are `latitude`, `longitude` (required, in decimal degrees),
+and `altitude` (optional, in meters above the WGS84 ellipsoid) in that order. An
+example including the optional third altitude value is shown below:
+
+```JSON
+  "global": {
+    ...
+    "core:geolocation": {
+      "type": "Point",
+      "coordinates": [34.0787916, -107.6183682, 2120.0]
+    }
+    ...
+  }
+```
 
 ##### The `extensions` Field
 The `core:extensions` field in the `global` object is JSON array of name/value
@@ -365,9 +388,9 @@ sample stream as seen by the application (e.g., a SigMF writer or reader).
 
 ###### The `datetime` Pair
 
-This name/value pair must be an ISO-8601 string, as defined by [RFC
-3339](https://www.ietf.org/rfc/rfc3339.txt), where the only allowed
-`time-offset` is `Z`, indicating the UTC/Zulu timezone. The ABNF description is:
+This name/value pair must be an ISO-8601 string, as defined by [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt),
+where the only allowed `time-offset` is `Z`, indicating the UTC/Zulu timezone.
+The ABNF description is:
 
 ```abnf
    date-fullyear   = 4DIGIT
@@ -418,8 +441,8 @@ annotation segment objects:
 |`comment`|false|string|A human-readable comment.|
 |`freq_lower_edge`|false|double|The frequency (Hz) of the lower edge of the feature described by this annotation.|
 |`freq_upper_edge`|false|double|The frequency (Hz) of the upper edge of the feature described by this annotation.|
-|`latitude`|false|| |
-|`longitude`|false|| |
+|`latitude`|false||The latitude corresponding to the annotation (deprecated, use `core:geolocation`).|
+|`longitude`|false||The longitude corresponding to the annotation (deprecated, use `core:geolocation`).|
 
 There is no limit to the number of annotations that can apply to the same group
 of samples. If two annotations have the same `sample_start`, there is no
