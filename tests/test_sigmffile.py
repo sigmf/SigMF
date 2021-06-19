@@ -88,10 +88,69 @@ def test_add_multiple_captures_and_annotations():
     for idx in range(3):
         simulate_capture(sigf, idx, 1024)
 
+
+def test_multichannel_types():
+    '''check that real & complex for all types is reading multiple channels correctly'''
+    lut = {
+        'i8': np.int8,
+        'u8': np.uint8,
+        'i16': np.int16,
+        'u16': np.uint16,
+        'u32': np.uint32,
+        'i32': np.int32,
+        'f32': np.float32,
+    }
+    raw_count = 16
+    _, temp_path = tempfile.mkstemp()
+    for key, dtype in lut.items():
+        # for each type of storage
+        np.arange(raw_count, dtype=dtype).tofile(temp_path)
+        for num_channels in [1, 8]:
+            # for single or 8 channel
+            for complex_prefix in ['r', 'c']:
+                # for real or complex
+                check_count = raw_count * 1 # deepcopy
+                temp_signal = SigMFFile(
+                    data_file=temp_path,
+                    global_info={
+                        SigMFFile.DATATYPE_KEY: f'{complex_prefix}{key}_le',
+                        SigMFFile.NUM_CHANNELS_KEY: num_channels,
+                    },
+                )
+                temp_samples = temp_signal.read_samples()
+
+                if complex_prefix == 'c':
+                    # complex data will be half as long
+                    check_count //= 2
+                    assert np.all(np.iscomplex(temp_samples))
+                if num_channels != 1:
+                    assert temp_samples.ndim == 2
+                check_count //= num_channels
+
+                assert check_count == temp_signal._count_samples()
+
+
+def test_multichannel_seek():
+    '''assure that seeking is working correctly with multichannel files'''
+    _, temp_path = tempfile.mkstemp()
+    # write some dummy data and read back
+    np.arange(18, dtype=np.uint16).tofile(temp_path)
+    temp_signal = SigMFFile(
+        data_file=temp_path,
+        global_info={
+            SigMFFile.DATATYPE_KEY: 'cu16_le',
+            SigMFFile.NUM_CHANNELS_KEY: 3,
+        },
+    )
+    # read after the first sample
+    temp_samples = temp_signal.read_samples(start_index=1, autoscale=False)
+    # assure samples are in the order we expect
+    assert np.all(temp_samples[:, 0] == np.array([6+7j, 12+13j]))
+
+
 def test_ordered_metadata():
     '''check to make sure the metadata is sorted as expected'''
     sigf = SigMFFile()
     top_sort_order = ['global', 'captures', 'annotations']
     for kdx, key in enumerate(sigf.ordered_metadata()):
         assert kdx == top_sort_order.index(key)
-

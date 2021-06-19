@@ -27,11 +27,24 @@ from sigmf import __version__
 TEST_FLOAT32_DATA = np.arange(16, dtype=np.float32)
 
 TEST_METADATA = {
-    'annotations': [{'core:sample_count': 16, 'core:sample_start': 0}],
-    'captures': [{'core:sample_start': 0}],
-    'global': {
-        'core:datatype': 'rf32_le',
-        'core:sha512': 'f4984219b318894fa7144519185d1ae81ea721c6113243a52b51e444512a39d74cf41a4cec3c5d000bd7277cc71232c04d7a946717497e18619bdbe94bfeadd6',
-        'core:version': __version__
-    }
+    "global": {
+        "core:datatype": "rf32_le",
+        "core:num_channels": 1,
+        "core:offset": 0,
+        "core:sha512": "f4984219b318894fa7144519185d1ae81ea721c6113243a52b51e444512a39d74cf41a4cec3c5d000bd7277cc71232c04d7a946717497e18619bdbe94bfeadd6",
+        "core:version": __version__
+    },
+    "captures": [
+        {
+            "core:sample_start": 0
+        }
+    ],
+    "annotations": [
+        {
+            "core:sample_count": 16,
+            "core:sample_start": 0
+        }
+    ]
+
 }
+
