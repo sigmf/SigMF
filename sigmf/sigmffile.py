@@ -325,8 +325,8 @@ class SigMFFile(object):
         ----------
         filep : object
             File pointer or something that json.dump() can handle
-        pretty : bool, optional
-            Is true by default.
+        pretty : bool, default True
+            When True will write more human-readable output, otherwise will be flat JSON.
         '''
         json.dump(
             self.ordered_metadata(),
@@ -343,8 +343,8 @@ class SigMFFile(object):
         ----------
         filep : object
             File pointer or something that json.dump() can handle
-        pretty : bool, optional
-            Is true by default.
+        pretty : bool, default True
+            When True will write more human-readable output, otherwise will be flat JSON.
 
         Returns
         -------
@@ -367,9 +367,19 @@ class SigMFFile(object):
         return archive.path
 
     def tofile(self, file_path, pretty=False, toarchive=False):
-        """
-        Dump contents to file.
-        """
+        '''
+        Write metadata file or full archive containing metadata & dataset.
+
+        Parameters
+        ----------
+        file_path : string
+            Location to save.
+        pretty : bool, default True
+            When True will write more human-readable output, otherwise will be flat JSON.
+        toarchive : bool, default False
+            If True will write both dataset & metadata into SigMF archive format.
+            If False will only write metadata to `sigmf-meta`.
+        '''
         fns = get_sigmf_filenames(file_path)
         if toarchive:
             self.archive(fns['archive_fn'])
@@ -377,24 +387,29 @@ class SigMFFile(object):
             with open(fns['meta_fn'], 'w') as fp:
                 self.dump(fp, pretty=pretty)
 
-    def read_samples(self, start_index=0, count=1, autoscale=True, raw_components=False):
-        """
-        Reads the specified number of samples starting at the specified index
-        from the associated data file.
-        Samples are returned as a NumPy array of type np.float32 (if real data)
-        or np.complex64.
+    def read_samples(self, start_index=0, count=-1, autoscale=True, raw_components=False):
+        '''
+        Reads the specified number of samples starting at the specified index from the associated data file.
 
-        Keyword arguments:
-        start_index -- starting sample index from which to read
-        count -- number of samples to read
-        autoscale -- if dataset is in a fixed-point representation, scale samples from (min, max) to (-1.0, 1.0)
-        raw_components -- if True, read and return the sample components (individual I and Q for complex, samples for real) with no conversions
-        """
+        Parameters
+        ----------
+        start_index : int, default 0
+            Starting sample index from which to read.
+        count : int, default -1
+            Number of samples to read. -1 will read whole file.
+        autoscale : bool, default True
+            If dataset is in a fixed-point representation, scale samples from (min, max) to (-1.0, 1.0)
+        raw_components : bool, default False
+            If True read and return the sample components (individual I & Q for complex, samples for real) with no conversions.
 
-        if count < 1:
-            raise IOError("Number of samples must be greater than zero.")
-
-        if start_index + count > self.sample_count:
+        Returns
+        -------
+        data : ndarray
+            Samples are returned as an array of float or complex, with number of dimensions equal to core:num_channels.
+        '''
+        if count == 0:
+            raise IOError('Number of samples must be greater than zero, or -1 for all samples.')
+        elif  start_index + count > self.sample_count:
             raise IOError("Cannot read beyond EOF.")
 
         if self.data_file is None:
