@@ -33,7 +33,7 @@ SIGMF_METADATA_EXT = ".sigmf-meta"
 SIGMF_DATASET_EXT = ".sigmf-data"
 
 
-class SigMFArchive(object):
+class SigMFArchive():
     """Archive a SigMFFile.
 
     A `.sigmf` file must include both valid metadata and data. If metadata

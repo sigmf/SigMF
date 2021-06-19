@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
 # Copyright 2016 GNU Radio Foundation
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,9 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""
-SigMF Tool
-"""
+
+'''SigMF Validation Tool'''
 
 import argparse
 from sigmf import SigMFFile
@@ -57,6 +57,7 @@ def main():
     """
     args = setup_parser().parse_args()
     return cmd_validate(args)
+
 
 if __name__ == '__main__':
     main()

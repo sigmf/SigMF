@@ -1,5 +1,3 @@
-'''SigMFFile Object'''
-
 # Copyright 2016 GNU Radio Foundation
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,6 +17,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+'''SigMFFile Object'''
 
 from collections import OrderedDict
 import codecs
@@ -232,14 +232,20 @@ class SigMFFile():
         )
 
     def get_annotations(self, index=None):
-        """
-        Returns a list of dictionaries.
-        Every dictionary contains one annotation for the sample at 'index'.
-        If no index is specified, all annotations are returned.
+        '''
+        Get relevant annotations from metadata.
 
-        Keyword arguments:
-        index -- the criteria for selecting annotations; this sample index must be contained in each annotation that is returned
-        """
+        Parameters
+        ----------
+        index : int, default None
+            If provided returns all annotations that include this sample index.
+            When omitted returns all annotations.
+
+        Returns
+        -------
+        list of dict
+            Each dictionary contains one annotation for the sample at `index`.
+        '''
         return [
             x for x in self._metadata.get(self.ANNOTATION_KEY, [])
             if index is None or (x[self.START_INDEX_KEY] <= index
@@ -303,6 +309,7 @@ class SigMFFile():
             self._metadata,
             schema.get_schema(schema_version),
         )
+
     def ordered_metadata(self):
         '''
         Get a nicer representation of _metadata. Will sort keys, but put the
@@ -419,7 +426,7 @@ class SigMFFile():
         '''
         if count == 0:
             raise IOError('Number of samples must be greater than zero, or -1 for all samples.')
-        elif  start_index + count > self.sample_count:
+        elif start_index + count > self.sample_count:
             raise IOError("Cannot read beyond EOF.")
 
         if self.data_file is None:
@@ -460,6 +467,7 @@ class SigMFFile():
 
         fp.close()
         return data
+
 
 def dtype_info(datatype):
     """
@@ -517,6 +525,7 @@ def dtype_info(datatype):
     output_info['is_fixedpoint'] = is_fixedpoint_data
     return output_info
 
+
 def fromarchive(archive_path, dir=None):
     """Extract an archive and return a SigMFFile.
 
@@ -550,6 +559,7 @@ def fromarchive(archive_path, dir=None):
 
     return SigMFFile(metadata=metadata, data_file=data_file)
 
+
 def fromfile(filename, skip_checksum=False):
     """
     Creates and returns a returns a SigMFFile instance with metadata loaded from the specified file.
@@ -574,6 +584,7 @@ def fromfile(filename, skip_checksum=False):
     metadata = json.load(mdfile_reader)
     meta_fp.close()
     return SigMFFile(metadata=metadata, data_file=data_fn, skip_checksum=skip_checksum)
+
 
 def get_sigmf_filenames(filename):
     """
