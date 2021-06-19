@@ -284,6 +284,7 @@ the `global` object:
 |`datatype`|true|string|The format of the stored samples in the dataset file. Its value must be a valid SigMF dataset format type string.|
 |`sample_rate`|false|double|The sample rate of the signal in samples per second.|
 |`version`|true|string|The version of the SigMF specification used to create the metadata file.|
+|`num_channels`|false|uint|Total number of interleaved channels in the dataset file.|
 |`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
 |`offset`|false|uint|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
 |`description`|false|string|A text description of the SigMF recording.|
