@@ -1,3 +1,5 @@
+'''SigMFFile Object'''
+
 # Copyright 2016 GNU Radio Foundation
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 from collections import OrderedDict
 import codecs
 import json
@@ -33,7 +36,7 @@ from .utils import dict_merge, insert_sorted_dict_list
 from .error import SigMFFileError
 
 
-class SigMFFile(object):
+class SigMFFile():
     """API to manipulate SigMF files.
 
     Parameters:
@@ -46,6 +49,7 @@ class SigMFFile(object):
     START_INDEX_KEY = "core:sample_start"
     LENGTH_INDEX_KEY = "core:sample_count"
     START_OFFSET_KEY = "core:offset"
+    NUM_CHANNELS_KEY = "core:num_channels"
     HASH_KEY = "core:sha512"
     VERSION_KEY = "core:version"
     DATATYPE_KEY = "core:datatype"
@@ -105,6 +109,10 @@ class SigMFFile(object):
         Return the offset of the first sample.
         """
         return self.get_global_field(self.START_OFFSET_KEY, 0)
+
+    def get_num_channels(self):
+        '''Returns integer number of channels if present, otherwise 1'''
+        return self.get_global_field(self.NUM_CHANNELS_KEY, 1)
 
     def _validate_dict_in_section(self, entries, section_key):
         """
@@ -261,7 +269,8 @@ class SigMFFile(object):
         else:
             file_size = path.getsize(self.data_file)
             sample_size = self.get_sample_size()
-            sample_count = file_size // sample_size
+            num_channels = self.get_num_channels()
+            sample_count = file_size // sample_size // num_channels
             if file_size % sample_size != 0:
                 warnings.warn("File '{}' does not contain an integral number of sample. It might not be valid data.".format(self.data_file))
             if len(annotations) > 0 and annotations[-1][self.START_INDEX_KEY] + annotations[-1][self.LENGTH_INDEX_KEY] > sample_count:
@@ -311,7 +320,7 @@ class SigMFFile(object):
             assert top_key in self._metadata
             ordered_meta[top_key] = json.loads(json.dumps(self._metadata[top_key], sort_keys=True))
         # If there are other top-level keys, they go later
-        # TODO: sort these `other` top-level keys
+        # TODO: sort potential `other` top-level keys
         for oth_key, oth_val in self._metadata.items():
             if oth_key not in top_sort_order:
                 ordered_meta[oth_key] = json.loads(json.dumps(oth_val, sort_keys=True))
@@ -377,7 +386,7 @@ class SigMFFile(object):
         pretty : bool, default True
             When True will write more human-readable output, otherwise will be flat JSON.
         toarchive : bool, default False
-            If True will write both dataset & metadata into SigMF archive format.
+            If True will write both dataset & metadata into SigMF archive format as a single `tar` file.
             If False will only write metadata to `sigmf-meta`.
         '''
         fns = get_sigmf_filenames(file_path)
@@ -400,12 +409,13 @@ class SigMFFile(object):
         autoscale : bool, default True
             If dataset is in a fixed-point representation, scale samples from (min, max) to (-1.0, 1.0)
         raw_components : bool, default False
-            If True read and return the sample components (individual I & Q for complex, samples for real) with no conversions.
+            If True read and return the sample components (individual I & Q for complex, samples for real)
+            with no conversions or interleaved channels.
 
         Returns
         -------
         data : ndarray
-            Samples are returned as an array of float or complex, with number of dimensions equal to core:num_channels.
+            Samples are returned as an array of float or complex, with number of dimensions equal to NUM_CHANNELS_KEY.
         '''
         if count == 0:
             raise IOError('Number of samples must be greater than zero, or -1 for all samples.')
@@ -424,12 +434,17 @@ class SigMFFile(object):
         sample_size = dtype['sample_size']
         component_size = dtype['component_size']
 
-        data_type_out = np.dtype("f4") if not is_complex_data else np.dtype("f4,f4")
+        data_type_out = np.dtype("f4") if not is_complex_data else np.dtype("f4, f4")
+        num_channels = self.get_num_channels()
 
         fp = open(self.data_file, "rb")
-        fp.seek(start_index * sample_size, 0)
+        fp.seek(start_index * sample_size * num_channels, 0)
 
-        data = np.fromfile(fp, dtype=data_type_in, count=count)
+        data = np.fromfile(fp, dtype=data_type_in, count=count*num_channels)
+        if num_channels != 1:
+            # return reshaped view for num_channels
+            # first dimension will be double size if `is_complex_data`
+            data = data.reshape(data.shape[0] // num_channels, num_channels)
         if not raw_components:
             data = data.astype(data_type_out)
             if autoscale and is_fixedpoint_data:

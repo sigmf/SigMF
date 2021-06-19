@@ -47,6 +47,16 @@ pip install .
 ```
 
 ## Use Cases
+## Load a SigMF archive; read all samples & metadata
+```python
+import sigmf
+handle = sigmf.sigmffile.fromfile('example.sigmf')
+handle.read_samples() # returns timeseries data
+handle.get_global_info() # returns 'global' metadata dictionary
+handle.get_captures() # returns 'captures' metadata dictionary
+handle.get_annotations() # returns list of all annotations
+```
+
 ### Load a SigMF dataset; read its annotation, metadata, and samples
 
 ```python
