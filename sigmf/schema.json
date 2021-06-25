@@ -96,6 +96,11 @@
                 "required": true,
                 "help": "The number of samples described by this segment"
             },
+            "core:label": {
+                "type": "string",
+                "required": false,
+                "help": "Short form human/machine readable label"
+            },
             "core:comment": {
                 "type": "string",
                 "required": false,
