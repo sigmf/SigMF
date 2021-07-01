@@ -8,6 +8,22 @@
                 "required": true,
                 "help": "Sample data format"
             },
+            "core:sample_rate": {
+                "type": "double",
+                "required": false,
+                "help": "The sample rate of the signal in samples per second"
+            },
+            "core:version": {
+                "type": "string",
+                "required": true,
+                "default": null,
+                "help": "Version of the SigMF specification"
+            },
+            "core:sha512": {
+                "type": "string",
+                "required": false,
+                "help": "The SHA512 hash of the dataset file associated with the SigMF file"
+            },
             "core:offset": {
                 "type": "uint",
                 "required": false,
@@ -23,27 +39,25 @@
                 "required": false,
                 "help": "Name and optionally email address of the author"
             },
+            "core:meta_doi": {
+                "type": "string",
+                "required": false,
+                "help": "The registered DOI (ISO 26324) for a recording's metadata file"
+            },
+            "core:data_doi": {
+                "type": "string",
+                "required": false,
+                "help": "The registered DOI (ISO 26324) for a recording's dataset file"
+            },
+            "core:recorder": {
+                "type": "string",
+                "required": false,
+                "help": "The name of the software used to make this SigMF recording"
+            },
             "core:license": {
                 "type": "string",
                 "required": false,
                 "help": "Sample data license"
-            },
-            "core:datetime": {
-                "type": "string",
-                "required": false,
-                "pattern": "",
-                "help": "ISO 8601-formatted date (e.g., 2017-02-01T15:05:03+00:00)"
-            },
-            "core:sha512": {
-                "type": "string",
-                "required": false,
-                "help": "SHA512 hash of the corresponding sample data file"
-            },
-            "core:version": {
-                "type": "string",
-                "required": true,
-                "default": null,
-                "help": "Version of the SigMF specification"
             },
             "core:hw": {
                 "type": "string",
@@ -63,15 +77,15 @@
                 "required": true,
                 "help": "Index of first sample of this chunk"
             },
+            "core:global_index": {
+                "type": "uint",
+                "required": false,
+                "help": "The global index that maps to the sample source provided `sample_start`"
+            },
             "core:frequency": {
                 "type": "double",
                 "required": false,
                 "help": "Center frequency of signal (Hz)"
-            },
-            "core:sample_rate": {
-                "type": "double",
-                "required": false,
-                "help": "Sampling rate of signal (Sps)"
             },
             "core:datetime": {
                 "type": "string",
@@ -96,10 +110,25 @@
                 "required": true,
                 "help": "The number of samples described by this segment"
             },
+            "core:generator": {
+                "type": "string",
+                "required": false,
+                "help": "Human-readable name of the entity that created this annotation"
+            },
             "core:comment": {
                 "type": "string",
                 "required": false,
-                "help": "Comment"
+                "help": "A human-readable comment"
+            },
+            "core:freq_lower_edge": {
+                "type": "double",
+                "required": false,
+                "help": "The frequency (Hz) of the lower edge of the feature described by this annotation"
+            },  
+            "core:freq_upper_edge": {
+                "type": "double",
+                "required": false,
+                "help": "The frequency (Hz) of the upper edge of the feature described by this annotation"
             }
         }
     }
