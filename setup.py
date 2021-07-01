@@ -31,6 +31,9 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7'
     ],
+    entry_points = {
+        'console_scripts': ['sigmf_validate=sigmf.validate:main']
+    },
     packages=['sigmf'],
     package_data = {'sigmf': ['*.json']},
     install_requires=['six', 'numpy', 'pysimplegui==4.0.0'],
