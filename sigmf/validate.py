@@ -18,9 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""SigMF Validation routines"""
-
-from __future__ import print_function
+'''SigMF Validator'''
 
 import json
 
@@ -39,6 +37,7 @@ class ValidationResult(object):
         if self.value or self.error is None:
             return str(self.value)
         return str(self.error)
+
 
 def match_type(value, our_type):
     " Checks if value matches our_type "
@@ -156,18 +155,49 @@ def validate_section(data_section, ref_section, section):
 
 def validate(data, ref=None):
     if ref is None:
-        from sigmf import schema
+        from . import schema
         ref = schema.get_schema()
     for result in (validate_section(data.get(key), ref.get(key), key) for key in ref):
         if not result:
             return result
     return True
 
-if __name__ == "__main__":
-    data_dict_ = json.load(open("../example_metadata_clean.json"))
-    ref_dict_ = json.load(open("schema.json"))
-    print(validate(data_dict_, ref_dict_))
+def main():
+    import argparse
+    import logging
+    import warnings
 
-    # "py_re": "^(?:[1-9]\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:Z|[+-][01]\d:[0-5]\d)$"
+    from . import sigmffile
 
-    # "py_re": "\d+\.\d+\.\d+"
+    parser = argparse.ArgumentParser(description='Validate SigMF Archive or file pair against JSON schema.')
+    parser.add_argument('filename', help='SigMF path (extension optional).')
+    parser.add_argument('-v', '--verbose', action='count', default=0)
+    args = parser.parse_args()
+
+    level_lut = {
+        0: logging.WARNING,
+        1: logging.INFO,
+        2: logging.DEBUG,
+    }
+    log = logging.getLogger()
+    logging.basicConfig(level=level_lut[min(args.verbose, 2)])
+
+    try:
+        signal = sigmffile.fromfile(args.filename)
+    except IOError as err:
+        log.error(err)
+        log.error('Unable to read SigMF, bad path?')
+        exit(1)
+    except json.decoder.JSONDecodeError as err:
+        log.error(err)
+        log.error('Unable to decode malformed JSON.')
+        exit(1)
+    result = signal.validate()
+    if result:
+        log.info('Validation OK!')
+    else:
+        log.error(result)
+        exit(1)
+
+if __name__ == '__main__':
+    main()

@@ -340,7 +340,7 @@ class SigMFFile():
         Parameters
         ----------
         filep : object
-            File pointer or something that json.dump() can handle
+            File pointer or something that json.dump() can handle.
         pretty : bool, default True
             When True will write more human-readable output, otherwise will be flat JSON.
         '''
@@ -357,8 +357,6 @@ class SigMFFile():
 
         Parameters
         ----------
-        filep : object
-            File pointer or something that json.dump() can handle
         pretty : bool, default True
             When True will write more human-readable output, otherwise will be flat JSON.
 
@@ -382,7 +380,7 @@ class SigMFFile():
         archive = SigMFArchive(self, name, fileobj)
         return archive.path
 
-    def tofile(self, file_path, pretty=False, toarchive=False):
+    def tofile(self, file_path, pretty=True, toarchive=False):
         '''
         Write metadata file or full archive containing metadata & dataset.
 
