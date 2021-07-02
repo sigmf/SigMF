@@ -51,9 +51,9 @@ pip install .
 ```python
 import sigmf
 handle = sigmf.sigmffile.fromfile('example.sigmf')
-handle.read_samples() # returns timeseries data
-handle.get_global_info() # returns 'global' metadata dictionary
-handle.get_captures() # returns 'captures' metadata dictionary
+handle.read_samples() # returns all timeseries data
+handle.get_global_info() # returns 'global' dictionary
+handle.get_captures() # returns list of 'captures' dictionaries
 handle.get_annotations() # returns list of all annotations
 ```
 

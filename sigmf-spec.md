@@ -185,9 +185,15 @@ dataset file MUST NOT contain any other characters (e.g., delimiters,
 whitespace, line-endings, `EOF` characters, etc.,).
 
 Complex samples should be interleaved, with the in-phase component first (i.e.,
-`I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`).  Also note that the `type`
-applies to not only the real but also the imaginary component of a complex
-sample.
+`I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`). When `core:num_channels` in the
+`global` object indicates that the recording contains more than one channel,
+samples from those channels should be interleaved in the same manner, with
+the same index from each channel's sample serially in the recording. For
+example, a recording with two channels of `i16_le` representing real-valued
+audio data from a stereo recording and here labeled `L` for left and `R` for
+right, the data should appear as `L[0]` `R[0]` `L[1]` `R[1]` ... `L[n]` `R[n]`.
+The data type specified by `core:data_type` applies to all channels of data
+both real and imaginary parts.
 
 ### Metadata Format
 

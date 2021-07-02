@@ -277,8 +277,8 @@ class SigMFFile():
             sample_size = self.get_sample_size()
             num_channels = self.get_num_channels()
             sample_count = file_size // sample_size // num_channels
-            if file_size % sample_size != 0:
-                warnings.warn("File '{}' does not contain an integral number of sample. It might not be valid data.".format(self.data_file))
+            if file_size % sample_count != 0:
+                warnings.warn("File '{}' does not contain an integer number of samples. It may be invalid data.".format(self.data_file))
             if len(annotations) > 0 and annotations[-1][self.START_INDEX_KEY] + annotations[-1][self.LENGTH_INDEX_KEY] > sample_count:
                 warnings.warn("File '{}' ends before the final annotation in the corresponding SigMF metadata.".format(self.data_file))
         self.sample_count = sample_count
