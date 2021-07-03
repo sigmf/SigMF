@@ -1,9 +1,11 @@
+![Rendered version of the Official SigMF Logo](logo/sigmf_logo.png)
+
 # Signal Metadata Format (SigMF)
 
 Welcome to the SigMF project! The SigMF specification document is the
 `sigmf-spec.md` file in this repository:
 
-SigMF: [Signal Metadata Format Specification](sigmf-spec.md)
+[Signal Metadata Format Specification](sigmf-spec.md)
 
 ## Introduction
 
@@ -66,7 +68,7 @@ handle.get_annotations() # returns list of all annotations
 from sigmf import SigMFFile, sigmffile
 
 # Load a dataset
-filename = 'example.sigmf-meta' # extension is optional
+filename = 'logo/sigmf_logo' # extension is optional
 signal = sigmffile.fromfile(filename)
 
 # Get some metadata and all annotations

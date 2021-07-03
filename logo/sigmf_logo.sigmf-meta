@@ -1,0 +1,42 @@
+{
+    "global": {
+        "core:author": "Kyle Logue, K6OF",
+        "core:datatype": "i16_le",
+        "core:description": "The Official SigMF Logo",
+        "core:license": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "core:num_channels": 2,
+        "core:recorder": "OsciStudio & Audacity",
+        "core:sample_rate": 48000,
+        "core:sha512": "69893900f22de266485031b584c28fc3a0d4f361acd1d623698ed258e616e082d3d398af40d2ce805a804864cb0be631dba060f7410a27c0c2e497becdca53bf",
+        "core:version": "1.0.0"
+    },
+    "captures": [
+        {
+            "core:datetime": "2021-06-18T23:17:51.163959Z",
+            "core:sample_start": 0
+        }
+    ],
+    "annotations": [
+        {
+            "core:comment": "logo warmup",
+            "core:freq_lower_edge": -22000.0,
+            "core:freq_upper_edge": 22000.0,
+            "core:sample_count": 42000,
+            "core:sample_start": 6000
+        },
+        {
+            "core:comment": "logo spinup",
+            "core:freq_lower_edge": -22000.0,
+            "core:freq_upper_edge": 22000.0,
+            "core:sample_count": 138000,
+            "core:sample_start": 48000
+        },
+        {
+            "core:comment": "logo steady",
+            "core:freq_lower_edge": -22000.0,
+            "core:freq_upper_edge": 22000.0,
+            "core:sample_count": 96000,
+            "core:sample_start": 186000
+        }
+    ]
+}

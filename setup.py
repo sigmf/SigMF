@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from setuptools import setup
 import os
 import re
@@ -21,21 +22,20 @@ setup(
     long_description=longdesc,
     url='https://github.com/gnuradio/SigMF',
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7'
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     entry_points = {
         'console_scripts': ['sigmf_validate=sigmf.validate:main']
     },
     packages=['sigmf'],
-    package_data = {'sigmf': ['*.json']},
+    package_data = {
+        'sigmf': ['*.json'],
+    },
     install_requires=['six', 'numpy', 'pysimplegui==4.0.0'],
     setup_requires=['pytest-runner'],
     tests_require=['pytest>3'],
