@@ -47,6 +47,13 @@ pip install .
 ```
 
 ## Use Cases
+
+### Verify SigMF dataset integrity & compliance
+
+```bash
+sigmf_validate example.sigmf 
+```
+
 ### Load a SigMF dataset; read its annotation, metadata, and samples
 
 ```python
