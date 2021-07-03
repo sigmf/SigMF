@@ -37,15 +37,20 @@ from .error import SigMFFileError
 
 
 class SigMFFile():
-    """API to manipulate SigMF files.
-
-    Parameters:
-
-      metadata    -- Metadata. Either a string, or a dictionary.
-      data_file   -- Path to the corresponding data file.
-      global_info -- Dictionary containing global header info.
-
-    """
+    '''
+    API for SigMF I/O
+    
+    Parameters
+    ----------
+    metadata: str or dict, optional
+        Metadata for associated dataset.
+    data_file: str, optional
+        Path to associated dataset.
+    global_info: dict, optional
+        Set global field shortcut if creating new object.
+    skip_checksum: bool, default False
+        When True will skip calculating hash on data_file (if present) to check against metadata.
+    '''
     START_INDEX_KEY = "core:sample_start"
     LENGTH_INDEX_KEY = "core:sample_count"
     START_OFFSET_KEY = "core:offset"
@@ -74,13 +79,7 @@ class SigMFFile():
     CAPTURE_KEY = "captures"
     ANNOTATION_KEY = "annotations"
 
-    def __init__(
-            self,
-            metadata=None,
-            data_file=None,
-            global_info=None,
-            skip_checksum=False,
-    ):
+    def __init__(self, metadata=None, data_file=None, global_info=None, skip_checksum=False):
         self.version = None
         self.schema = None
         if metadata is None:
@@ -102,7 +101,7 @@ class SigMFFile():
         return self.dumps()
 
     def __repr__(self):
-        return "SigMFFile(%s)" % self
+        return f'SigMFFile({self})'
 
     def _get_start_offset(self):
         """
@@ -273,14 +272,16 @@ class SigMFFile():
             else:
                 sample_count = 0
         else:
-            file_size = path.getsize(self.data_file)
-            sample_size = self.get_sample_size()
+            file_size = path.getsize(self.data_file) # size of dataset in bytes
+            sample_size = self.get_sample_size() # size of a sample in bytes
             num_channels = self.get_num_channels()
             sample_count = file_size // sample_size // num_channels
-            if file_size % sample_count != 0:
-                warnings.warn("File '{}' does not contain an integer number of samples. It may be invalid data.".format(self.data_file))
+            if file_size % (sample_size * num_channels) != 0:
+                warnings.warn(f'File `{self.data_file}` does not contain an integer '
+                    'number of samples across channels. It may be invalid data.')
             if len(annotations) > 0 and annotations[-1][self.START_INDEX_KEY] + annotations[-1][self.LENGTH_INDEX_KEY] > sample_count:
-                warnings.warn("File '{}' ends before the final annotation in the corresponding SigMF metadata.".format(self.data_file))
+                warnings.warn(f'File `{self.data_file}` ends before the final annotation '
+                    'in the corresponding SigMF metadata.')
         self.sample_count = sample_count
         return sample_count
 

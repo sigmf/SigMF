@@ -42,12 +42,15 @@ discussions, the more useful the standard is likely to be.
 ## Getting Started
 
 This module can be installed the typical way:
+
 ```bash
 pip install .
 ```
 
 ## Use Cases
-## Load a SigMF archive; read all samples & metadata
+
+### Load a SigMF archive; read all samples & metadata
+
 ```python
 import sigmf
 handle = sigmf.sigmffile.fromfile('example.sigmf')
