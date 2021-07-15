@@ -290,8 +290,13 @@ class SigMFFile():
         Calculates the hash of the data file and adds it to the global section.
         Also returns a string representation of the hash.
         """
-        the_hash = sigmf_hash.calculate_sha512(self.data_file)
-        return self.set_global_field(self.HASH_KEY, the_hash)
+        old_hash = self.get_global_field(self.HASH_KEY)
+        new_hash = sigmf_hash.calculate_sha512(self.data_file)
+        if old_hash:
+            if old_hash != new_hash:
+                raise SigMFFileError('Calculated file hash does not match associated metadata.')
+
+        return self.set_global_field(self.HASH_KEY, new_hash)
 
     def set_data_file(self, data_file):
         """
@@ -427,7 +432,6 @@ class SigMFFile():
             raise IOError('Number of samples must be greater than zero, or -1 for all samples.')
         elif start_index + count > self.sample_count:
             raise IOError("Cannot read beyond EOF.")
-
         if self.data_file is None:
             raise SigMFFileError("No signal data file has been associated with the metadata.")
 
@@ -560,13 +564,22 @@ def fromarchive(archive_path, dir=None):
 
 
 def fromfile(filename, skip_checksum=False):
-    """
+    '''
     Creates and returns a returns a SigMFFile instance with metadata loaded from the specified file.
     The filename may be that of either a sigmf-meta file, a sigmf-data file, or a sigmf archive.
 
-    Keyword arguments:
-    filename -- the SigMF filename
-    """
+    Parameters
+    ----------
+    filename: str
+        Path for SigMF dataset with or without extension.
+    skip_checksum: bool, default False
+        When True will not read entire dataset to caculate hash.
+
+    Returns
+    -------
+    object
+        SigMFFile object with dataset & metadata.
+    '''
     fns = get_sigmf_filenames(filename)
     meta_fn = fns['meta_fn']
     data_fn = fns['data_fn']
