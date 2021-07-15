@@ -20,11 +20,13 @@
 
 '''SigMF Validator'''
 
+from . import schema
+
 import json
 
 
 class ValidationResult(object):
-    " Amends a validation result (True, False) with an error string. "
+    '''Amends a validation result (True, False) with an error string.'''
     def __init__(self, value=False, error=None):
         self.error = error
         self.value = value
@@ -40,45 +42,48 @@ class ValidationResult(object):
 
 
 def match_type(value, our_type):
-    " Checks if value matches our_type "
+    '''Checks if value matches our_type'''
     return value is None or {
-        'string': lambda x: isinstance(x, str) or isinstance(x, unicode), # FIXME make py3k compatible
+        'string': lambda x: isinstance(x, str),
         'uint': lambda x: isinstance(x, int) and x >= 0,
         'double': lambda x: isinstance(x, float) or isinstance(x, int),
     }[our_type](value)
 
 
 def validate_key(data_value, ref_dict, section, key):
-    """
+    '''
     Validates a key/value pair entry in a chunk.
 
-    Parameters:
-    data_value -- The value. May be None.
-    ref_dict -- A dictionary containing reference information.
-    section -- The section in which this key/value pair is stored ("global",
-               etc.). This is for better error reporting only.
-    key -- The key of this key/value pair ("core:Version", etc.). This is for
-           better error reporting only.
-    """
+    Parameters
+    ----------
+    data_value
+        Valid or invaid entry in metadata for validation.
+    ref_dict: dict
+        A dictionary containing reference information.
+    section: str
+        The section in which this key/value pair is stored ("global", etc.).
+        This is for better error reporting only.
+    key: str
+        The key of this key/value pair ("core:Version", etc.). This is for better error reporting only.
+
+    Returns
+    -------
+    True or ValidationResult
+    '''
     if ref_dict.get('required') and data_value is None:
         return ValidationResult(
             False,
-            "In Section `{sec}', an entry is missing required key `{key}'.".format(
-                sec=section,
-                key=key
-            ))
+            f'In Section `{section}`, an entry is missing required key `{key}`'
+            )
     if 'type' in ref_dict and not match_type(data_value, ref_dict["type"]):
         return ValidationResult(
             False,
-            "In Section `{sec}', entry `{key}={value}' is not of type `{type}'.".format(
-                sec=section,
-                value=data_value,
-                key=key,
-                type=ref_dict["type"]
-            ))
+            f'In Section `{section}`, entry `{key}={data_value}` is not of type `{ref_dict["type"]}`'
+            )
     # if "py_re" in ref_dict and not re.match(ref_dict["py_re"], data_value):
         # return ValidationResult(False, "regex fail")
     return True
+
 
 def validate_key_throw(*args):
     """
@@ -89,12 +94,10 @@ def validate_key_throw(*args):
         raise ValueError(str(validation_result))
     return validation_result
 
+
 def validate_section_dict(data_section, ref_section, section):
     if not isinstance(data_section, dict):
-        return ValidationResult(
-            False,
-            "Section `{sec}' exists, but is not a dict.".format(sec=section)
-        )
+        return ValidationResult(False, f'Section `{section}` exists, but is not a dict.')
     key_validation_results = (
         validate_key(
             data_section.get(key),
@@ -107,22 +110,20 @@ def validate_section_dict(data_section, ref_section, section):
             return result
     return True
 
+
 def validate_section_dict_list(data_section, ref_section, section):
     if not isinstance(data_section, list) or \
             not all((isinstance(x, dict) for x in data_section)):
-        return ValidationResult(
-            False,
-            "Section `{sec}' exists, but is not a list of dicts.".format(sec=section)
-        )
-    sort_key = ref_section.get("sort")
+        return ValidationResult(False, f'Section `{section}` exists, but is not a list of dicts.')
+    sort_key = ref_section.get('sort')
     last_index = (data_section[0].get(sort_key, 0) if len(data_section) else 0) - 1
     for chunk in data_section:
         key_validation_results = (
             validate_key(
                 chunk.get(key),
-                ref_section["keys"].get(key),
+                ref_section['keys'].get(key),
                 section, key
-            ) for key in ref_section["keys"]
+            ) for key in ref_section['keys']
         )
         for result in key_validation_results:
             if not bool(result):
@@ -131,46 +132,41 @@ def validate_section_dict_list(data_section, ref_section, section):
         if this_index <= last_index:
             return ValidationResult(
                 False,
-                "In Section `{sec}', chunk starting at index {idx} "\
-                "is ahead of previous section.".format(
-                    sec=section, idx=this_index
+                f'In Section `{section}`, chunk starting at index {this_index} is ahead of previous section.'
                 )
-            )
         last_index = this_index
     return True
 
+
 def validate_section(data_section, ref_section, section):
-    """
-    Validates a section (e.g. global, capture, etc.).
-    """
+    '''Validates a section (e.g. global, capture, etc.).'''
     if ref_section["required"] and data_section is None:
-        return ValidationResult(
-            False,
-            "Required section `{sec}' not found.".format(sec=section)
-        )
+        return ValidationResult(False, f'Required section `{section}` not found.')
     return {
         'dict': validate_section_dict,
         'dict_list': validate_section_dict_list,
-    }[ref_section["type"]](data_section, ref_section, section)
+    }[ref_section['type']](data_section, ref_section, section)
+
 
 def validate(data, ref=None):
     if ref is None:
-        from . import schema
         ref = schema.get_schema()
     for result in (validate_section(data.get(key), ref.get(key), key) for key in ref):
         if not result:
             return result
     return True
 
+
 def main():
     import argparse
     import logging
-    import warnings
 
     from . import sigmffile
+    from . import error
 
     parser = argparse.ArgumentParser(description='Validate SigMF Archive or file pair against JSON schema.')
     parser.add_argument('filename', help='SigMF path (extension optional).')
+    parser.add_argument('--skip-checksum', action='store_true', help='Skip reading dataset to validate checksum.')
     parser.add_argument('-v', '--verbose', action='count', default=0)
     args = parser.parse_args()
 
@@ -183,7 +179,11 @@ def main():
     logging.basicConfig(level=level_lut[min(args.verbose, 2)])
 
     try:
-        signal = sigmffile.fromfile(args.filename)
+        signal = sigmffile.fromfile(args.filename, skip_checksum=args.skip_checksum)
+    except error.SigMFFileError as err:
+        # this happens if checksum fails
+        log.error(err)
+        exit(1)
     except IOError as err:
         log.error(err)
         log.error('Unable to read SigMF, bad path?')
@@ -198,6 +198,7 @@ def main():
     else:
         log.error(result)
         exit(1)
+
 
 if __name__ == '__main__':
     main()
