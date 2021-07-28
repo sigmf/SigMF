@@ -91,7 +91,9 @@ Augmented Backus-Naur form (ABNF) is used as defined by [RFC
 
 Fields defined as "human-readable", a "string", or simply as "text" shall be
 treated as plaintext where whitespace is significant, unless otherwise
-specified.
+specified. Fields defined "human/machine-readable" should be short, simple
+text strings without whitespace that are easily understood by a human and
+readily parsed by software.
 
 ## Specification
 
@@ -412,6 +414,7 @@ annotation segment objects:
 |`sample_start`|true|uint|The sample index at which this segment takes effect.|
 |`sample_count`|false|uint|The number of samples that this segment applies to. |
 |`generator`|false|string|Human-readable name of the entity that created this annotation.|
+|`label`|false|string|A short form human/machine-readable label for the annotation.|
 |`comment`|false|string|A human-readable comment.|
 |`freq_lower_edge`|false|double|The frequency (Hz) of the lower edge of the feature described by this annotation.|
 |`freq_upper_edge`|false|double|The frequency (Hz) of the upper edge of the feature described by this annotation.|
@@ -431,6 +434,11 @@ the center frequency is at baseband, the `freq_lower_edge` and `freq_upper_edge`
 fields may be relative to baseband. It is required that both `freq_lower_edge`
 and `freq_upper_edge` be provided, or neither; the use of just one field is not
 allowed.
+
+The `label` field may be used for any purpose, but it is recommended that it be
+limited to no more than 20 characters because a common use is a short form GUI
+indicator. Similarly, any user interface making use of this field should be
+capable of displaying up to 20 characters.
 
 ### Dataset Licensing
 
