@@ -6,49 +6,75 @@
             "core:datatype": {
                 "type": "string",
                 "required": true,
-                "help": "Sample data format"
+                "help": "The format of the stored samples in the dataset file. Its value must be a valid SigMF dataset format type string."
             },
-            "core:offset": {
+            "core:sample_rate": {
+                "type": "double",
+                "required": false,
+                "help": "The sample rate of the signal in samples per second."
+            },
+            "core:num_channels": {
                 "type": "uint",
                 "required": false,
-                "help": "Index offset of the first sample. Defaults to 0"
-            },
-            "core:description": {
-                "type": "string",
-                "required": false,
-                "help": "Textual description of the capture."
-            },
-            "core:author": {
-                "type": "string",
-                "required": false,
-                "help": "Name and optionally email address of the author"
-            },
-            "core:license": {
-                "type": "string",
-                "required": false,
-                "help": "Sample data license"
-            },
-            "core:datetime": {
-                "type": "string",
-                "required": false,
-                "pattern": "",
-                "help": "ISO 8601-formatted date (e.g., 2017-02-01T15:05:03+00:00)"
-            },
-            "core:sha512": {
-                "type": "string",
-                "required": false,
-                "help": "SHA512 hash of the corresponding sample data file"
+                "default": 1,
+                "help": "Total number of interleaved channels in the dataset file."
             },
             "core:version": {
                 "type": "string",
                 "required": true,
                 "default": null,
-                "help": "Version of the SigMF specification"
+                "help": "The version of the SigMF specification used to create the metadata file."
+            },
+            "core:sha512": {
+                "type": "string",
+                "required": false,
+                "help": "The SHA512 hash of the dataset file associated with the SigMF file."
+            },
+            "core:offset": {
+                "type": "uint",
+                "required": false,
+                "default": 0,
+                "help": "The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files."
+            },
+            "core:description": {
+                "type": "string",
+                "required": false,
+                "help": "A text description of the SigMF recording."
+            },
+            "core:author": {
+                "type": "string",
+                "required": false,
+                "help": "The author's name (and optionally e-mail address) of the form \"Bruce Wayne wayne@example.com\"."
+            },
+            "core:meta_doi": {
+                "type": "string",
+                "required": false,
+                "help": "The registered DOI (ISO 26324) for a recording's metadata file."
+            },
+            "core:data_doi": {
+                "type": "string",
+                "required": false,
+                "help": "The registered DOI (ISO 26324) for a recording's dataset file."
+            },
+            "core:recorder": {
+                "type": "string",
+                "required": false,
+                "help": "The name of the software used to make this SigMF recording."
+            },
+            "core:license": {
+                "type": "string",
+                "required": false,
+                "help": "A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one."
             },
             "core:hw": {
                 "type": "string",
                 "required": false,
                 "help": "Information about the hardware used (measurement setup, antennas, etc.)"
+            },
+            "core:extensions": {
+                "type": "list",
+                "required": false,
+                "help": "A list of extensions used by this recording."
             }
         }
     },
@@ -63,20 +89,21 @@
                 "required": true,
                 "help": "Index of first sample of this chunk"
             },
+            "core:global_index": {
+                "type": "uint",
+                "required": false,
+                "help": "If the sample source provides a global sample count, this is the global index that maps to `sample_start`."
+            },
             "core:frequency": {
                 "type": "double",
                 "required": false,
-                "help": "Center frequency of signal (Hz)"
-            },
-            "core:sample_rate": {
-                "type": "double",
-                "required": false,
-                "help": "Sampling rate of signal (Sps)"
+                "help": "The center frequency of the signal in Hz."
             },
             "core:datetime": {
                 "type": "string",
                 "required": false,
-                "help": "Start time of chunk"
+                "pattern": "",
+                "help": "An ISO-8601 string indicating the timestamp of the sample index specified by sample_start. (e.g., 2017-02-01T15:05:03.000Z)"
             }
         }
     },
@@ -89,17 +116,32 @@
             "core:sample_start": {
                 "type": "uint",
                 "required": true,
-                "help": "Index of first sample of this chunk"
+                "help": "The sample index at which this segment takes effect."
             },
             "core:sample_count": {
                 "type": "uint",
                 "required": true,
-                "help": "The number of samples described by this segment"
+                "help": "The number of samples that this segment applies to."
+            },
+            "core:generator": {
+                "type": "string",
+                "required": false,
+                "help": "Human-readable name of the entity that created this annotation."
             },
             "core:comment": {
                 "type": "string",
                 "required": false,
-                "help": "Comment"
+                "help": "A human-readable comment."
+            },
+            "core:freq_lower_edge": {
+                "type": "double",
+                "required": false,
+                "help": "The frequency (Hz) of the lower edge of the feature described by this annotation."
+            },
+            "core:freq_upper_edge": {
+                "type": "double",
+                "required": false,
+                "help": "The frequency (Hz) of the upper edge of the feature described by this annotation."
             }
         }
     }

@@ -27,7 +27,7 @@ from sigmf.sigmffile import SigMFFile
 from .testdata import TEST_FLOAT32_DATA, TEST_METADATA
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def test_data_file():
     with tempfile.NamedTemporaryFile() as temp:
         TEST_FLOAT32_DATA.tofile(temp.name)

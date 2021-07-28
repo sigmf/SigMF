@@ -17,6 +17,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+'''SigMFFile Object'''
+
 from collections import OrderedDict
 import codecs
 import json
@@ -33,19 +36,25 @@ from .utils import dict_merge, insert_sorted_dict_list
 from .error import SigMFFileError
 
 
-class SigMFFile(object):
-    """API to manipulate SigMF files.
-
-    Parameters:
-
-      metadata    -- Metadata. Either a string, or a dictionary.
-      data_file   -- Path to the corresponding data file.
-      global_info -- Dictionary containing global header info.
-
-    """
+class SigMFFile():
+    '''
+    API for SigMF I/O
+    
+    Parameters
+    ----------
+    metadata: str or dict, optional
+        Metadata for associated dataset.
+    data_file: str, optional
+        Path to associated dataset.
+    global_info: dict, optional
+        Set global field shortcut if creating new object.
+    skip_checksum: bool, default False
+        When True will skip calculating hash on data_file (if present) to check against metadata.
+    '''
     START_INDEX_KEY = "core:sample_start"
     LENGTH_INDEX_KEY = "core:sample_count"
     START_OFFSET_KEY = "core:offset"
+    NUM_CHANNELS_KEY = "core:num_channels"
     HASH_KEY = "core:sha512"
     VERSION_KEY = "core:version"
     DATATYPE_KEY = "core:datatype"
@@ -70,13 +79,7 @@ class SigMFFile(object):
     CAPTURE_KEY = "captures"
     ANNOTATION_KEY = "annotations"
 
-    def __init__(
-            self,
-            metadata=None,
-            data_file=None,
-            global_info=None,
-            skip_checksum=False,
-    ):
+    def __init__(self, metadata=None, data_file=None, global_info=None, skip_checksum=False):
         self.version = None
         self.schema = None
         if metadata is None:
@@ -98,13 +101,17 @@ class SigMFFile(object):
         return self.dumps()
 
     def __repr__(self):
-        return "SigMFFile(%s)" % self
+        return f'SigMFFile({self})'
 
     def _get_start_offset(self):
         """
         Return the offset of the first sample.
         """
         return self.get_global_field(self.START_OFFSET_KEY, 0)
+
+    def get_num_channels(self):
+        '''Returns integer number of channels if present, otherwise 1'''
+        return self.get_global_field(self.NUM_CHANNELS_KEY, 1)
 
     def _validate_dict_in_section(self, entries, section_key):
         """
@@ -224,14 +231,20 @@ class SigMFFile(object):
         )
 
     def get_annotations(self, index=None):
-        """
-        Returns a list of dictionaries.
-        Every dictionary contains one annotation for the sample at 'index'.
-        If no index is specified, all annotations are returned.
+        '''
+        Get relevant annotations from metadata.
 
-        Keyword arguments:
-        index -- the criteria for selecting annotations; this sample index must be contained in each annotation that is returned
-        """
+        Parameters
+        ----------
+        index : int, default None
+            If provided returns all annotations that include this sample index.
+            When omitted returns all annotations.
+
+        Returns
+        -------
+        list of dict
+            Each dictionary contains one annotation for the sample at `index`.
+        '''
         return [
             x for x in self._metadata.get(self.ANNOTATION_KEY, [])
             if index is None or (x[self.START_INDEX_KEY] <= index
@@ -259,13 +272,16 @@ class SigMFFile(object):
             else:
                 sample_count = 0
         else:
-            file_size = path.getsize(self.data_file)
-            sample_size = self.get_sample_size()
-            sample_count = file_size // sample_size
-            if file_size % sample_size != 0:
-                warnings.warn("File '{}' does not contain an integral number of sample. It might not be valid data.".format(self.data_file))
+            file_size = path.getsize(self.data_file) # size of dataset in bytes
+            sample_size = self.get_sample_size() # size of a sample in bytes
+            num_channels = self.get_num_channels()
+            sample_count = file_size // sample_size // num_channels
+            if file_size % (sample_size * num_channels) != 0:
+                warnings.warn(f'File `{self.data_file}` does not contain an integer '
+                    'number of samples across channels. It may be invalid data.')
             if len(annotations) > 0 and annotations[-1][self.START_INDEX_KEY] + annotations[-1][self.LENGTH_INDEX_KEY] > sample_count:
-                warnings.warn("File '{}' ends before the final annotation in the corresponding SigMF metadata.".format(self.data_file))
+                warnings.warn(f'File `{self.data_file}` ends before the final annotation '
+                    'in the corresponding SigMF metadata.')
         self.sample_count = sample_count
         return sample_count
 
@@ -299,6 +315,7 @@ class SigMFFile(object):
             self._metadata,
             schema.get_schema(schema_version),
         )
+
     def ordered_metadata(self):
         '''
         Get a nicer representation of _metadata. Will sort keys, but put the
@@ -316,7 +333,7 @@ class SigMFFile(object):
             assert top_key in self._metadata
             ordered_meta[top_key] = json.loads(json.dumps(self._metadata[top_key], sort_keys=True))
         # If there are other top-level keys, they go later
-        # TODO: sort these `other` top-level keys
+        # TODO: sort potential `other` top-level keys
         for oth_key, oth_val in self._metadata.items():
             if oth_key not in top_sort_order:
                 ordered_meta[oth_key] = json.loads(json.dumps(oth_val, sort_keys=True))
@@ -330,8 +347,8 @@ class SigMFFile(object):
         ----------
         filep : object
             File pointer or something that json.dump() can handle.
-        pretty : bool, optional
-            Is true by default.
+        pretty : bool, default True
+            When True will write more human-readable output, otherwise will be flat JSON.
         '''
         json.dump(
             self.ordered_metadata(),
@@ -346,8 +363,8 @@ class SigMFFile(object):
 
         Parameters
         ----------
-        pretty : bool, optional
-            Is true by default.
+        pretty : bool, default True
+            When True will write more human-readable output, otherwise will be flat JSON.
 
         Returns
         -------
@@ -370,9 +387,19 @@ class SigMFFile(object):
         return archive.path
 
     def tofile(self, file_path, pretty=True, toarchive=False):
-        """
-        Dump contents to file.
-        """
+        '''
+        Write metadata file or full archive containing metadata & dataset.
+
+        Parameters
+        ----------
+        file_path : string
+            Location to save.
+        pretty : bool, default True
+            When True will write more human-readable output, otherwise will be flat JSON.
+        toarchive : bool, default False
+            If True will write both dataset & metadata into SigMF archive format as a single `tar` file.
+            If False will only write metadata to `sigmf-meta`.
+        '''
         fns = get_sigmf_filenames(file_path)
         if toarchive:
             self.archive(fns['archive_fn'])
@@ -380,24 +407,30 @@ class SigMFFile(object):
             with open(fns['meta_fn'], 'w') as fp:
                 self.dump(fp, pretty=pretty)
 
-    def read_samples(self, start_index=0, count=1, autoscale=True, raw_components=False):
-        """
-        Reads the specified number of samples starting at the specified index
-        from the associated data file.
-        Samples are returned as a NumPy array of type np.float32 (if real data)
-        or np.complex64.
+    def read_samples(self, start_index=0, count=-1, autoscale=True, raw_components=False):
+        '''
+        Reads the specified number of samples starting at the specified index from the associated data file.
 
-        Keyword arguments:
-        start_index -- starting sample index from which to read
-        count -- number of samples to read
-        autoscale -- if dataset is in a fixed-point representation, scale samples from (min, max) to (-1.0, 1.0)
-        raw_components -- if True, read and return the sample components (individual I and Q for complex, samples for real) with no conversions
-        """
+        Parameters
+        ----------
+        start_index : int, default 0
+            Starting sample index from which to read.
+        count : int, default -1
+            Number of samples to read. -1 will read whole file.
+        autoscale : bool, default True
+            If dataset is in a fixed-point representation, scale samples from (min, max) to (-1.0, 1.0)
+        raw_components : bool, default False
+            If True read and return the sample components (individual I & Q for complex, samples for real)
+            with no conversions or interleaved channels.
 
-        if count < 1:
-            raise IOError("Number of samples must be greater than zero.")
-
-        if start_index + count > self.sample_count:
+        Returns
+        -------
+        data : ndarray
+            Samples are returned as an array of float or complex, with number of dimensions equal to NUM_CHANNELS_KEY.
+        '''
+        if count == 0:
+            raise IOError('Number of samples must be greater than zero, or -1 for all samples.')
+        elif start_index + count > self.sample_count:
             raise IOError("Cannot read beyond EOF.")
         if self.data_file is None:
             raise SigMFFileError("No signal data file has been associated with the metadata.")
@@ -411,12 +444,17 @@ class SigMFFile(object):
         sample_size = dtype['sample_size']
         component_size = dtype['component_size']
 
-        data_type_out = np.dtype("f4") if not is_complex_data else np.dtype("f4,f4")
+        data_type_out = np.dtype("f4") if not is_complex_data else np.dtype("f4, f4")
+        num_channels = self.get_num_channels()
 
         fp = open(self.data_file, "rb")
-        fp.seek(start_index * sample_size, 0)
+        fp.seek(start_index * sample_size * num_channels, 0)
 
-        data = np.fromfile(fp, dtype=data_type_in, count=count)
+        data = np.fromfile(fp, dtype=data_type_in, count=count*num_channels)
+        if num_channels != 1:
+            # return reshaped view for num_channels
+            # first dimension will be double size if `is_complex_data`
+            data = data.reshape(data.shape[0] // num_channels, num_channels)
         if not raw_components:
             data = data.astype(data_type_out)
             if autoscale and is_fixedpoint_data:
@@ -432,6 +470,7 @@ class SigMFFile(object):
 
         fp.close()
         return data
+
 
 def dtype_info(datatype):
     """
@@ -489,6 +528,7 @@ def dtype_info(datatype):
     output_info['is_fixedpoint'] = is_fixedpoint_data
     return output_info
 
+
 def fromarchive(archive_path, dir=None):
     """Extract an archive and return a SigMFFile.
 
@@ -521,6 +561,7 @@ def fromarchive(archive_path, dir=None):
         archive.close()
 
     return SigMFFile(metadata=metadata, data_file=data_file)
+
 
 def fromfile(filename, skip_checksum=False):
     '''
@@ -555,6 +596,7 @@ def fromfile(filename, skip_checksum=False):
     metadata = json.load(mdfile_reader)
     meta_fp.close()
     return SigMFFile(metadata=metadata, data_file=data_fn, skip_checksum=skip_checksum)
+
 
 def get_sigmf_filenames(filename):
     """

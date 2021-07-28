@@ -1,9 +1,11 @@
+![Rendered version of the Official SigMF Logo](logo/sigmf_logo.png)
+
 # Signal Metadata Format (SigMF)
 
 Welcome to the SigMF project! The SigMF specification document is the
 `sigmf-spec.md` file in this repository:
 
-SigMF: [Signal Metadata Format Specification](sigmf-spec.md)
+[Signal Metadata Format Specification](sigmf-spec.md)
 
 ## Introduction
 
@@ -42,11 +44,23 @@ discussions, the more useful the standard is likely to be.
 ## Getting Started
 
 This module can be installed the typical way:
+
 ```bash
 pip install .
 ```
 
 ## Use Cases
+
+### Load a SigMF archive; read all samples & metadata
+
+```python
+import sigmf
+handle = sigmf.sigmffile.fromfile('example.sigmf')
+handle.read_samples() # returns all timeseries data
+handle.get_global_info() # returns 'global' dictionary
+handle.get_captures() # returns list of 'captures' dictionaries
+handle.get_annotations() # returns list of all annotations
+```
 
 ### Verify SigMF dataset integrity & compliance
 
@@ -60,7 +74,7 @@ sigmf_validate example.sigmf
 from sigmf import SigMFFile, sigmffile
 
 # Load a dataset
-filename = 'example.sigmf-meta' # extension is optional
+filename = 'logo/sigmf_logo' # extension is optional
 signal = sigmffile.fromfile(filename)
 
 # Get some metadata and all annotations
