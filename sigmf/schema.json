@@ -13,17 +13,17 @@
                 "required": false,
                 "help": "The sample rate of the signal in samples per second."
             },
-            "core:num_channels": {
-                "type": "uint",
-                "required": false,
-                "default": 1,
-                "help": "Total number of interleaved channels in the dataset file."
-            },
             "core:version": {
                 "type": "string",
                 "required": true,
                 "default": null,
                 "help": "The version of the SigMF specification used to create the metadata file."
+            },
+            "core:num_channels": {
+                "type": "uint",
+                "required": false,
+                "default": 1,
+                "help": "Total number of interleaved channels in the dataset file."
             },
             "core:sha512": {
                 "type": "string",
@@ -70,6 +70,28 @@
                 "type": "string",
                 "required": false,
                 "help": "Information about the hardware used (measurement setup, antennas, etc.)"
+            },
+            "core:geolocation": {
+                "type": "dict",
+                "required": false,
+                "help": "GeoJSON point object representing the location of the data collector",
+                "keys": {
+                    "type": {
+                        "type": "string",
+                        "required": true,
+                        "help": "The only supported geolocation type is a GeoJSON `point`"
+                    },
+                    "coordinates": {
+                        "type": "double_list",
+                        "required": true,
+                        "help": "Latitude (deg), longitude (deg), and optional altitude (m) per RFC 5870"
+                    }
+                }
+            },
+            "core:hagl": {
+                "type": "double",
+                "required": false,
+                "help": "Antenna height above ground level"
             },
             "core:extensions": {
                 "type": "list",
