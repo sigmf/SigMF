@@ -1,4 +1,4 @@
-# The `spatial` SigMF Extension Namespace v0.0.1
+# The `spatial` SigMF Extension Namespace v0.0.2
 
 This document defines the `spatial` extension namespace for the Signal Metadata
 Format (SigMF) specification. This extension namespace contains objects to help
@@ -8,7 +8,7 @@ beamforming.
 
 This extension uses the objects defined in the `multichannel` extension to
 provide mangement for the separate recordings for phase coherent channels. The
-use of this extension is required.
+use of this extension is required if there is more than one channel.
 
 The `spatial` extension makes use of cartesian coordinates to define array
 geometry, and spherical coordinates for reporting bearings. This, coupled with
@@ -49,8 +49,10 @@ floating point value.
   "bearing_object": {
     "azimuth": 211.2,
     "elevation": 15.0,
+    "range": 30,
     "az_error": 0.1,
-    "el_error": 0.1
+    "el_error": 0.1,
+    "range_error": 0.1
   }
 ```
 
@@ -60,11 +62,13 @@ floating point value.
 |----|--------|----|-----|-----------|
 |`azimuth`|false|float|degrees|Azimuth component of the direction in degrees increasing clockwise.|
 |`elevation`|false|float|degrees|Elevation component of the direction in degrees above horizon.|
+|`range`|false|float|meters|Line-of-sight slant range to emitter, if known, in meters.|
 |`az_error`|false|float|degrees|Error or uncertainty in the azimuth component.|
-|`el_error`|false|float|degrees|Error or uncertainty in the azimuth component.|
+|`el_error`|false|float|degrees|Error or uncertainty in the elevation component.|
+|`range_error`|false|float|meters|Error or uncertainty in the range component.|
 
-The `az_error` and `el_error` fields must only be used if `azimuth` or
-`elevation` respectively are specified.
+The `az_error`, `el_error`, and `range_error` fields may only be used if the
+corresponding field estimates are specified.
 
 ## 1 Global
 
@@ -73,10 +77,16 @@ The `spatial` extension adds the following fields to the `global` SigMF object:
 |name|required|type|units|description|
 |----|--------|----|-----|-----------|
 |`num_elements`|true|int|N/A|Defines the number of channels collected in the coherent dataset.|
+|`channel_num`|true|int|N/A|The channel number, shares index with `element_geometry`.|
 
 The number of elements must be directly specified here and is constant for a
 given dataset. It may be tempting to use the `core:num_channels` field however
 that has a specific purpose related to interleaved data and is not a substitute.
+
+While `multirecordings` provides a mechanism to infer channel numbering, this
+extension requires it to be explicitly defined in the `channel_num` field. The
+`primary` `multirecordings` recording must be channel 0. If there is only one
+element then this field will always be zero.
 
 ## 2 Captures
 
@@ -87,6 +97,8 @@ The `spatial` extension adds the following fields to `captures` segment objects:
 |`element_geometry`|true|array|meters|Defines the relative arrangement of the array.|
 |`aperture_bearing`|false|bearing|degrees|Bearing of aperture boresight in this segment.|
 |`emitter_bearing`|false|bearing|degrees|Bearing of signals in this segment.|
+|`phase_offset`|false|double|degrees|Phase offset relative to channel 0.|
+|`calibration`|false|[calibration](spatial.sigmf-ext.md#21-the-calibration-object)|Reserved for calibration.|
 
 The `element_geometry` object must be included in each `captures` segment if the
 `spatial` extension is used, and defines the position of the phase centers of
@@ -115,6 +127,56 @@ the ground truth bearing of all signals contained within a multichannel dataset
 relative to the `aperture_bearing`. This is useful for reference data which is
 well controlled, but is not well suited for arbitrary signals or data with more
 than one emitter location.
+
+The `phase_offset` field is a double precision value used when a dataset is
+captured from a RF device that is phase cohenert but not phase-aligned. Datasets
+making use of this field can be post-processed to align the data and this field
+can be set to zero. This value is always relative to channel 0, and is therefore
+always zero for channel 0. If this field is omitted it is assumed that the value
+is zero, and thus it is always optional for channel 0 or datasets that are
+already phase aligned.
+
+### 2.1 The `calibration` Object
+
+The `calibration` object is a special captures segment metadata field that
+indicates the segment is used for calibration. This might be used to indicate
+that a tone or broadboand noise signal was generated to perform phase alignment
+in post-processing. This may be generated once anytime a radio is retuned to
+maintain phase alignment in uncalibrated coherent systems, and the resulting
+value from calibration can be stored in the `captures` object `phase_offset`
+field after post-processing.
+
+If this field is not defined for a `captures` segment, then that segment should
+be treated as normal data.
+
+|name|required|type|description|
+|----|--------|----|-----------|
+|`caltype`|true|[caltype](spatial.sigmf-ext.md#211-the-caltype-field)|Type of calibration data contained.|
+|`bearing`|false|bearing|The bearing of the calibration signal.|
+|`cal_geometry`|false|array|The cartesian location of the calibration antenna.|
+
+Either the `bearing` or the `cal_geometry` field must be provided if a captures
+segment includes the `calibration` field. The `bearing` object can be used to
+describe the calibration source location in a spherical coordinate system, and
+the `cal_geometry` can be used to describe the calibration aperture phase center
+in cartesian coordinates. Which of these is most appropriate will depend on the
+specific application, generally the `bearing` field is most useful for remote
+emitters and `cal_geometry` is most useful for local or integrated calibration
+apertures.
+
+If the `cal_geometry` object is used, it is an array of three double values
+describing the X, Y, and Z position referenced to the same origin as the
+`element_geometry` field.
+
+#### 2.1.1 The `caltype` field
+
+The `caltype` field can have one of the following values:
+
+|value|description|
+|----|-------|
+|`tone`|This segment contains a tone for calibration purposes.|
+|`xcorr`|This segment contains a signal for crosscorrelation calibration purposes.|
+|`other`|This segment contains another type of calibration signal.|
 
 ## 3 Annotations
 
