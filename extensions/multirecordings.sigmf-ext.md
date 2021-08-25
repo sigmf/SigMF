@@ -113,7 +113,8 @@ File: `example-1.sigmf-meta`
         "core:extensions" : {
             "multirecordings": "v0.1.0"
         },
-        "multirecordings:channel": 1
+        "multirecordings:channel": 1,
+        "multirecordings:primary": "example-0"
     },
     "captures": [
         {
