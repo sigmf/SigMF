@@ -29,11 +29,13 @@ be able to stand-alone as compliant recordings.
 | recording | string recording name | A string that indicates the name of a `SigMF Recording` |
 
 The `recording` datatype is the primary mechanism by which SigMF Recordings are
-linked. This datatype is the name of a SigMF Recording, **without** extensions
+linked. This datatype is the string name of a SigMF Recording, **without** filename extensions
 (i.e., given a recording comprising `N.sigmf-meta` and `N.sigmf-data`, the
 `recording` datatype value would simply be `N`).
 
-The metadata and dataset files of the recording MUST be in the local directory
+This datatype may take the place of any non-string datatype in a metadata file. The presence of string filename then indicates that particular field in the recording is described by another recording with the base name in the string.
+
+The second recording (both metadata and dataset files) MUST be in the same directory
 (i.e., local to the SigMF Recording in which they are referenced, and thus in
 the same SigMF Archive).
 
