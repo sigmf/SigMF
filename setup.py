@@ -30,7 +30,10 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
     entry_points={
-        'console_scripts': ['sigmf_validate=sigmf.validate:main']
+        'console_scripts': [
+            'sigmf_validate = sigmf.validate:main',
+            'sigmf_gui = sigmf.gui:main [gui]',
+        ]
     },
     packages=['sigmf'],
     package_data={

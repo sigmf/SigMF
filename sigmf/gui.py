@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-# Copyright 2020 The Johns Hopkins University Applied Physics Laboratory LLC.  All Rights Reserved.
+# Copyright 2021 GNU Radio Foundation
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -8,8 +7,8 @@
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -19,11 +18,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+'''GUI for creating & editing SigMF Files'''
+
 from PySimpleGUI import *
-from sigmf.sigmffile import SigMFFile, fromarchive, dtype_info
-from sigmf.archive import SIGMF_ARCHIVE_EXT
 import os
 import warnings
+
+from .sigmffile import SigMFFile, fromarchive, dtype_info
+from .archive import SIGMF_ARCHIVE_EXT
 
 warnings.filterwarnings("error")
 
@@ -227,13 +229,13 @@ def add_sigmf_field(funct, values, field_name, *args, required=False, type=None,
                 return False
             try:
                 input = int(input)
-            except:
+            except ValueError:
                 show_error('Expected an integer for: {}'.format(field_name))
                 return False
         elif type == float:
             try:
                 input = float(input)
-            except:
+            except ValueError:
                 show_error('Expected a double for: {}'.format(field_name))
                 return False
         elif type == bool:
@@ -241,7 +243,7 @@ def add_sigmf_field(funct, values, field_name, *args, required=False, type=None,
                 if input != 'False' and input != 'True':
                     raise ValueError('Unexpected input for boolean')
                 input = True if input == 'True' else False
-            except:
+            except ValueError:
                 show_error('Expected a bool for: {}'.format(field_name))
                 return False
         Unit.convert(unit, input)
@@ -251,7 +253,7 @@ def add_sigmf_field(funct, values, field_name, *args, required=False, type=None,
             else:
                 funct(*args, input)
         except UserWarning as w:
-            Popup('Warning: '.format(repr(w)), title='Warning')
+            Popup('Warning: {}'.format(repr(w)), title='Warning')
         except Exception as e:
             show_error(repr(e))
             return False
@@ -367,7 +369,7 @@ def add_capture(capture_data_input, values, capture_selector_dict, file_data, fr
         combo_button.Update(values=tuple(new_values), value=new_val)
 
 
-def run_gui():
+def main():
     window_input = WindowInput()
     capture_data_input = CaptureData()
     capture_text_blocks = dict()
@@ -375,7 +377,7 @@ def run_gui():
     f = SigMFFile()
     capture_selector_dict = dict()
 
-    layout = [[Text('This is the APL SIGMF tool to archive RF datasets', size=(80, 1))],
+    layout = [[Text('This is the SigMF tool to archive RF datasets', size=(80, 1))],
               [Text('Enter your data and signal captures below. You must include', auto_size_text=True),
                Text('required', text_color='red', font=DEFAULT_FONT + ('italic',), auto_size_text=True),
                Text('fields.', size=(50, 1), auto_size_text=True)],
@@ -463,7 +465,7 @@ def run_gui():
          [validate_button, Button('View Data')]]
     )
 
-    window = Window('APL SigMF Archive Creator',
+    window = Window('SigMF Archive Creator',
                     auto_size_buttons=False,
                     default_element_size=(20, 1),
                     auto_size_text=False,
@@ -601,7 +603,3 @@ def run_gui():
             break
 
     window.Close()
-
-
-if __name__ == '__main__':
-    run_gui()

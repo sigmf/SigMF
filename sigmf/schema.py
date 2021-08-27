@@ -1,4 +1,4 @@
-# Copyright 2016 GNU Radio Foundation
+# Copyright 2021 GNU Radio Foundation
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,15 @@ from . import utils
 
 
 def get_schema(version=None):
+    '''
+    safe load json
+
+    In the future load specific schema versions.
+    '''
     schema_file = os.path.join(
         utils.get_schema_path(os.path.dirname(utils.__file__)),
         'schema.json'
     )
-    return json.load(open(schema_file))
+    with open(schema_file, 'rb') as handle:
+        schema = json.load(handle)
+    return schema
