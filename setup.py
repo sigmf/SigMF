@@ -36,7 +36,10 @@ setup(
     package_data = {
         'sigmf': ['*.json'],
     },
-    install_requires=['six', 'numpy', 'pysimplegui==4.0.0'],
+    install_requires=[
+        'numpy',
+        'pysimplegui==4.0.0'
+    ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest>3'],
     zip_safe=False

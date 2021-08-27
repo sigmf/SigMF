@@ -23,9 +23,6 @@
 from copy import deepcopy
 from datetime import datetime
 
-from six import iteritems
-
-
 SIGMF_DATETIME_ISO8601_FMT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 
@@ -44,12 +41,13 @@ def dict_merge(a_dict, b_dict):
     if not isinstance(b_dict, dict):
         return b_dict
     result = deepcopy(a_dict)
-    for key, value in iteritems(b_dict):
+    for key, value in b_dict.items():
         if key in result and isinstance(result[key], dict):
             result[key] = dict_merge(result[key], value)
         else:
             result[key] = deepcopy(value)
     return result
+
 
 def insert_sorted_dict_list(dict_list, new_entry, key, force_insertion=False):
     """
@@ -69,6 +67,7 @@ def insert_sorted_dict_list(dict_list, new_entry, key, force_insertion=False):
             return dict_list
     dict_list = dict_list + [new_entry]
     return dict_list
+
 
 def get_schema_path(module_path):
     """

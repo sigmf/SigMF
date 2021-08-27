@@ -27,7 +27,6 @@ import tarfile
 import tempfile
 from os import path
 import warnings
-from six import iteritems
 import numpy as np
 
 from . import __version__, schema, sigmf_hash, validate
@@ -119,7 +118,7 @@ class SigMFFile():
         Throws if not.
         """
         schema_section = self.get_schema()[section_key]
-        for key, value in iteritems(entries):
+        for key, value in entries.items():
             validate.validate_key_throw(
                 value, schema_section.get(key, {}), schema_section, key
             )
@@ -616,7 +615,7 @@ def get_default_metadata(schema):
         " Return a dict with all default values from keys_dict "
         return {
             key: desc.get("default")
-            for key, desc in iteritems(keys_dict)
+            for key, desc in keys_dict.items()
             if "default" in desc
         }
 
@@ -629,5 +628,5 @@ def get_default_metadata(schema):
 
     return {
         category: default_category_data(desc["type"], get_default_dict(desc["keys"]))
-        for category, desc in iteritems(schema)
+        for category, desc in schema.items()
     }
