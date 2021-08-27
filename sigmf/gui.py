@@ -22,12 +22,12 @@
 
 from PySimpleGUI import *
 import os
-import warnings
+import logging
 
 from .sigmffile import SigMFFile, fromarchive, dtype_info
 from .archive import SIGMF_ARCHIVE_EXT
 
-warnings.filterwarnings("error")
+log = logging.getLogger()
 
 validate_button = Button('Update', bind_return_key=False, enable_events=True)
 submit_button = Button('Save Archive', disabled=True, button_color=('white', '#D3D3D3'))
@@ -107,12 +107,12 @@ class WindowInput(WindowElementGroup):
     DATA_BYTE_ORDER = 'Data Byte Order'
 
     def __init__(self):
+        SAMPLING_RATE = 'Sampling Rate'
         DATA_OFFSET = 'Data Offset'
         DESCRIPTION = 'Description'
         AUTHOR = 'Author'
         DATE = 'Date'
         HARDWARE = 'Hardware'
-        RECEIVER_RF = 'Receiver RF'
         RECEIVER_LAT = 'Receiver Lat'
         RECEIVER_LON = 'Receiver Lon'
         NORM_TECH = 'Normalization Technique'
@@ -121,22 +121,23 @@ class WindowInput(WindowElementGroup):
 
         self.core_element_list = [WindowInput.DATA_TYPE_COMPLEX, WindowInput.DATA_TYPE_UNSIGNED,
                                   WindowInput.DATA_TYPE_FIXEDPOINT, WindowInput.DATA_SAMPLE_SIZE,
-                                  WindowInput.DATA_BYTE_ORDER, DATA_OFFSET, DESCRIPTION, AUTHOR, DATE]
-        self.secondary_element_list = [HARDWARE, NORM_TECH, RECEIVER_LAT, ANTEN_POL, RECEIVER_LON, ANTEN_GAIN,
-                                       RECEIVER_RF]
+                                  WindowInput.DATA_BYTE_ORDER, DATA_OFFSET, DESCRIPTION, AUTHOR, DATE, SAMPLING_RATE]
+        self.secondary_element_list = [HARDWARE, NORM_TECH, RECEIVER_LAT, ANTEN_POL, RECEIVER_LON, ANTEN_GAIN]
         self.file_element_list = [WindowInput.DATA_FILE, WindowInput.OUTPUT_FOLDER]
         self.partial_component_list = [WindowInput.DATA_TYPE_COMPLEX, WindowInput.DATA_TYPE_UNSIGNED,
                                        WindowInput.DATA_TYPE_FIXEDPOINT, WindowInput.DATA_SAMPLE_SIZE,
                                        WindowInput.DATA_BYTE_ORDER]
-        sigmf_tags = {DESCRIPTION: SigMFFile.DESCRIPTION_KEY,
-                      AUTHOR: SigMFFile.AUTHOR_KEY, DATE: SigMFFile.DATETIME_KEY, HARDWARE: SigMFFile.HW_KEY,
-                      RECEIVER_RF: SigMFFile.FREQUENCY_KEY, RECEIVER_LAT: SigMFFile.LAT_KEY,
-                      RECEIVER_LON: SigMFFile.LON_KEY}
-        req_tags = [WindowInput.DATA_FILE, WindowInput.DATA_SAMPLE_SIZE, WindowInput.DATA_BYTE_ORDER, RECEIVER_RF]
+        sigmf_tags = {
+            DESCRIPTION: SigMFFile.DESCRIPTION_KEY,
+            SAMPLING_RATE: SigMFFile.SAMPLE_RATE_KEY,
+            AUTHOR: SigMFFile.AUTHOR_KEY, DATE: SigMFFile.DATETIME_KEY, HARDWARE: SigMFFile.HW_KEY,
+            RECEIVER_LAT: SigMFFile.LAT_KEY,
+            RECEIVER_LON: SigMFFile.LON_KEY}
+        req_tags = [WindowInput.DATA_FILE, WindowInput.DATA_SAMPLE_SIZE, WindowInput.DATA_BYTE_ORDER, SAMPLING_RATE]
         el_types = {WindowInput.DATA_TYPE_COMPLEX: bool, WindowInput.DATA_TYPE_UNSIGNED: bool,
                     WindowInput.DATA_TYPE_FIXEDPOINT: bool, DATA_OFFSET: int, RECEIVER_LAT: float,
-                    RECEIVER_LON: float, ANTEN_GAIN: float, RECEIVER_RF: float}
-        el_units = {ANTEN_GAIN: Unit.DBI, RECEIVER_RF: Unit.MHZ}
+                    RECEIVER_LON: float, ANTEN_GAIN: float, SAMPLING_RATE: float}
+        el_units = {ANTEN_GAIN: Unit.DBI}
         el_tooltip = {DATE: 'YYYY-MM-DD',
                       DATA_OFFSET: 'int: bit offset from start of data file of first element'}
         el_text = {}
@@ -175,10 +176,9 @@ class CaptureData(WindowElementGroup):
     START_INDEX = 'Start Index'
 
     def __init__(self):
-        SAMPLING_RATE = 'Sampling Rate'
         EMITTER = 'Emitter'
         MODE_OF_OPERATION = 'Mode(s) of Operation'
-        SIGNAL_RF = 'Signal RF'
+        RECEIVER_RF = 'Receiver RF'
         SIGNAL_BANDWIDTH = 'Signal Bandwidth'
         MODULATION = 'Modulation'
         PRF = 'PRF'
@@ -192,16 +192,18 @@ class CaptureData(WindowElementGroup):
         COMMENT = 'Comment'
 
         self.annotation_element_list = [COMMENT]
-        element_list = [CaptureData.START_INDEX, SAMPLING_RATE, EMITTER, MODE_OF_OPERATION, SIGNAL_RF, SIGNAL_BANDWIDTH,
+        element_list = [CaptureData.START_INDEX, EMITTER, MODE_OF_OPERATION, RECEIVER_RF, SIGNAL_BANDWIDTH,
                         MODULATION, PRF, STAGGER, FREQUENCY_HOPPING, PW, BEAM_PATTERN, SNR,
                         CHIP_RATE] + self.annotation_element_list
-
-        sigmf_tags = {CaptureData.START_INDEX: SigMFFile.START_INDEX_KEY, SAMPLING_RATE: SigMFFile.SAMPLE_RATE_KEY,
-                      COMMENT: SigMFFile.COMMENT_KEY}
-        req_tags = [CaptureData.START_INDEX, SAMPLING_RATE]
-        el_types = {CaptureData.START_INDEX: int, SAMPLING_RATE: float, SIGNAL_RF: float, SIGNAL_BANDWIDTH: float,
+        sigmf_tags = {
+            CaptureData.START_INDEX: SigMFFile.START_INDEX_KEY, 
+            RECEIVER_RF: SigMFFile.FREQUENCY_KEY,
+            COMMENT: SigMFFile.COMMENT_KEY
+        }
+        req_tags = [CaptureData.START_INDEX]
+        el_types = {CaptureData.START_INDEX: int, RECEIVER_RF: float, SIGNAL_BANDWIDTH: float,
                     PRF: float, PW: float, SNR: float, CHIP_RATE: float}
-        el_units = {SIGNAL_RF: Unit.MHZ, PW: Unit.US, SIGNAL_BANDWIDTH: Unit.MHZ}
+        el_units = {PW: Unit.US, SIGNAL_BANDWIDTH: Unit.MHZ, RECEIVER_RF: Unit.MHZ}
         el_tooltip = {CaptureData.START_INDEX: 'int: start index in file of capture'}
         el_text = {}
         el_help = {}
@@ -219,9 +221,9 @@ def update_dictionary(dictionary, key, val):
 
 def add_sigmf_field(funct, values, field_name, *args, required=False, type=None, unit=None, **kwargs):
     input = str(values[field_name]) if field_name in values else ''
-    print(args)
-    print(input)
-    print(kwargs)
+    log.debug(f'args {args}')
+    log.debug(f'input {input}')
+    log.debug(f'kwargs {kwargs}')
     if input != '':
         if type == int:
             if '.' in input:
@@ -269,7 +271,7 @@ def show_error(message):
 
 def validate_data(file):
     isValid = file.validate()
-    print('Valid: ', isValid)
+    log.info(f'valid: {isValid}')
     if not isValid:
         show_error('Metadata not valid: ' + isValid.error)
         submit_button.Update(disabled=True)
@@ -370,6 +372,13 @@ def add_capture(capture_data_input, values, capture_selector_dict, file_data, fr
 
 
 def main():
+    level_lut = {
+        0: logging.WARNING,
+        1: logging.INFO,
+        2: logging.DEBUG,
+    }
+    logging.basicConfig(level=level_lut[2])
+
     window_input = WindowInput()
     capture_data_input = CaptureData()
     capture_text_blocks = dict()
@@ -479,7 +488,7 @@ def main():
 
         window.Refresh()
         event, values = window.Read()
-        print(event, values)
+        log.debug(f'event: {event}, values: {values}')
         if event == 'Load Archive':
             load_path = values[WindowInput.LOAD_PATH]
             if load_path == '':
@@ -488,7 +497,7 @@ def main():
 
             load_button.Update(text='Loading...')
             window.Refresh()
-            print('reading from ', values[WindowInput.LOAD_PATH])
+            log.info(f'reading from {values[WindowInput.LOAD_PATH]}')
             f = fromarchive(values[WindowInput.LOAD_PATH])
             update_global_screen(window_input, window_text_blocks, f.get_global_info(), f)
             capture_selector_dict = {}
@@ -534,11 +543,10 @@ def main():
             data_type_str += 'f' if not bool(window_data_type_dict[WindowInput.DATA_TYPE_FIXEDPOINT]) else ''
             data_type_str += 'u' if bool(window_data_type_dict[WindowInput.DATA_TYPE_UNSIGNED]) else ''
             data_type_str += str(window_data_type_dict[WindowInput.DATA_SAMPLE_SIZE]) + '_'
-            data_type_str += 'l' if window_data_type_dict[WindowInput.DATA_BYTE_ORDER] == 'little endian' else 'b'
+            data_type_str += 'le' if window_data_type_dict[WindowInput.DATA_BYTE_ORDER] == 'little endian' else 'be'
             data_type_dict = {SigMFFile.DATATYPE_KEY: data_type_str}
             added = added and add_sigmf_field(SigMFFile.set_global_field, data_type_dict, SigMFFile.DATATYPE_KEY, f,
                                               SigMFFile.DATATYPE_KEY, required=True)
-            print('HERE: ', window_data_type_dict)
             added = added and add_sigmf_field(SigMFFile.set_data_file, values, WindowInput.DATA_FILE, f,
                                               required=True) and added
             if not added:
