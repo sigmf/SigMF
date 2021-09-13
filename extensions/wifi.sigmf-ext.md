@@ -1,15 +1,17 @@
 ## Wi-Fi Extension v1.0.0
-The `wifi`namespace extension defines dynamic Wi-Fi burst parameters extending `annotations`.
 
-## Global
+The `wifi`namespace extension defines dynamic Wi-Fi burst parameters extending
+`annotations`.
 
-The following names are specified in the `wifi` namespace and should be used in the `global` object:
+## 1 Global
 
-|name|required|type|unit|description|
-|----|--------------|-------|-------|-----------|
-|`version`|true|string|N/A|The version of the `wifi` extension used to create the metadata file.|
+`wifi` does not extend [Global](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#global-object).
 
-## Annotations
+## 2 Captures
+
+`wifi` does not extend [Captures](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#captures-array).
+
+## 3 Annotations
 
 The following names are specified in the `wifi` namespace and should be used in the `annotations` object:
 
@@ -31,3 +33,7 @@ The following names are specified in the `wifi` namespace and should be used in 
 |`start_of_packet`|true|float|samples|Starting sample of captured Wi-Fi burst.|
 |`stop_of_packet`|true|float|samples|Stopping sample of captured Wi-Fi burst.|
 |`number_of_samples_in_packet`|true|float|samples|Number of downsampled IQ samples in Wi-Fi burst.|
+
+## 4 Examples
+
+No `wifi` examples.

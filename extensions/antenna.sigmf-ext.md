@@ -1,8 +1,8 @@
-# Antenna Extension v0.9.0
+# Antenna Extension v1.0.0
 
 The `antenna` namespace extension defines static antenna parameters extending `global` and dynamic antenna parameters extending `annotations`.
 
-## Global
+## 1 Global
 
 The following names are specified in the `antenna` namespace and should be used in
 the `global` object:
@@ -23,9 +23,12 @@ the `global` object:
 |`cable_loss`|false|float|dB|Cable loss for cable connecting antenna and preselector.|
 |`steerable`|false|boolean|N/A|Defines if the antenna is steerable or not.|
 |`mobile`|false|boolean|N/A|Defines if the antenna is mobile or not.|
-|`version`|true|string|N/A|The version of the `antenna` extension used to create the metadata file.|
 
-## Annotations
+## 2 Captures
+
+`antenna` does not extend [Captures](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#captures-array).
+
+## 3 Annotations
 
 The following names are specified in the `antenna` namespace and should be used in
 the `annotations` object:
@@ -35,3 +38,7 @@ the `annotations` object:
 |`azimuth_angle`|false|float|degrees|Angle of main beam in azimuthal plane from North.|
 |`elevation_angle`|false|float|degrees|Angle of main beam in elevation plane from horizontal.|
 |`polarization`|false|float|string|E.g. `"vertical"`, `"horizontal"`, `"slant-45"`, `"left-hand circular"`, `"right-hand circular"`.|
+
+## 4 Examples
+
+No `antenna` examples.
