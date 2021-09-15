@@ -312,7 +312,7 @@ location of the recording system. The location is stored as a single
 [RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` object
 using the convention defined by [RFC 5870](https://www.rfc-editor.org/rfc/rfc5870.txt).
 Per the GeoJSON specification, the point coordinates use the WGS84 coordinate
-reference system and are `latitude`, `longitude` (required, in decimal degrees),
+reference system and are `longitude`, `latitude` (required, in decimal degrees),
 and `altitude` (optional, in meters above the WGS84 ellipsoid) in that order. An
 example including the optional third altitude value is shown below:
 
@@ -321,7 +321,7 @@ example including the optional third altitude value is shown below:
     ...
     "core:geolocation": {
       "type": "Point",
-      "coordinates": [34.0787916, -107.6183682, 2120.0]
+      "coordinates": [-107.6183682, 34.0787916, 2120.0]
     }
     ...
   }
