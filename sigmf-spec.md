@@ -294,7 +294,7 @@ the `global` object:
 |`version`|true|string|The version of the SigMF specification used to create the metadata file.|
 |`num_channels`|false|uint|Total number of interleaved channels in the dataset file. If omitted defaults to 1.|
 |`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
-|`offset`|false|uint|The index number of the first sample in the dataset. If not provided, this value is assumed to be zero. Typically used when a recording is split over multiple files. All other sample indecies in the SigMF file take this value into|
+|`offset`|false|uint|The index number of the first sample in the dataset. If not provided, this value is assumed to be zero. Typically used when a recording is split over multiple files. All sample indices in SigMF are absolute, and so all other indices referenced in metadata for this recording should be greater than or equal to this value.|
 |`description`|false|string|A text description of the SigMF recording.|
 |`author`|false|string|The author's name (and optionally e-mail address) of the form "Bruce Wayne <wayne@example.com>".|
 |`meta_doi`|false|string|The registered DOI (ISO 26324) for a recording's metadata file.|
