@@ -294,7 +294,7 @@ the `global` object:
 |`version`|true|string|The version of the SigMF specification used to create the metadata file.|
 |`num_channels`|false|uint|Total number of interleaved channels in the dataset file. If omitted defaults to 1.|
 |`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
-|`offset`|false|uint|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
+|`offset`|false|uint|The index number of the first sample in the dataset. If not provided, this value is assumed to be zero. Typically used when a recording is split over multiple files. All sample indices in SigMF are absolute, and so all other indices referenced in metadata for this recording should be greater than or equal to this value.|
 |`description`|false|string|A text description of the SigMF recording.|
 |`author`|false|string|The author's name (and optionally e-mail address) of the form "Bruce Wayne <wayne@example.com>".|
 |`meta_doi`|false|string|The registered DOI (ISO 26324) for a recording's metadata file.|
@@ -487,9 +487,33 @@ requirements:
    a single segment.
 5. Supports all fields in the `core` namespace.
 
-## Example
+## Examples
 
-[TODO] Provide an example of metadata file contents.
+#### Example of the `global` `core:offset` field usage:
+
+This is an example metadata file for the second of a series of files split into
+5M sample chunks.
+
+```json
+{
+  "global": {
+    "core:datatype": "ci16_le",
+    "core:sample_rate": 25000000.0,
+    "core:offset": 5000000,
+    "core:version": "1.0.0"
+  },
+  "captures": [{
+    "core:frequency": 100000000.0,
+    "core:sample_start": 5000000
+  }],
+  "annotations": [{
+    "core:sample_start": 5000000,
+    "core:sample_count": 5000000,
+    "core:freq_lower_edge": 100190000.0,
+    "core:freq_upper_edge": 100410000.0,
+  }]
+}
+```
 
 ## Citing SigMF
 
