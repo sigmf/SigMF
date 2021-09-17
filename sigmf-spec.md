@@ -330,9 +330,8 @@ example including the optional third altitude value is shown below:
 
 ##### The `extensions` Field
 
-The `core:extensions` field in the `global` object is a JSON array of objects
-that describe SigMF extensions. These `extensions objects` have the following
-names defined in the `core` namespace:
+The `core:extensions` field in the `global` object is a JSON array of _extension objects_
+that describe SigMF extensions. `Extension objects` MUST contain the three key/value pairs defined below, and MUST NOT contain any other fields.
 
 |name|required|type|description|
 |----|--------------|-------|-----------|
