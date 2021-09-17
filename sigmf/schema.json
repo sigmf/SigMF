@@ -84,7 +84,7 @@
                     "coordinates": {
                         "type": "double_list",
                         "required": true,
-                        "help": "Latitude (deg), longitude (deg), and optional altitude (m) per RFC 5870"
+                        "help": "Longitude (deg), latitude (deg), and optional altitude (m) per RFC 5870"
                     }
                 }
             },

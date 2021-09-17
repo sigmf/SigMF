@@ -269,7 +269,7 @@ An example describing just the ID, power, and location of an emitter:
             "power_eirp": 43.0,
             "geolocation": {
                 "type": "point",
-                "coordinates": [38.8984531, -77.0729078]
+                "coordinates": [-77.071651, 38.897397]
             }
         }
     }]
