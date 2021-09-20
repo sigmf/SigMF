@@ -1,0 +1,10 @@
+cff-version: 1.0.3
+message: To cite the SigMF specification, please include the following:
+authors:
+  - name: The GNU Radio Foundation, Inc.
+title: The Signal Metadata Format (SigMF)
+version: 0.0.1
+doi: 10.5281/zenodo.1418396
+date-released: 2018-07-18
+license: CC-BY-SA-4.0
+url: https://sigmf.org
