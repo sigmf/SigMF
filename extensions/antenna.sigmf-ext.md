@@ -30,8 +30,7 @@ The following names are specified in the `antenna` namespace and should be used 
 
 ## Annotations
 
-The following names are specified in the `antenna` namespace and should be used in
-the `annotations` object:
+The following names are specified in the `antenna` namespace and should be used in the `annotations` object:
 
 |name|required|type|unit|description|
 |----|--------------|-------|-------|-----------|

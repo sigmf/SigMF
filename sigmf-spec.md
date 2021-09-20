@@ -482,7 +482,7 @@ The `collection` object points to specific recordings via a _SigMF Recording tup
 4. Keys in the `collection` object MUST use SigMF Recording Tuples to reference recordings.
 5. SigMF Recording tuples MUST take the form of `["N", "hash"]`, where `N` is the base-name of a SigMF Recording and `hash` is the SHA512 hash of the Recording's metadata file `N.sigmf-meta`.
 6. If a value contains multiple SigMF Recording tuples, they MUST appear in a JSON array.  
-7. Recordings referenced in the `collection` MUST be EITHER in the immediate local directory, or contained within a SigMF Archive in the immediate local directory.
+7. The `sigmf-collection` file MUST be EITHER in the same directory as the Recordings that it references, or in the top-level directory of an Archive.
 
 The following names are specified in the `core` namespace for use in the `collection` object.
 
@@ -492,7 +492,7 @@ The following names are specified in the `core` namespace for use in the `collec
 |`description`|false|string|A text description of the SigMF collection.|
 |`author`|false|string|The author's name (and optionally e-mail address) of the form "Bruce Wayne <wayne@example.com>".|
 |`collection_doi`|false|string|The registered DOI (ISO 26324) for a Collection.|
-|`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
+|`license`|false|string|A URL for the license document under which this Collection metadata is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
 |`hagl`|false|SigMF Recording Tuple|Antenna height above ground level (in meters).|
 |`extensions`|false|array|A list of objects describing extensions used by this recording.|
 |`streams`|false|array|An ordered array of SigMF Recording Tuples, indicating multiple recorded streams of data (e.g., phased array collections).|
