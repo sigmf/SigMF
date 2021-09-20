@@ -49,6 +49,7 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
       - [Global Object](#global-object)
         - [The `geolocation` Field](#the-geolocation-field)
         - [The `extensions` Field](#the-extensions-field)
+        - [The `collection` Field](#the-collection-field)
       - [Captures Array](#captures-array)
         - [Capture Segment Objects](#capture-segment-objects)
           - [The `global_index` Pair](#the-global_index-pair)
@@ -352,6 +353,9 @@ used, but not required, and `version 1.2.3` of `extension-02` *is* required.
     ...
   }
 ```
+
+##### The `collection` Field
+This field is used to indicated that this Recording is part of a SigMF Collection (described later in this document). It is STRONGLY RECOMMENDED that if you are building a Collection, that each Recording referenced by that Collection use this field to associate up to the `sigmf-collection` file.
 
 #### Captures Array
 
