@@ -59,7 +59,8 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
     - [Collection Format](#collection-format)
     - [Licensing](#licensing)
     - [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
-  - [Example](#example)
+  - [Examples](#examples)
+      - [Example of the `global` `core:offset` field usage:](#example-of-the-global-coreoffset-field-usage)
   - [Citing SigMF](#citing-sigmf)
   - [Acknowledgements](#acknowledgements)
 
@@ -356,12 +357,12 @@ In the example below, `extension-01` is used, but not required, and
     "core:extensions" : [
         {
         "name": "extension-01",
-        "version": "v0.0.5",
+        "version": "0.0.5",
         "optional": true
         },
         {
         "name": "extension-02",
-        "version": "v1.2.3",
+        "version": "1.2.3",
         "optional": false
         }
     ]
