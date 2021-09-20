@@ -347,7 +347,7 @@ that describe SigMF extensions. `Extension objects` MUST contain the three key/v
 |`version`|true|string|The version of the extension namespace specification used.|
 |`optional`|true|boolean|If this field is `true`, the extension is required to parse this recording.|
 
-In the example below, `extension-01` is used, but not required, and 
+In the example below, `extension-01` is used, but not required, and
 `version 1.2.3` of `extension-02` *is* required.
 
 ```JSON
@@ -401,14 +401,14 @@ capture segment objects:
 ###### The `global_index` Pair
 
 Some hardware devices are capable of 'counting' samples, or assigning sample
-indices relative to the sample stream produced or consumed by the device. Note 
-this is different from the sample index used to reference a sample in the SigMF 
+indices relative to the sample stream produced or consumed by the device. Note
+this is different from the sample index used to reference a sample in the SigMF
 dataset file.
 
-These numbers are most commonly used to indicate that data was dropped by the 
+These numbers are most commonly used to indicate that data was dropped by the
 hardware device. For example, if the hardware driver provides a packet of data,
 labeled with samples 0 to 1000, and the following packet labels its first sample
-as number 1500, that indicates that 500 samples were dropped between those two 
+as number 1500, that indicates that 500 samples were dropped between those two
 packets. This field allows you to indicate such a discontinuity in the recorded
 sample stream as seen by the application (e.g., a SigMF writer or reader).
 
@@ -507,13 +507,13 @@ The following names are specified in the `core` namespace for use in the `collec
 
 |name|required|type|description|
 |----|--------------|-------|-----------|
-|`version`|true|string|The version of the SigMF specification used to create the metadata file.|
+|`version`|true|string|The version of the SigMF specification used to create the collection file.|
 |`description`|false|string|A text description of the SigMF collection.|
 |`author`|false|string|The author's name (and optionally e-mail address) of the form "Bruce Wayne <wayne@example.com>".|
 |`collection_doi`|false|string|The registered DOI (ISO 26324) for a Collection.|
 |`license`|false|string|A URL for the license document under which this Collection metadata is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
 |`hagl`|false|SigMF Recording Tuple|Antenna height above ground level (in meters).|
-|`extensions`|false|array|A list of objects describing extensions used by this recording.|
+|`extensions`|false|array|A list of objects describing extensions used by this Collection.|
 |`streams`|false|array|An ordered array of SigMF Recording Tuples, indicating multiple recorded streams of data (e.g., phased array collections).|
 
 Example `top-level.sigmf-collection` file:
