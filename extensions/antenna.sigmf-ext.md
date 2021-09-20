@@ -1,11 +1,14 @@
 # Antenna Extension v1.0.0
 
-The `antenna` namespace extension defines static antenna parameters extending `global` and dynamic antenna parameters extending `annotations`.
+The `antenna` namespace extension defines static antenna parameters extending the `global` and `annotations` objects in SigMF Recordings, and the `collection` object in a SigMF Collection.
+
+# SigMF Recordings
+
+The following fields are specified for SigMF Recordings.
 
 ## 1 Global
 
-The following names are specified in the `antenna` namespace and should be used in
-the `global` object:
+The following names are specified in the `antenna` namespace and should be used in the `global` object:
 
 |name|required|type|unit|description|
 |----|--------------|-------|-------|-----------|
@@ -30,8 +33,7 @@ the `global` object:
 
 ## 3 Annotations
 
-The following names are specified in the `antenna` namespace and should be used in
-the `annotations` object:
+The following names are specified in the `antenna` namespace and should be used in the `annotations` object:
 
 |name|required|type|unit|description|
 |----|--------------|-------|-------|-----------|
@@ -39,6 +41,16 @@ the `annotations` object:
 |`elevation_angle`|false|float|degrees|Angle of main beam in elevation plane from horizontal.|
 |`polarization`|false|float|string|E.g. `"vertical"`, `"horizontal"`, `"slant-45"`, `"left-hand circular"`, `"right-hand circular"`.|
 
-## 4 Examples
+## 4 Collection
+
+The following fields are specificed in SigMF Collections.
+
+|name|required|type|unit|description|
+|----|--------------|-------|-------|-----------|
+|`azimuth_angle`|false|float|degrees|Angle of main beam in azimuthal plane from North.|
+|`elevation_angle`|false|float|degrees|Angle of main beam in elevation plane from horizontal.|
+
+## 5 Examples
 
 No `antenna` examples.
+
