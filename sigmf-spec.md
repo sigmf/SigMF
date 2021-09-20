@@ -212,7 +212,7 @@ be namespaced.
 
 The format of the name/value pairs is:
 
-```
+```JSON
 "namespace:name": value,
 ```
 
@@ -278,11 +278,12 @@ namespaces may be defined by the user as needed.
    the canonical extension namespaces.
 
 ##### Canonical Extension Namespaces
+
 This is a list of the canonical extension namespaces defined by SigMF:
 
- * `antenna` - Used to describe the antenna(s) used to for the recording.
- * `modulation` - Defines how to describe modulations used in wireless communications systems.
- * `volatile` - Allows for continuously time-varying fields, such as a moving receiver or rotating antenna.
+* `antenna` - Used to describe the antenna(s) used to for the recording.
+* `capture_details` - Used to describe features of IQ captures and annotations.
+* `signal` - Used to describe modulated signals used in wireless communications systems.
 
 #### Global Object
 
@@ -301,7 +302,7 @@ the `global` object:
 |`version`|true|string|The version of the SigMF specification used to create the metadata file.|
 |`num_channels`|false|uint|Total number of interleaved channels in the dataset file. If omitted defaults to 1.|
 |`sha512`|false|string|The SHA512 hash of the dataset file associated with the SigMF file.|
-|`offset`|false|uint|The index number of the first sample in the dataset. This value defaults to zero. Typically used when a recording is split over multiple files.|
+|`offset`|false|uint|The index number of the first sample in the dataset. If not provided, this value is assumed to be zero. Typically used when a recording is split over multiple files. All sample indices in SigMF are absolute, and so all other indices referenced in metadata for this recording should be greater than or equal to this value.|
 |`description`|false|string|A text description of the SigMF recording.|
 |`author`|false|string|The author's name (and optionally e-mail address) of the form "Bruce Wayne <wayne@example.com>".|
 |`meta_doi`|false|string|The registered DOI (ISO 26324) for a recording's metadata file.|
@@ -311,7 +312,7 @@ the `global` object:
 |`hw`|false |string|A text description of the hardware used to make the recording.|
 |`geolocation`|false|GeoJSON `point` object|The location of the recording system.|
 |`hagl`|false|double|Antenna height above ground level (in meters).|
-|`extensions`|false|object|A list of extensions used by this recording.|
+|`extensions`|false|array|A list of objects describing extensions used by this recording.|
 |`collection`|false|string|The base filename of a `collection` with which this Recording is associated.|
 
 ##### The `geolocation` Field
@@ -336,20 +337,34 @@ example including the optional third altitude value is shown below:
 ```
 
 ##### The `extensions` Field
-The `core:extensions` field in the `global` object is JSON array of name/value
-pairs describing `SigMF Extension` namespaces, where the name is the namespace
-provided by an extension and the value is a string that specifies whether the
-extension is `optional` or the version of the extension required to properly
-parse & process the SigMF Recording. In the example below, `extension-01` is
-used, but not required, and `version 1.2.3` of `extension-02` *is* required.
+
+The `core:extensions` field in the `global` object is a JSON array of _extension objects_
+that describe SigMF extensions. `Extension objects` MUST contain the three key/value pairs defined below, and MUST NOT contain any other fields.
+
+|name|required|type|description|
+|----|--------------|-------|-----------|
+|`name`|true|string|The name of the SigMF extension namespace.|
+|`version`|true|string|The version of the extension namespace specification used.|
+|`optional`|true|boolean|If this field is `true`, the extension is required to parse this recording.|
+
+In the example below, `extension-01` is used, but not required, and 
+`version 1.2.3` of `extension-02` *is* required.
 
 ```JSON
   "global": {
     ...
-    "core:extensions" : {
-      "extension-01": "optional",
-      "extension-02": "v1.2.3",
-    }
+    "core:extensions" : [
+        {
+        "name": "extension-01",
+        "version": "v0.0.5",
+        "optional": true
+        },
+        {
+        "name": "extension-02",
+        "version": "v1.2.3",
+        "optional": false
+        }
+    ]
     ...
   }
 ```
@@ -551,9 +566,33 @@ requirements:
    a single segment.
 5. Supports all fields in the `core` namespace.
 
-## Example
+## Examples
 
-[TODO] Provide an example of metadata file contents.
+#### Example of the `global` `core:offset` field usage:
+
+This is an example metadata file for the second of a series of files split into
+5M sample chunks.
+
+```json
+{
+  "global": {
+    "core:datatype": "ci16_le",
+    "core:sample_rate": 25000000.0,
+    "core:offset": 5000000,
+    "core:version": "1.0.0"
+  },
+  "captures": [{
+    "core:frequency": 100000000.0,
+    "core:sample_start": 5000000
+  }],
+  "annotations": [{
+    "core:sample_start": 5000000,
+    "core:sample_count": 5000000,
+    "core:freq_lower_edge": 100190000.0,
+    "core:freq_upper_edge": 100410000.0,
+  }]
+}
+```
 
 ## Citing SigMF
 

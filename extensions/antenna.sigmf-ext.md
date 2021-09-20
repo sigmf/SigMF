@@ -6,7 +6,7 @@ The `antenna` namespace extension defines static antenna parameters extending th
 
 The following fields are specified for SigMF Recordings.
 
-## Global
+## 1 Global
 
 The following names are specified in the `antenna` namespace and should be used in the `global` object:
 
@@ -26,9 +26,12 @@ The following names are specified in the `antenna` namespace and should be used 
 |`cable_loss`|false|float|dB|Cable loss for cable connecting antenna and preselector.|
 |`steerable`|false|boolean|N/A|Defines if the antenna is steerable or not.|
 |`mobile`|false|boolean|N/A|Defines if the antenna is mobile or not.|
-|`version`|true|string|N/A|The version of the `antenna` extension used to create the metadata file.|
 
-## Annotations
+## 2 Captures
+
+`antenna` does not extend [Captures](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#captures-array).
+
+## 3 Annotations
 
 The following names are specified in the `antenna` namespace and should be used in the `annotations` object:
 
@@ -38,14 +41,16 @@ The following names are specified in the `antenna` namespace and should be used 
 |`elevation_angle`|false|float|degrees|Angle of main beam in elevation plane from horizontal.|
 |`polarization`|false|float|string|E.g. `"vertical"`, `"horizontal"`, `"slant-45"`, `"left-hand circular"`, `"right-hand circular"`.|
 
-# SigMF Collections
+## 4 Collection
 
 The following fields are specificed in SigMF Collections.
 
-## Collection
-
 |name|required|type|unit|description|
 |----|--------------|-------|-------|-----------|
-
 |`azimuth_angle`|false|float|degrees|Angle of main beam in azimuthal plane from North.|
 |`elevation_angle`|false|float|degrees|Angle of main beam in elevation plane from horizontal.|
+
+## 5 Examples
+
+No `antenna` examples.
+
