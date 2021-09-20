@@ -8,8 +8,7 @@ The following fields are specified for SigMF Recordings.
 
 ## Global
 
-The following names are specified in the `antenna` namespace and should be used in
-the `global` object:
+The following names are specified in the `antenna` namespace and should be used in the `global` object:
 
 |name|required|type|unit|description|
 |----|--------------|-------|-------|-----------|
@@ -51,4 +50,3 @@ The following fields are specificed in SigMF Collections.
 
 |`azimuth_angle`|false|float|degrees|Angle of main beam in azimuthal plane from North.|
 |`elevation_angle`|false|float|degrees|Angle of main beam in elevation plane from horizontal.|
-|`polarization`|false|float|string|E.g. `"vertical"`, `"horizontal"`, `"slant-45"`, `"left-hand circular"`, `"right-hand circular"`.|

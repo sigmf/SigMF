@@ -30,35 +30,37 @@ This document is available under the [CC-BY-SA License](http://creativecommons.o
 
 **Table of Contents**
 
-* [Signal Metadata Format Specification v0.0.2](#signal-metadata-format-specification-v002)
-    * [Abstract](#abstract)
-    * [Status of this Document](#status-of-this-document)
-    * [Copyright Notice](#copyright-notice)
-    * [Table of Contents](#table-of-contents)
-    * [Introduction](#introduction)
-    * [Conventions Used in this Document](#conventions-used-in-this-document)
-    * [Specification](#specification)
-        * [Files](#files)
-            * [SigMF Archives](#sigmf-archives)
-        * [Dataset Format](#dataset-format)
-        * [Metadata Format](#metadata-format)
-            * [Datatypes](#datatypes)
-            * [Namespaces](#namespaces)
-                * [Extension Namespaces](#extension-namespaces)
-                * [Canonical Extension Namespaces](#canonical-extension-namespaces)
-            * [Global Object](#global-object)
-                * [The `extensions` Field](#the-extensions-field)
-            * [Captures Array](#captures-array)
-                * [Capture Segment Objects](#capture-segment-objects)
-                    * [The `global_index` Pair](#the-globalindex-pair)
-                    * [The `datetime` Pair](#the-datetime-pair)
-            * [Annotations Array](#annotations-array)
-                * [Annotation Segment Objects](#annotation-segment-objects)
-        * [Dataset Licensing](#dataset-licensing)
-        * [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
-    * [Example](#example)
-    * [Citing SigMF](#citing-sigmf)
-    * [Acknowledgements](#acknowledgements)
+- [Signal Metadata Format Specification v0.0.2](#signal-metadata-format-specification-v002)
+  - [Abstract](#abstract)
+  - [Status of this Document](#status-of-this-document)
+  - [Copyright Notice](#copyright-notice)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Conventions Used in this Document](#conventions-used-in-this-document)
+  - [Specification](#specification)
+    - [Files](#files)
+      - [SigMF Archives](#sigmf-archives)
+    - [Dataset Format](#dataset-format)
+    - [Metadata Format](#metadata-format)
+      - [Datatypes](#datatypes)
+      - [Namespaces](#namespaces)
+        - [Extension Namespaces](#extension-namespaces)
+        - [Canonical Extension Namespaces](#canonical-extension-namespaces)
+      - [Global Object](#global-object)
+        - [The `geolocation` Field](#the-geolocation-field)
+        - [The `extensions` Field](#the-extensions-field)
+      - [Captures Array](#captures-array)
+        - [Capture Segment Objects](#capture-segment-objects)
+          - [The `global_index` Pair](#the-global_index-pair)
+          - [The `datetime` Pair](#the-datetime-pair)
+      - [Annotations Array](#annotations-array)
+        - [Annotation Segment Objects](#annotation-segment-objects)
+    - [Collection Format](#collection-format)
+    - [Licensing](#licensing)
+    - [SigMF Compliance by Applications](#sigmf-compliance-by-applications)
+  - [Example](#example)
+  - [Citing SigMF](#citing-sigmf)
+  - [Acknowledgements](#acknowledgements)
 
 ## Introduction
 
@@ -309,6 +311,7 @@ the `global` object:
 |`geolocation`|false|GeoJSON `point` object|The location of the recording system.|
 |`hagl`|false|double|Antenna height above ground level (in meters).|
 |`extensions`|false|object|A list of extensions used by this recording.|
+|`collection`|false|string|The base filename of a `collection` with which this Recording is associated.|
 
 ##### The `geolocation` Field
 The `core:geolocation` field in the `global` object is used to store the
@@ -474,23 +477,24 @@ The `sigmf-collection` file contains JSON-formatted metadata adhering to the Sig
 The `collection` object points to specific recordings via a _SigMF Recording tuple_, which references the base-name of the recording and the SHA512 hash of the metadata file. Tuples may be the singular value in a key/value pair, or provided in an ordered list via a JSON array.
 
 1. The `collection` object MUST be the only top-level object in the file.
-2. The `collection` object MUST only contain SigMF key/value pairs.
-3. Keys in the `collection` object MUST use SigMF Recording Tuples to reference recordings.
-4. SigMF Recording tuples MUST take the form of `["N", "hash"]`, where `N` is the base-name of a SigMF Recording and `hash` is the SHA512 hash of the Recording's metadata file `N.sigmf-meta`.
-5. If a value contains multiple SigMF Recording tuples, they MUST appear in a JSON array.  
-6. Recordings referenced in the `collection` MUST be EITHER in the immediate local directory, or in a local SigMF Archive.
+2. It is RECOMMENDED that the `collection` file use hyphens to separate words rather than whitespace or underscores.
+3. The `collection` object MUST only contain SigMF key/value pairs.
+4. Keys in the `collection` object MUST use SigMF Recording Tuples to reference recordings.
+5. SigMF Recording tuples MUST take the form of `["N", "hash"]`, where `N` is the base-name of a SigMF Recording and `hash` is the SHA512 hash of the Recording's metadata file `N.sigmf-meta`.
+6. If a value contains multiple SigMF Recording tuples, they MUST appear in a JSON array.  
+7. Recordings referenced in the `collection` MUST be EITHER in the immediate local directory, or contained within a SigMF Archive in the immediate local directory.
 
 The following names are specified in the `core` namespace for use in the `collection` object.
 
 |name|required|type|description|
 |----|--------------|-------|-----------|
 |`version`|true|string|The version of the SigMF specification used to create the metadata file.|
-|`description`|false|string|A text description of the SigMF recording.|
+|`description`|false|string|A text description of the SigMF collection.|
 |`author`|false|string|The author's name (and optionally e-mail address) of the form "Bruce Wayne <wayne@example.com>".|
 |`collection_doi`|false|string|The registered DOI (ISO 26324) for a Collection.|
 |`license`|false|string|A URL for the license document under which the recording is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one.|
 |`hagl`|false|SigMF Recording Tuple|Antenna height above ground level (in meters).|
-|`extensions`|false|object|A list of extensions used by this collection.|
+|`extensions`|false|array|A list of objects describing extensions used by this recording.|
 |`streams`|false|array|An ordered array of SigMF Recording Tuples, indicating multiple recorded streams of data (e.g., phased array collections).|
 
 Example `top-level.sigmf-collection` file:
@@ -499,9 +503,13 @@ Example `top-level.sigmf-collection` file:
     "collection": {
        "core:version": "v1.0.0",
 
-        "core:extensions" : {
-            "antenna": "v0.1.0"
-        },
+        "core:extensions" : [
+            {
+            "name": "antenna",
+            "version": "1.0.0",
+            "optional": false
+            }
+         ],
 
         "core:hagl": ["hagl-basename", "hash"],
 
@@ -515,10 +523,10 @@ Example `top-level.sigmf-collection` file:
 }
 ```
 
-### Dataset Licensing
+### Licensing
 
 You may specify any license of your choosing. Recommended licenses for SigMF
-recordings are:
+Recordings and Collections are:
 
 * [CC0 1.0 Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/)
 * [CC-BY Attribution 2.0 Generic](https://creativecommons.org/licenses/by/2.0/)
