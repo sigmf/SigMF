@@ -1,7 +1,7 @@
 {
     "global": {
         "core:author": "Kyle Logue, K6OF",
-        "core:datatype": "i16_le",
+        "core:datatype": "ri16_le",
         "core:description": "The Official SigMF Logo",
         "core:license": "https://creativecommons.org/licenses/by-sa/4.0/",
         "core:num_channels": 2,
