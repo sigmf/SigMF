@@ -311,7 +311,6 @@ the Global object:
 | `license`      | false    | string  | A URL for the license document under which the Recording is offered.|
 | `hw`           | false    | string  | A text description of the hardware used to make the Recording.|
 | `geolocation`  | false    | GeoJSON `point` object | The location of the Recording system.|
-| `hagl`         | false    | double  | Antenna height above ground level (in meters).|
 | `extensions`   | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
 | `collection`   | false    | string  | The base filename of a `collection` with which this Recording is associated.|
 
@@ -521,7 +520,6 @@ The following names are specified in the `core` namespace for use in the `collec
 | `author`         | false    | string                | The author's name (and optionally e-mail address) of the form "Bruce Wayne <wayne@example.com>".|
 | `collection_doi` | false    | string                | The registered DOI (ISO 26324) for a Collection.|
 | `license`        | false    | string                | A URL for the license document under which this Collection metadata is offered.|
-| `hagl`           | false    | SigMF Recording Tuple | Antenna height above ground level (in meters).|
 | `extensions`     | false    | array                 | A list of objects describing extensions used by this Collection.|
 | `streams`        | false    | array                 | An ordered array of SigMF Recording Tuples, indicating multiple recorded streams of data (e.g., phased array collections).|
 
@@ -539,7 +537,7 @@ Example `top-level.sigmf-collection` file:
             }
          ],
 
-        "core:hagl": ["hagl-basename", "hash"],
+        "antenna:hagl": ["hagl-basename", "hash"],
 
         "antenna:azimuth_angle": ["azimuth-angle-basename", "hash"],
 
