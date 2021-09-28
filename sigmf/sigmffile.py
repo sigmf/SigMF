@@ -217,7 +217,7 @@ class SigMFFile():
         Insert annotation
         """
         assert start_index >= self._get_start_offset()
-        assert length > 1
+        assert length >= 1
         metadata = metadata or {}
         metadata[self.START_INDEX_KEY] = start_index
         metadata[self.LENGTH_INDEX_KEY] = length
