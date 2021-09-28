@@ -25,17 +25,20 @@ import json
 
 from . import utils
 
+SCHEMA_META = 'schema-meta.json'
+SCHEMA_COLLECTION = 'schema-collection.json'
 
-def get_schema(version=None):
+
+def get_schema(version=None, schema_file=SCHEMA_META):
     '''
-    safe load json
+    Load JSON Schema to for either a `sigmf-meta` or `sigmf-collection`.
 
     In the future load specific schema versions.
     '''
-    schema_file = os.path.join(
+    schema_path = os.path.join(
         utils.get_schema_path(os.path.dirname(utils.__file__)),
-        'schema.json'
+        schema_file
     )
-    with open(schema_file, 'rb') as handle:
+    with open(schema_path, 'rb') as handle:
         schema = json.load(handle)
     return schema
