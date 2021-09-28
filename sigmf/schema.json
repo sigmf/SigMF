@@ -88,11 +88,6 @@
                     }
                 }
             },
-            "core:hagl": {
-                "type": "double",
-                "required": false,
-                "help": "Antenna height above ground level (in meters)."
-            },
             "core:extensions": {
                 "required": false,
                 "help": "A list of extensions used by this recording.",
@@ -226,11 +221,6 @@
                 "type": "string",
                 "required": false,
                 "help": "A URL for the license document under which the collection is offered; when possible, use the canonical document provided by the license author, or, failing that, a well-known one."
-            },
-            "core:hagl": {
-                "type": "list",
-                "required": false,
-                "help": "Recording Tuple pointing to a F32 type dataset representing aperture HAGL."
             },
             "core:extensions": {
                 "required": false,

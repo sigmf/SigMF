@@ -26,6 +26,7 @@ The following names are specified in the `antenna` namespace and should be used 
 |`cable_loss`|false|float|dB|Cable loss for cable connecting antenna and preselector.|
 |`steerable`|false|boolean|N/A|Defines if the antenna is steerable or not.|
 |`mobile`|false|boolean|N/A|Defines if the antenna is mobile or not.|
+|`hagl`|false|double|meters|Antenna phase center height above ground level.|
 
 ## 2 Captures
 
@@ -49,6 +50,7 @@ The following fields are specificed in SigMF Collections.
 |----|--------------|-------|-------|-----------|
 |`azimuth_angle`|false|float|degrees|Angle of main beam in azimuthal plane from North.|
 |`elevation_angle`|false|float|degrees|Angle of main beam in elevation plane from horizontal.|
+|`hagl`|false|SigMF Recording Tuple|Antenna height above ground level (in meters).|
 
 ## 5 Examples
 
