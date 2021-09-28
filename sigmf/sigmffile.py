@@ -81,6 +81,9 @@ class SigMFFile():
     def __init__(self, metadata=None, data_file=None, global_info=None, skip_checksum=False):
         self.version = None
         self.schema = None
+        self.data_file = None
+        self.sample_count = 0
+
         if metadata is None:
             self._metadata = get_default_metadata(self.get_schema())
             if not self._metadata[self.GLOBAL_KEY][self.VERSION_KEY]:
@@ -91,10 +94,8 @@ class SigMFFile():
             self._metadata = json.loads(metadata)
         if global_info is not None:
             self.set_global_info(global_info)
-        self.data_file = data_file
-        if self.data_file and not skip_checksum:
-            self.calculate_hash()
-        self._count_samples()
+        if data_file is not None:
+            self.set_data_file(data_file, skip_checksum=skip_checksum)
 
     def __str__(self):
         return self.dumps()
@@ -297,12 +298,18 @@ class SigMFFile():
 
         return self.set_global_field(self.HASH_KEY, new_hash)
 
-    def set_data_file(self, data_file):
+    def set_data_file(self, data_file, skip_checksum=False):
         """
-        Set the datafile path, then recalculate the hash and sample count. Return the hash string.
+        Set the datafile path, then recalculate sample count. If not skipped,
+        update the hash and return the hash string.
         """
+        if self.get_global_field(self.DATATYPE_KEY) is None:
+            raise SigMFFileError("Error setting data file, the DATATYPE_KEY must be set in the global metadata first.")
+
         self.data_file = data_file
         self._count_samples()
+        if skip_checksum:
+            return None
         return self.calculate_hash()
 
     def validate(self):
@@ -479,6 +486,8 @@ def dtype_info(datatype):
     Keyword arguments:
     datatype -- a SigMF-compliant datatype string
     """
+    if datatype is None:
+        raise SigMFFileError("Invalid datatype 'None'.")
     output_info = {}
     dtype = datatype.lower()
 
