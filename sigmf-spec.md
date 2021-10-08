@@ -112,61 +112,103 @@ model and format for how SigMF data should be stored at-rest (on-disk) using JSO
 
 ### Files
 
-A SigMF Recording is the fundamental unit of SigMF, and consists of two files: 
-a SigMF `Metadata` file and a `Dataset` file. The Dataset file is a binary file 
-of digital samples, and the Metadata file contains information that describes the 
-dataset. Multiple Recordings MAY be organized in a SigMF `Collection`, which 
-describes relationships between Recordings, and is defined in a `collection` file.
+There are two fundamental filetypes defined by this specification: files with 
+metadata, and the files that contain the datasets described by the metadata. There
+are two types of files containining metadata, a SigMF `Metadata` file, and a SigMF
+`Collection` file. There are also two types of datasets, a SigMF `Dataset` file, 
+and a `Non-Conforming Dataset` file, abbreviated as `NCD`.
 
-SigMF Metadata and Dataset rules:
-1. The Metadata and Dataset MUST be in separate files.
-1. The Metadata file MUST only describe one dataset file.
-1. The Metadata file MUST be stored in UTF-8 encoding.
-1. The Metadata file MUST have a `.sigmf-meta` filename extension.
-1. The Dataset file MUST have a `.sigmf-data` filename extension.
-1. The names of the Metadata and Dataset files must be identical (excepting
-   their extensions).
-1. It is RECOMMENDED that the Metadata and Dataset files use hyphens to separate 
+The primary unit of SigMF is a SigMF `Recording`, which comprises a Metadata file
+and the dataset file it describes. Collections are an optional feature that are 
+used to describe the relationships between multiple Recordings. 
+
+Collections and multiple Recordings can be packaged for easy storage and 
+distribution in a SigMF `Archive`.
+
+             ┌────────────────────┐
+             │                    │
+             │  SigMF Collection  │
+             │                    ├──┐
+             │   (optional file)  │  │
+             └──────────┬─────────┘  │
+                        │            │            ┌─────────────────────┐
+                        │            │  stored in │                     │
+                        │ links      ├────────────►    SigMF Archive    │
+                        │            │            │                     │
+                        │            │            │   (optional file)   │
+              ┌─────────▼─────────┐  │            └─────────────────────┘
+              │                   │  │
+              │  SigMF Recording  ├──┘
+              │                   │
+              └─────────┬─────────┘
+                        │
+                        │ comprises
+                        │
+          ┌─────────────┴──────────────┐
+          │                            │
+ ┌────────▼───────┐                    │
+ │                │               ┌────▼────┐
+ │ SigMF Metadata ├───────────────► dataset │
+ │                │   describes   └────┬────┘
+ │     (file)     │                    │
+ └────────────────┘                    │
+                             ┌─────────┴────────────┐
+                             │     is either        │
+                             │                      │
+                    ┌────────▼────────┐    ┌────────▼─────────┐
+                    │                 │    │                  │
+                    │  SigMF Dataset  │    │  Non-Conforming  │
+                    │                 │    │     Dataset      │
+                    │      (file)     │    │                  │
+                    └─────────────────┘    │      (file)      │
+                                           └──────────────────┘
+
+
+Rules for all files:
+1. All filetypes MUST be stored in separate files on-disk.
+1. It is RECOMMENDED that filenames use hyphens to separate 
    words rather than whitespace or underscores.
 
-SigMF Collection rules:
-1. The Collection MUST be defined in its own file, separate from any Recording's 
-   metadata.
+Rules for SigMF Metadata files:
+1. A Metadata file MUST only describe one dataset file.
+1. A Metadata file MUST be stored in UTF-8 encoding.
+1. A Metadata file MUST have a `.sigmf-meta` filename extension.
+1. A Metadata file MUST be in the same directory as the dataset file
+   it describes.
+1. It is RECOMMENDED that the base filenames (not including file extension) of 
+   a Recording's Metadata and dataset files be identical.
+
+Rules for SigMF Dataset files:
+1. The Dataset file MUST have a `.sigmf-data` filename extension.
+
+Rules for SigMF Non-Conforming Dataset files:
+1. The NCD file MUST NOT have a `.sigmf-data` filename extension.
+
+Rules for SigMF Collection files:
 1. The Collection file MUST be stored in UTF-8 encoding.
 1. The Collection file MUST have a `.sigmf-collection` filename extension.
 1. The `sigmf-collection` file MUST be EITHER in the same directory as the 
    Recordings that it references, or in the top-level directory of an Archive 
    (described in later section).
-1. It is RECOMMENDED that the Collection file use hyphens to separate words rather 
-   than whitespace or underscores.
 
-### SigMF Archives
-
-The Metadata and Dataset files that comprise a SigMF Recording may be combined
-into a file archive. A SigMF `Archive` may contain multiple SigMF Recordings, 
-which may be related by a SigMF Collection.
-
+Rules for SigMF Archive files:
 1. The Archive MUST use the `tar` archive format, as specified by POSIX.1-2001.
 1. The Archive file's filename extension MUST be `.sigmf`.
-1. The Archive MUST contain the following files: for each contained recording
+1. The Archive MUST contain the following files: for each contained Recording
    with some name given here meta-syntactically as `N`, files named `N` (a
    directory), `N/N.sigmf-meta`, and `N/N.sigmf-data`.
-1. The Archive MAY contain a `.sigmf-collection` file in the top-level directory.
+1. The Archive MAY contain a `.sigmf-collection` file at the top-level directory.
 1. It is RECOMMENDED that if Recordings in an archive represent continuous
    data that has been split into separate Recordings, that their filenames
    reflect the order of the series by appending a hyphenated zero-based index
    (e.g., `N-0`, `N-1`, `N-2`, etc.,).
 
-Each Recording in an Archive, even if connected to others by being part of
-a larger dataset, MUST be evaluated independently for compliance to the SigMF
-standard, and thus all metadata MAY be different between the Recordings.
+### SigMF Dataset Format
 
-### Dataset Format
-
-The samples in the Dataset must be in a SigMF-supported format. There are
-four orthogonal characteristics of sample data: complex or real, floating-point
-or integer, bit-width, and endianness. The following ABNF rules specify the
-dataset formats defined in the Core namespace:
+There are four orthogonal characteristics of sample data: complex or real, 
+floating-point or integer, bit-width, and endianness. The following ABNF 
+rules specify the dataset formats defined in the Core namespace. Additional
+dataset formats may be added through extensions.
 
 ```abnf
     dataset-format = (real / complex) ((type endianness) / byte)
@@ -209,10 +251,9 @@ right, the data should appear as `L[0]` `R[0]` `L[1]` `R[1]` ... `L[n]` `R[n]`.
 The data type specified by `core:data_type` applies to all channels of data
 both real and imaginary parts.
 
-### Metadata Format
+### SigMF Metadata Format
 
-SigMF metadata fundamentally takes the form of key/value pairs, taking the
-following form:
+SigMF metadata fundamentally takes the form of key/value pairs:
 
 ```JSON
 "namespace:name": value,
@@ -310,9 +351,20 @@ the Global object:
 | `recorder`     | false    | string  | The name of the software used to make this SigMF Recording.|
 | `license`      | false    | string  | A URL for the license document under which the Recording is offered.|
 | `hw`           | false    | string  | A text description of the hardware used to make the Recording.|
+| `dataset`      | false    | string  | The full filename of the dataset file this Metadata file describes.|
 | `geolocation`  | false    | GeoJSON `point` object | The location of the Recording system.|
 | `extensions`   | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
 | `collection`   | false    | string  | The base filename of a `collection` with which this Recording is associated.|
+
+##### The `dataset` Field
+The `core:dataset` field in the Global Object is used to specify the dataset file that
+this Metadata describes. If provided, this string MUST BE the complete filename of the
+dataset file, including the extension. The dataset file must be in the local directory,
+and this string MUST NOT include any aspects of filepath other than the filename.
+
+If this field is omitted, the dataset file MUST BE a SigMF Dataset file (NOT a
+Non-Conforming Dataset), and MUST have the same base filename as the Metadata file and
+use the `.sigmf-data` extension.
 
 ##### The `geolocation` Field
 The `core:geolocation` field in the Global Object is used to store the
@@ -371,66 +423,148 @@ In the example below, `extension-01` is used, but not required, and
 
 ##### The `collection` Field
 This field is used to indicate that this Recording is part of a SigMF Collection 
-(described later in this document). It is STRONGLY RECOMMENDED that if you are 
+(described later in this document). It is RECOMMENDED that if you are 
 building a Collection, that each Recording referenced by that Collection use this 
 field to associate up to the relevant `sigmf-collection` file.
 
 #### Captures Array
 
-The `captures` value is an array of `capture segment objects` that describe the
-parameters of the signal capture. It MUST be sorted by the value of each
-capture segment's `core:sample_start` key, ascending.
+The `captures` value is an array of `capture segment objects` that describe how to
+understand the samples from a signal capture and map them into digital memory. 
+It MUST be sorted by the value of each capture segment's `core:sample_start` key, 
+ascending.
 
-##### Capture Segment Objects
+#### Capture Segment Objects
 
-Capture Segment Objects are composed of key/value pairs.
-
-Each Capture Segment Object must contain a `core:sample_start` key/value pair,
-which indicates the first index at which the rest of the Segment's key/value
-pairs apply. The fields that are described within a Capture Segment are
-scoped to that Segment only and must be declared again if they are valid in
-subsequent Segments.
+Capture Segment Objects are composed of key/value pairs, and each Segment describes
+a chunk of samples that can be mapped into memory for processing. Each Segment
+must contain a `core:sample_start` key/value pair, which indicates the sample index
+relative to the dataset where this Segment's metadata applies. The fields that are 
+described within a Capture Segment are scoped to that Segment only and must be 
+declared again if they are valid in subsequent Segments.
 
 The following names are specified in the Core namespace and should be used in
 Capture Segment Objects:
 
-| name           | required | type   | description                                                                                                       |
-| -------------- | -------- | ------ | ----------------------------------------------------------------------------------------------------------------- |
-| `sample_start` | true     | uint   | The sample index in the Dataset file at which this Segment takes effect.                                          |
-| `global_index` | false    | uint   | If the sample source provides a global sample count, this is the global index that maps to `sample_start`.        |
-| `frequency`    | false    | double | The center frequency of the signal in Hz.                                                                         |
-| `datetime`     | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.                      |
+| name           | required | type   | description                                                                                      |
+| -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------ |
+| `sample_start` | true     | uint   | The sample index in the dataset file at which this Segment takes effect.                         |
+| `global_index` | false    | uint   | The index of the sample referenced by `sample_start` relative to an original sample stream.      |
+| `sample_count` | false    | uint   | The number of valid samples in this Segment starting from the `sample_start` position.           |
+| `byte_offset`  | false    | uint   | The absolute byte offset of the sample referenced by `sample_start` in the dataset file.         |
+| `frequency`    | false    | double | The center frequency of the signal in Hz.                                                        |
+| `datetime`     | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.     |
 
-###### The `global_index` Pair
+##### The `sample_start` Field
 
-Some hardware devices are capable of 'counting' samples, or assigning sample
-indices relative to the sample stream produced or consumed by the device. Note
-this is different from the sample index used to reference a sample in the SigMF
-Dataset file.
+This field specifies the sample index where this Segment takes effect relative
+to the recorded dataset file. If the dataset is a SigMF Dataset file, this 
+field can be immediately mapped to physical disk location since conforming
+Datasets only contain sample data.
 
-These numbers are most commonly used to indicate that data was dropped in transfer
-between the hardware device and processing. For example, if the hardware driver 
-provides a packet of data, labeled with samples 0 to 1000, and the following packet 
-labels its first sample as number 1500, that indicates that 500 samples were 
-dropped between those two packets. This field allows you to indicate such a 
-discontinuity in the recorded sample stream as seen by the application 
-(e.g., a SigMF writer or reader).
+##### The `global_index` Field
 
-###### The `datetime` Pair
+This field describes the index of the sample referenced by the `sample_start`
+field relative to an original sample stream, the entirety of which may not
+have been captured in a recorded dataset. If ommitted, this value SHOULD
+be treated as equal to `sample_start`.
 
-This key/value pair must be an ISO-8601 string, as defined by [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt),
-where the only allowed `time-offset` is `Z`, indicating the UTC/Zulu timezone.
-The ABNF description is:
+For example, some hardware devices are capable of 'counting' samples at
+the point of data conversion. This sample count is commonly used to indicate 
+a discontinuity in the datastream between the hardware device and processing.
+
+For example, in the below Captures array, there are two Segments describing
+samples in a SigMF Dataset file. The first Segment begins at the start of the 
+Dataset file. The second segment begins at sample index 500 relative to the
+recorded samples (and since this is a conforming SigMF Dataset, is physically
+located on-disk at location `sample_start * sizeof(sample)`), but the 
+`global_index` reports this was actually sample number 1000 in the original
+datastream, indicating that 500 samples were lost before they could be recorded.
+
+```json
+   ...
+   "captures": [
+      {
+         "core:sample_start": 0,
+         "core:global_index": 0
+      },
+      {
+         "core:sample_start": 500,
+         "core:global_index": 1000
+      }
+   ],
+   ...
+```
+
+##### The `sample_count` Field
+
+This field specifies the number of samples that should be read in to memory
+for processing, starting from `sample_start`. If omitted, this value SHOULD
+be treated as equal to the entire length of the Segment (i.e., until the
+start of the next Segment or EOF).
+
+This value is used to avoid reading data into memory that trails a Segment
+of samples that is not valid for processing.
+
+##### The `byte_offset` Field
+
+This field specifies the byte offset of the physical location of the
+sample specified by `sample_start` in the dataset file stored on-disk. This
+offset is absolute (i.e., relative to the beginning of the file). If omitted,
+this value SHOULD be treated as equal to `sample_start * sizeof(sample)` (which
+is always true for SigMF Datasets).
+
+In each successive Segment, the value of `sample_start` MUST be equal to
+the sum of the previous Segment's `sample_start` and `sample_count fields.
+
+For example, the below Metadata for a Non-Conforming Dataset contains
+two segments describing chunks of 8-bit complex samples (2 bytes per sample) 
+recorded to disk with 4-byte headers and footers that are not valid for 
+processing. The first valid sample in the dataset (sample index `0`) is 
+physically located `4 bytes` offset from the start of the file on-disk, 
+from which point `500 samples` may be read into memory. The next valid 
+sample (sample index `500`) is then physically located `1012 bytes` offset
+from the start of the file on-disk, from which point another `500 samples`
+may be read into memory. 
+
+```json
+{
+   "global": {
+      "core:datatype": "cu8",
+      "core:version": "1.0.0",
+      "core:dataset": "non-conforming-dataset.dat"
+   },
+   "captures": [
+      {
+         "core:sample_start": 0,
+         "core:sample_count": 500,
+         "core:byte_offset": 4
+      },
+      {
+         "core:sample_start": 500,
+         "core:sample_count": 500,
+         "core:byte_offset": 1012
+      }
+   ],
+   "annotations": []
+}
+```
+
+##### The `datetime` Field
+
+This key/value pair must be an ISO-8601 string, as defined by 
+[RFC 3339](https://www.ietf.org/rfc/rfc3339.txt), where the only allowed 
+`time-offset` is `Z`, indicating the UTC/Zulu timezone. The ABNF description is:
 
 ```abnf
    date-fullyear   = 4DIGIT
    date-month      = 2DIGIT  ; 01-12
-   date-mday       = 2DIGIT  ; 01-28, 01-29, 01-30, 01-31 based on
-                             ; month/year
+   date-mday       = 2DIGIT  ; 01-28, 01-29, 01-30, 01-31 based on month/year
+                             
    time-hour       = 2DIGIT  ; 00-23
    time-minute     = 2DIGIT  ; 00-59
-   time-second     = 2DIGIT  ; 00-58, 00-59, 00-60 based on leap second
-                             ; rules
+   time-second     = 2DIGIT  ; 00-58, 00-59, 00-60 based on leap second rules
+                            
    time-secfrac    = "." 1*DIGIT
    time-offset     = "Z"
 
