@@ -446,14 +446,14 @@ declared again if they are valid in subsequent Segments.
 The following names are specified in the Core namespace and should be used in
 Capture Segment Objects:
 
-| name           | required | type   | description                                                                                      |
-| -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------ |
-| `sample_start` | true     | uint   | The sample index in the dataset file at which this Segment takes effect.                         |
-| `global_index` | false    | uint   | The index of the sample referenced by `sample_start` relative to an original sample stream.      |
-| `sample_count` | false    | uint   | The number of valid samples in this Segment starting from the `sample_start` position.           |
-| `byte_offset`  | false    | uint   | The absolute byte offset of the sample referenced by `sample_start` in the dataset file.         |
-| `frequency`    | false    | double | The center frequency of the signal in Hz.                                                        |
-| `datetime`     | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.     |
+| name            | required | type   | description                                                                                 |
+| ----------------| -------- | ------ | --------------------------------------------------------------------------------------------|
+| `sample_start`  | true     | uint   | The sample index in the dataset file at which this Segment takes effect.                    |
+| `global_index`  | false    | uint   | The index of the sample referenced by `sample_start` relative to an original sample stream. |
+| `header_bytes`  | false    | uint   | The number of bytes preceeding this chunk of samples that should be ignored.                |
+| `footer_bytes`  | false    | uint   | The number of bytes trailing this chunk of samples that should be ignored.                  |
+| `frequency`     | false    | double | The center frequency of the signal in Hz.                                                   |
+| `datetime`      | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.|
 
 ##### The `sample_start` Field
 
@@ -496,54 +496,45 @@ datastream, indicating that 500 samples were lost before they could be recorded.
    ...
 ```
 
-##### The `sample_count` Field
+##### The `header_bytes` Field
 
-This field specifies the number of samples that should be read in to memory
-for processing, starting from `sample_start`. If omitted, this value SHOULD
-be treated as equal to the entire length of the Segment (i.e., until the
-start of the next Segment or EOF).
+This field specifies a number of bytes that are not valid sample data that 
+are physically located at the start of where the chunk of samples referenced 
+by this Segment would otherwise begin. If omitted, this value SHOULD
+be treated as equal zero.
 
-This value is used to avoid reading data into memory that trails a Segment
-of samples that is not valid for processing.
+##### The `footer_bytes` Field
 
-##### The `byte_offset` Field
-
-This field specifies the byte offset of the physical location of the
-sample specified by `sample_start` in the dataset file stored on-disk. This
-offset is absolute (i.e., relative to the beginning of the file). If omitted,
-this value SHOULD be treated as equal to `sample_start * sizeof(sample)` (which
-is always true for SigMF Datasets).
-
-In each successive Segment, the value of `sample_start` MUST be equal to
-the sum of the previous Segment's `sample_start` and `sample_count fields.
+This field specifies a number of bytes that are not valid sample data that 
+are physically located at the end of this Segment's sample data on-disk. 
+If omitted, this value SHOULD be treated as equal zero.
 
 For example, the below Metadata for a Non-Conforming Dataset contains
 two segments describing chunks of 8-bit complex samples (2 bytes per sample) 
 recorded to disk with 4-byte headers and footers that are not valid for 
-processing. The first valid sample in the dataset (sample index `0`) is 
-physically located `4 bytes` offset from the start of the file on-disk, 
-from which point `500 samples` may be read into memory. The next valid 
-sample (sample index `500`) is then physically located `1012 bytes` offset
-from the start of the file on-disk, from which point another `500 samples`
-may be read into memory. 
+processing. Thus, to map these two chunks of samples into memory, a reader
+application would map `500 samples` (equal to `1000 bytes`) starting at a file 
+offset of `4 bytes`, and then the remainder of the file through EOF starting
+at a file offset of `1012 bytes` (equal to the size of the previous Segment
+of samples plus two headers and a footer), ignoring the final `4 bytes`.
 
 ```json
 {
    "global": {
       "core:datatype": "cu8",
       "core:version": "1.0.0",
-      "core:dataset": "non-conforming-dataset.dat"
+      "core:dataset": "non-conforming-dataset-01.dat"
    },
    "captures": [
       {
          "core:sample_start": 0,
-         "core:sample_count": 500,
-         "core:byte_offset": 4
+         "core:segment_header": 4,
+         "core:segment_footer": 4
       },
       {
          "core:sample_start": 500,
-         "core:sample_count": 500,
-         "core:byte_offset": 1012
+         "core:segment_header": 4,
+         "core:segment_footer": 4
       }
    ],
    "annotations": []
