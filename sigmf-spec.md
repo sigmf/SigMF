@@ -335,6 +335,16 @@ example including the optional third altitude value is shown below:
   }
 ```
 
+GeoJSON permits the use of *Foreign Members* in GeoJSON documents per RFC 7946
+Section 6.1. Because the SigMF requirement for the `geolocation` field is to be
+a valid GeoJSON `point` object, users MAY include *Foreign Member* fields here
+for user-defined purposes (position valid indication, GNSS SV counts, dillution
+of precision, accuracy, etc). It is strongly RECOMMENDED that all fields be
+documented in a SigMF Extension document.
+
+*Note:* Objects named `geometry` or `properties` are **not** permitted Foreign
+Members, as specified in RFC 7946 Section 7.1.
+
 ##### The `extensions` Field
 
 The `core:extensions` field in the Global Object is an array of `extension objects`
