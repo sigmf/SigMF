@@ -38,7 +38,7 @@ from .error import SigMFFileError
 class SigMFFile():
     '''
     API for SigMF I/O
-    
+
     Parameters
     ----------
     metadata: str or dict, optional
@@ -52,6 +52,7 @@ class SigMFFile():
     '''
     START_INDEX_KEY = "core:sample_start"
     LENGTH_INDEX_KEY = "core:sample_count"
+    GLOBAL_INDEX_KEY = "core:global_index"
     START_OFFSET_KEY = "core:offset"
     NUM_CHANNELS_KEY = "core:num_channels"
     HASH_KEY = "core:sha512"
@@ -67,6 +68,7 @@ class SigMFFile():
     META_DOI_KEY = "core:meta-doi"
     DATA_DOI_KEY = "core:data-doi"
     GENERATOR_KEY = "core:generator"
+    LABEL_KEY = "core:label"
     RECORDER_KEY = "core:recorder"
     LICENSE_KEY = "core:license"
     HW_KEY = "core:hw"
@@ -74,9 +76,25 @@ class SigMFFile():
     DATETIME_KEY = "core:datetime"
     LAT_KEY = "core:latitude"
     LON_KEY = "core:longitude"
+    GEOLOCATION_KEY = "core:geolocation"
+    COLLECTION_KEY = "core:collection"
+    COLLECTION_DOI_KEY = "core:collection_doi"
+    STREAMS_KEY = "core:streams"
     GLOBAL_KEY = "global"
     CAPTURE_KEY = "captures"
     ANNOTATION_KEY = "annotations"
+    VALID_GLOBAL_KEYS = [
+        AUTHOR_KEY, COLLECTION_KEY, DATATYPE_KEY, DATA_DOI_KEY, DESCRIPTION_KEY, EXTENSIONS_KEY, GEOLOCATION_KEY,
+        HASH_KEY, HW_KEY, LICENSE_KEY, META_DOI_KEY, NUM_CHANNELS_KEY, RECORDER_KEY, SAMPLE_RATE_KEY,
+        START_OFFSET_KEY, VERSION_KEY
+    ]
+    VALID_CAPTURE_KEYS = [DATETIME_KEY, FREQUENCY_KEY, GLOBAL_INDEX_KEY, START_INDEX_KEY]
+    VALID_ANNOTATION_KEYS = [
+        COMMENT_KEY, FHI_KEY, FLO_KEY, GENERATOR_KEY, LABEL_KEY, LAT_KEY, LENGTH_INDEX_KEY, LON_KEY, START_INDEX_KEY
+    ]
+    VALID_COLLECTION_KEYS = [
+        AUTHOR_KEY, COLLECTION_DOI_KEY, DESCRIPTION_KEY, EXTENSIONS_KEY, LICENSE_KEY, STREAMS_KEY, VERSION_KEY
+    ]
 
     def __init__(self, metadata=None, data_file=None, global_info=None, skip_checksum=False):
         self.version = None

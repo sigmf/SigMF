@@ -148,6 +148,21 @@ def test_multichannel_seek():
     assert np.all(temp_samples[:, 0] == np.array([6+7j, 12+13j]))
 
 
+def test_key_validity():
+    '''assure the keys in test metadata are valid'''
+    for top_key, top_val in TEST_METADATA.items():
+        if type(top_val) is dict:
+            for core_key in top_val.keys():
+                assert core_key in vars(SigMFFile)[f'VALID_{top_key.upper()}_KEYS']
+        elif type(top_val) is list:
+            # annotations are in a list
+            for annot in top_val:
+                for core_key in annot.keys():
+                    assert core_key in SigMFFile.VALID_ANNOTATION_KEYS
+        else:
+            raise ValueError('expected list or dict')
+
+
 def test_ordered_metadata():
     '''check to make sure the metadata is sorted as expected'''
     sigf = SigMFFile()
