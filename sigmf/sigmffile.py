@@ -630,9 +630,11 @@ def get_sigmf_filenames(filename):
     Returned as dict with 'data_fn', 'meta_fn', and 'archive_fn' as keys.
 
     Keyword arguments:
-    filename -- the SigMF filename
+    filename -- the SigMF dataset filename (with or without .sigmf* extension)
     """
-    filename = path.splitext(filename)[0]
+    filename_lower = filename.lower()
+    if filename_lower.endswith(SIGMF_DATASET_EXT) or filename_lower.endswith(SIGMF_METADATA_EXT) or filename_lower.endswith(SIGMF_ARCHIVE_EXT):
+        filename = path.splitext(filename)[0]
     return {'data_fn': filename+SIGMF_DATASET_EXT, 'meta_fn': filename+SIGMF_METADATA_EXT, 'archive_fn': filename+SIGMF_ARCHIVE_EXT}
 
 
