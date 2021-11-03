@@ -34,6 +34,17 @@ from .archive import SigMFArchive, SIGMF_DATASET_EXT, SIGMF_METADATA_EXT, SIGMF_
 from .utils import dict_merge, insert_sorted_dict_list
 from .error import SigMFFileError, SigMFAccessError
 
+class SigMFFileIterator():
+    def __init__(self, sigmf_file):
+        self.sigmf_file = sigmf_file
+        self.pos = 0
+
+    def __next__(self):
+        if self.pos >= len(self.sigmf_file):
+            raise StopIteration
+        a = self.sigmf_file[self.pos]
+        self.pos += 1
+        return a
 
 class SigMFFile():
     '''
@@ -124,6 +135,26 @@ class SigMFFile():
 
     def __repr__(self):
         return f'SigMFFile({self})'
+
+    def __len__(self):
+        return self._memmap.shape[0]
+
+    def __iter__(self):
+        return SigMFFileIterator(self)
+
+    def __getitem__(self, sli):
+        a = self._memmap[sli] # matches behavior of numpy.ndarray.__getitem__()
+        if self._return_type is not None:
+            # is_fixed_point and is_complex
+            if self._memmap.ndim == 2:
+                # num_channels==1
+                a = a[0].astype(self._return_type) + 1.j * a[1].astype(self._return_type)
+            elif self._memmap.ndim == 3:
+                # num_channels>1
+                a = a[:,0].astype(self._return_type) + 1.j * a[:,1].astype(self._return_type)
+            else:
+                raise ValueError("unhandled ndim in SigMFFile.__getitem__(); this shouldn't happen")
+        return a
 
     def _get_start_offset(self):
         """
@@ -387,6 +418,30 @@ class SigMFFile():
 
         self.data_file = data_file
         self._count_samples()
+
+        dtype = dtype_info(self.get_global_field(self.DATATYPE_KEY))
+        num_channels = self.get_num_channels()
+        self.ndim = 1 if (num_channels < 2) else 2
+        is_complex_data = dtype['is_complex']
+        is_fixedpoint_data = dtype['is_fixedpoint']
+
+        memmap_shape = (-1,)
+        if num_channels > 1:
+            memmap_shape = memmap_shape + (num_channels,)
+        if is_complex_data and is_fixedpoint_data:
+            # There is no corresponding numpy type, so we'll have to add another axis, length of 2
+            memmap_shape = memmap_shape + (2,)
+        self._return_type = dtype['memmap_convert_type']
+        #print('memmap()ing', self.get_global_field(self.DATATYPE_KEY), 'with', dtype['memmap_map_type'])
+        try:
+            self._memmap = np.memmap(self.data_file, offset=0, dtype=dtype['memmap_map_type']).reshape(memmap_shape)
+        except:  # TODO include likely exceptions here
+            warnings.warn('Failed to memory-map array from file')
+            self._memmap = None
+            self.shape = None
+        else:
+            self.shape = self._memmap.shape if (self._return_type is None) else self._memmap.shape[:-1]
+
         if skip_checksum:
             return None
         return self.calculate_hash()
@@ -619,7 +674,9 @@ def dtype_info(datatype):
         else:
             raise SigMFFileError("Unrecognized endianness specifier: '{}'".format(dtype[1]))
     dtype = dtype[0]
-    if "32" in dtype:
+    if "64" in dtype:
+        sample_size = 8
+    elif "32" in dtype:
         sample_size = 4
     elif "16" in dtype:
         sample_size = 2
@@ -636,8 +693,17 @@ def dtype_info(datatype):
     data_type_str += "f" if not is_fixedpoint_data else "u" if is_unsigned_data else "i"
     data_type_str += str(component_size)
 
+    memmap_convert_type = None
     if is_complex_data:
         data_type_str = ','.join((data_type_str, data_type_str))
+        memmap_map_type = byte_order
+        if is_fixedpoint_data:
+            memmap_map_type += ("u" if is_unsigned_data else "i") + str(component_size)
+            memmap_convert_type = byte_order + "c8"
+        else:
+            memmap_map_type += "c" + str(sample_size)
+    else:
+        memmap_map_type = data_type_str
 
     data_type_in = np.dtype(data_type_str)
     output_info['sample_dtype'] = data_type_in
@@ -647,6 +713,8 @@ def dtype_info(datatype):
     output_info['is_complex'] = is_complex_data
     output_info['is_unsigned'] = is_unsigned_data
     output_info['is_fixedpoint'] = is_fixedpoint_data
+    output_info['memmap_map_type'] = memmap_map_type
+    output_info['memmap_convert_type'] = memmap_convert_type
     return output_info
 
 
