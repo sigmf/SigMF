@@ -450,8 +450,7 @@ Capture Segment Objects:
 | ----------------| -------- | ------ | --------------------------------------------------------------------------------------------|
 | `sample_start`  | true     | uint   | The sample index in the dataset file at which this Segment takes effect.                    |
 | `global_index`  | false    | uint   | The index of the sample referenced by `sample_start` relative to an original sample stream. |
-| `header_bytes`  | false    | uint   | The number of bytes preceeding this chunk of samples that should be ignored.                |
-| `footer_bytes`  | false    | uint   | The number of bytes trailing this chunk of samples that should be ignored.                  |
+| `header_bytes`  | false    | uint   | The number of bytes preceeding a chunk of samples that should be ignored, used for NCDs.    |
 | `frequency`     | false    | double | The center frequency of the signal in Hz.                                                   |
 | `datetime`      | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.|
 
@@ -501,22 +500,17 @@ datastream, indicating that 500 samples were lost before they could be recorded.
 This field specifies a number of bytes that are not valid sample data that 
 are physically located at the start of where the chunk of samples referenced 
 by this Segment would otherwise begin. If omitted, this value SHOULD
-be treated as equal zero.
-
-##### The `footer_bytes` Field
-
-This field specifies a number of bytes that are not valid sample data that 
-are physically located at the end of this Segment's sample data on-disk. 
-If omitted, this value SHOULD be treated as equal zero.
+be treated as equal zero. If included, the Dataset is by definition a
+Non-Conforming Dataset.
 
 For example, the below Metadata for a Non-Conforming Dataset contains
 two segments describing chunks of 8-bit complex samples (2 bytes per sample) 
-recorded to disk with 4-byte headers and footers that are not valid for 
+recorded to disk with 4-byte headers that are not valid for 
 processing. Thus, to map these two chunks of samples into memory, a reader
-application would map `500 samples` (equal to `1000 bytes`) starting at a file 
-offset of `4 bytes`, and then the remainder of the file through EOF starting
-at a file offset of `1012 bytes` (equal to the size of the previous Segment
-of samples plus two headers and a footer), ignoring the final `4 bytes`.
+application would map the `500 samples` (equal to `1000 bytes`) in the first 
+Segment, starting at a file offset of `4 bytes`, and then the remainder of the 
+file through EOF starting at a file offset of `1008 bytes` (equal to the size 
+of the previous Segment of samples plus two headers).
 
 ```json
 {
@@ -528,13 +522,11 @@ of samples plus two headers and a footer), ignoring the final `4 bytes`.
    "captures": [
       {
          "core:sample_start": 0,
-         "core:segment_header": 4,
-         "core:segment_footer": 4
+         "core:header_bytes": 4,
       },
       {
          "core:sample_start": 500,
-         "core:segment_header": 4,
-         "core:segment_footer": 4
+         "core:header_bytes": 4,
       }
    ],
    "annotations": []
