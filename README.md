@@ -108,6 +108,7 @@ for adx, annotation in enumerate(annotations):
 ```python
 import datetime as dt
 from sigmf import SigMFFile
+from sigmf.utils import get_data_type_str
 
 # suppose we have an complex timeseries signal
 data = np.zeros(1024, dtype=np.complex64)
@@ -119,7 +120,7 @@ data.tofile('example.sigmf-data')
 meta = SigMFFile(
     data_file='example.sigmf-data', # extension is optional
     global_info = {
-        SigMFFile.DATATYPE_KEY: 'cf32_le',
+        SigMFFile.DATATYPE_KEY: get_data_type_str(data),  # in this case, 'cf32_le'
         SigMFFile.SAMPLE_RATE_KEY: 48000,
         SigMFFile.AUTHOR_KEY: 'jane.doe@domain.org',
         SigMFFile.DESCRIPTION_KEY: 'All zero example file.',

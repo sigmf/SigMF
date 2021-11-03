@@ -22,6 +22,10 @@
 
 from copy import deepcopy
 from datetime import datetime
+import numpy as np
+import sys
+
+from . import error
 
 SIGMF_DATETIME_ISO8601_FMT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
@@ -73,3 +77,37 @@ def get_schema_path(module_path):
     """
     """
     return module_path
+
+def get_endian_str(ray):
+    if not isinstance(ray, np.ndarray):
+        raise error.SigMFError('Argument must be a numpy array')
+    atype = ray.dtype
+
+    if atype.byteorder == '<':
+        return '_le'
+    elif atype.byteorder == '>':
+        return '_be'
+    else:
+        # endianness must be either '=' (native) or '|' (doesn't matter)
+        return '_le' if sys.byteorder == 'little' else '_be'
+
+def get_data_type_str(ray):
+    """
+    Return the SigMF datatype string for the datatype of `ray`.
+    """
+    if not isinstance(ray, np.ndarray):
+        raise error.SigMFError('Argument must be a numpy array')
+    atype = ray.dtype
+    if atype.kind not in ('u','i','f','c'):
+        raise error.SigMFError('Unsupported data type:', atype)
+
+    data_type_str = ''
+    if atype.kind == 'c':
+        data_type_str += 'cf'
+    elif atype.kind == 'f':
+        data_type_str += 'f'
+    elif atype.kind in ('u','i'):
+        data_type_str += atype.kind
+    data_type_str += str(atype.itemsize * 8)  # units is bits
+    data_type_str += get_endian_str(ray)
+    return data_type_str
