@@ -352,6 +352,7 @@ the Global object:
 | `license`      | false    | string  | A URL for the license document under which the Recording is offered.|
 | `hw`           | false    | string  | A text description of the hardware used to make the Recording.|
 | `dataset`      | false    | string  | The full filename of the dataset file this Metadata file describes.|
+| `trailing_bytes` | false | uint | The number of bytes to ignore at the end of a Non-Conforming Dataset file.|
 | `geolocation`  | false    | GeoJSON `point` object | The location of the Recording system.|
 | `extensions`   | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
 | `collection`   | false    | string  | The base filename of a `collection` with which this Recording is associated.|
@@ -365,6 +366,11 @@ and this string MUST NOT include any aspects of filepath other than the filename
 If this field is omitted, the dataset file MUST BE a SigMF Dataset file (NOT a
 Non-Conforming Dataset), and MUST have the same base filename as the Metadata file and
 use the `.sigmf-data` extension.
+
+##### The `trailing_bytes` Field
+This field is used with Non-Conforming Datasets to indicate some number of bytes that
+trail the sample data in the NCD file that should be ignored for processing. This can
+be used to ignore footer data in non-SigMF filetypes.
 
 ##### The `geolocation` Field
 The `core:geolocation` field in the Global Object is used to store the
