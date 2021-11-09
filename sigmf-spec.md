@@ -306,7 +306,7 @@ the Global object:
 | `description`  | false    | string  | A text description of the SigMF Recording.|
 | `author`       | false    | string  | The author's name (and optionally e-mail address) of the form "Bruce Wayne <wayne@example.com>".|
 | `meta_doi`     | false    | string  | The registered DOI (ISO 26324) for a Recording's Metadata file.|
-| `data_doi`     | false    | string  | The registered DOI (ISO 26324) for a Recording's Hataset file.|
+| `data_doi`     | false    | string  | The registered DOI (ISO 26324) for a Recording's Dataset file.|
 | `recorder`     | false    | string  | The name of the software used to make this SigMF Recording.|
 | `license`      | false    | string  | A URL for the license document under which the Recording is offered.|
 | `hw`           | false    | string  | A text description of the hardware used to make the Recording.|
