@@ -71,6 +71,21 @@
                 "required": false,
                 "help": "Information about the hardware used (measurement setup, antennas, etc.)"
             },
+            "core:dataset": {
+                "type": "string",
+                "required": false,
+                "help": "The full filename of the dataset file this Metadata file describes."
+            },
+            "core:trailing_bytes": {
+                "type": "uint",
+                "required": false,
+                "help": "The number of bytes to ignore at the end of a Non-Conforming Dataset file."
+            },
+            "core:virtual_dataset": {
+                "type": "bool",
+                "required": false,
+                "help": "Always `true`, indicates that the dataset is virtual (SigMF Recording is metadata only)."
+            },
             "core:geolocation": {
                 "type": "dict",
                 "required": false,

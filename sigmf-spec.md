@@ -128,44 +128,46 @@ used to describe the relationships between multiple Recordings.
 Collections and multiple Recordings can be packaged for easy storage and 
 distribution in a SigMF `Archive`.
 
-                 ┌────────────────────┐
-                 │                    │
-                 │  SigMF Collection  │
-                 │                    ├──┐
-                 │   (optional file)  │  │
-                 └──────────┬─────────┘  │
-                            │            │            ┌─────────────────────┐
-                            │            │  stored in │                     │
-                            │ links      ├────────────►    SigMF Archive    │
-                            │            │            │                     │
-                            │            │            │   (optional file)   │
-                  ┌─────────▼─────────┐  │            └─────────────────────┘
-                  │                   │  │
-                  │  SigMF Recording  ├──┘
-                  │                   │
-                  └─────────┬─────────┘
-                            │
-                            │ comprises
-                            │
-              ┌─────────────┴──────────────┐
-              │                            │
-     ┌────────▼───────┐                    │
-     │                │               ┌────▼────┐
-     │ SigMF Metadata ├───────────────► dataset │
-     │                │   describes   └────┬────┘
-     │     (file)     │                    │
-     └────────────────┘                    │
-                                 ┌─────────┴────────────┐
-                                 │     is either        │
-                                 │                      │
-                        ┌────────▼────────┐    ┌────────▼─────────┐
-                        │                 │    │                  │
-                        │  SigMF Dataset  │    │  Non-Conforming  │
-                        │                 │    │     Dataset      │
-                        │      (file)     │    │                  │
-                        └─────────────────┘    │      (file)      │
-                                               └──────────────────┘
-
+```
+             ┌────────────────────┐
+             │                    │
+             │  SigMF Collection  │
+             │                    ├───┐
+             │   (optional file)  │   │
+             └──────────┬─────────┘   │
+                        │             │             ┌─────────────────────┐
+                        │             │  stored in  │                     │
+                        │ links       ├─────────────►    SigMF Archive    │
+                        │             │             │                     │
+                        │             │             │   (optional file)   │
+             ╔══════════▼══════════╗  │             └─────────────────────┘
+             ║                     ║  │
+             ║   SigMF Recording   ╟──┘
+             ║                     ║
+             ║ (base SigMF object) ║
+             ╚══════════╤══════════╝
+                        │
+                        │ comprises
+                        │
+          ┌─────────────┴────────────────────────┐
+          │                                      │
+ ┌────────▼───────┐                              │
+ │                │                         ┌────▼────┐
+ │ SigMF Metadata ├─────────────────────────► dataset │
+ │                │  describes contents of  └────┬────┘
+ │     (file)     │                              │
+ └────────────────┘                              │  is one of
+                       ┌──────────────────────┬──┴────────────────────┐
+                       │                      │                       │
+                       │                      │                       │
+              ┌────────▼────────┐    ┌────────▼─────────┐    ┌────────▼────────┐
+              │                 │    │                  │    │                 │
+              │  SigMF Dataset  │    │  Non-Conforming  │    │ Virtual Dataset │
+              │                 │    │     Dataset      │    │                 │
+              │      (file)     │    │                  │    │    (no file)    │
+              └─────────────────┘    │      (file)      │    └─────────────────┘
+                                     └──────────────────┘
+```
 
 Rules for all files:
 1. All filetypes MUST be stored in separate files on-disk.
@@ -339,43 +341,58 @@ about the Recording itself.
 The following names are specified in the Core namespace for use in the Global
 object:
 
-| name            | required | type    | description      |
-| --------------- | -------- | --------| -----------------|
-| `datatype`      | true     | string  | The SigMF Dataset format of the stored samples in the dataset file.|
-| `sample_rate`   | false    | double  | The sample rate of the signal in samples per second.|
-| `version`       | true     | string  | The version of the SigMF specification used to create the Metadata file.|
-| `num_channels`  | false    | uint    | Total number of interleaved channels in the dataset file. If omitted, this defaults to one.|
-| `sha512`        | false    | string  | The SHA512 hash of the Dataset file associated with the SigMF file.|
-| `offset`        | false    | uint    | The index number of the first sample in the Dataset. If not provided, this value defaults to zero. Typically used when a Recording is split over multiple files. All sample indices in SigMF are absolute, and so all other indices referenced in metadata for this recording SHOULD be greater than or equal to this value.|
-| `description`   | false    | string  | A text description of the SigMF Recording.|
-| `author`        | false    | string  | A text identifier for the author potentially including name, handle, email, and/or other ID like Amateur Call Sign. For example "Bruce Wayne <bruce@waynetech.com>" or "Bruce (K3X)".|
-| `meta_doi`      | false    | string  | The registered DOI (ISO 26324) for a Recording's Metadata file.|
-| `data_doi`      | false    | string  | The registered DOI (ISO 26324) for a Recording's Dataset file.|
-| `recorder`      | false    | string  | The name of the software used to make this SigMF Recording.|
-| `license`       | false    | string  | A URL for the license document under which the Recording is offered.|
-| `hw`            | false    | string  | A text description of the hardware used to make the Recording.|
-| `dataset`       | false    | string  | The full filename of the dataset file this Metadata file describes.|
-| `trailing_bytes`| false    | uint    | The number of bytes to ignore at the end of a Non-Conforming Dataset file.|
-| `geolocation`   | false    | GeoJSON `point` object | The location of the Recording system.|
-| `extensions`    | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
-| `collection`    | false    | string  | The base filename of a `collection` with which this Recording is associated.|
+| name             | required | type    | description      |
+| ---------------- | -------- | --------| -----------------|
+| `datatype`       | true     | string  | The SigMF Dataset format of the stored samples in the dataset file.|
+| `sample_rate`    | false    | double  | The sample rate of the signal in samples per second.|
+| `version`        | true     | string  | The version of the SigMF specification used to create the Metadata file.|
+| `num_channels`   | false    | uint    | Total number of interleaved channels in the dataset file. If omitted, this defaults to one.|
+| `sha512`         | false    | string  | The SHA512 hash of the Dataset file associated with the SigMF file.|
+| `offset`         | false    | uint    | The index number of the first sample in the Dataset. If not provided, this value defaults to zero. Typically used when a Recording is split over multiple files. All sample indices in SigMF are absolute, and so all other indices referenced in metadata for this recording SHOULD be greater than or equal to this value.|
+| `description`    | false    | string  | A text description of the SigMF Recording.|
+| `author`         | false    | string  | A text identifier for the author potentially including name, handle, email, and/or other ID like Amateur Call Sign. For example "Bruce Wayne <bruce@waynetech.com>" or "Bruce (K3X)".|
+| `meta_doi`       | false    | string  | The registered DOI (ISO 26324) for a Recording's Metadata file.|
+| `data_doi`       | false    | string  | The registered DOI (ISO 26324) for a Recording's Dataset file.|
+| `recorder`       | false    | string  | The name of the software used to make this SigMF Recording.|
+| `license`        | false    | string  | A URL for the license document under which the Recording is offered.|
+| `hw`             | false    | string  | A text description of the hardware used to make the Recording.|
+| `dataset`        | false    | string  | The full filename of the dataset file this Metadata file describes.|
+| `trailing_bytes` | false    | uint    | The number of bytes to ignore at the end of a Non-Conforming Dataset file.|
+| `virtual_dataset`| false    | bool    | Indicates that the dataset is virtual (SigMF Recording is metadata only).|
+| `geolocation`    | false    | GeoJSON `point` object | The location of the Recording system.|
+| `extensions`     | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
+| `collection`     | false    | string  | The base filename of a `collection` with which this Recording is associated.|
 
 ##### The `dataset` Field
+
 The `core:dataset` field in the Global object is used to specify the dataset file that
 this Metadata describes. If provided, this string MUST be the complete filename of the
 dataset file, including the extension. The dataset file must be in the local directory,
 and this string MUST NOT include any aspects of filepath other than the filename.
 
-If this field is omitted, the dataset file MUST be a SigMF Dataset file (NOT a
+If this field is omitted, the dataset MUST have a SigMF compliant Dataset file (NOT a
 Non-Conforming Dataset), and MUST have the same base filename as the Metadata file and
-use the `.sigmf-data` extension.
+use the `.sigmf-data` extension. If it is acceptable to rename the files in the SigMF
+recording, it is RECOMMENDED that SigMF Compliant recordings DO NOT use this field.
 
 ##### The `trailing_bytes` Field
+
 This field is used with Non-Conforming Datasets to indicate some number of bytes that
 trail the sample data in the NCD file that should be ignored for processing. This can
 be used to ignore footer data in non-SigMF filetypes.
 
+##### The `virtual_dataset` Field
+
+This field should be defined and set to `true` to indicate that the dataset is Virtual.
+This is used when only the metadata is intentionally being stored without a
+corresponding `.sigmf-data` file. This may be done when a dataset will be generated
+dynamically from the schema, or because only the schema is needed for the purposes of
+the application. This is an advanced feature that requires caution as compliant
+applications are not required to validate this field and may react as if the SigMF
+Recording is not valid.
+
 ##### The `geolocation` Field
+
 The `core:geolocation` field in the Global Object is used to store the
 location of the recording system. The location is stored as a single
 [RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` object
@@ -441,6 +458,7 @@ In the example below, `extension-01` is used, but not necessary, and
 ```
 
 ##### The `collection` Field
+
 This field is used to indicate that this Recording is part of a SigMF Collection 
 (described later in this document). It is strongly RECOMMENDED that if you are 
 building a Collection, that each Recording referenced by that Collection use this 
@@ -750,11 +768,13 @@ requirements:
    definition can be in user documentation or within the code its self, though
    explicit documentation is RECOMMENDED.
 
-SigMF Compliant Applications MAY work with non-compliant Schema or Recordings,
-but such operation is NOT guaranteed or implied. Support for SigMF collections
-is OPTIONAL for SigMF compliant applications, however it is RECOMMENDED that
-applications implementing SigMF make use of collections when appropriate for
-interoperability and consistency.
+Compliant applications are NOT REQUIRED to support Non-Compliant Datasets or
+Virtual Datasets, but it is RECOMMENDED that they parse the respective metadata
+fields in the `gloabl` object to provide descriptive messages to users regarding
+why the files are not supported. Support for SigMF collections is OPTIONAL for
+SigMF compliant applications, however it is RECOMMENDED that applications
+implementing SigMF make use of collections when appropriate for interoperability
+and consistency.
 
 ## Citing SigMF
 
