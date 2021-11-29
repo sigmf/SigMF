@@ -293,7 +293,7 @@ class SigMFFile():
             else:
                 sample_count = 0
         else:
-            file_size = path.getsize(self.data_file) # size of dataset in bytes
+            file_size = path.getsize(self.data_file) - self.get_global_field(self.TRAILING_BYTES_KEY, 0)  # in bytes
             sample_size = self.get_sample_size() # size of a sample in bytes
             num_channels = self.get_num_channels()
             sample_count = file_size // sample_size // num_channels
@@ -460,7 +460,11 @@ class SigMFFile():
         elif start_index + count > self.sample_count:
             raise IOError("Cannot read beyond EOF.")
         if self.data_file is None:
-            raise SigMFFileError("No signal data file has been associated with the metadata.")
+            if self.get_global_field(self.VIRTUAL_DATASET_KEY, False):
+                # only if data_file is `None` allows access to dynamically generated datsets
+                raise SigMFFileError("Cannot read samples from a virtual dataset.")
+            else:
+                raise SigMFFileError("No signal data file has been associated with the metadata.")
 
         dtype = dtype_info(self.get_global_field(self.DATATYPE_KEY))
         is_complex_data = dtype['is_complex']
@@ -558,6 +562,20 @@ def dtype_info(datatype):
     return output_info
 
 
+def get_dataset_filename_from_metadata(meta_fn, metadata=None):
+    '''
+    Parse provided metadata and return the expected data filename. In the case of
+    a virtual dataset or if the file does not exist, this will return 'None'.
+    '''
+    if metadata['global'].get('core:virtual_dataset', False):
+        return None
+    data_fn = get_sigmf_filenames(meta_fn)['data_fn']
+    data_fn = metadata['global'].get('core:dataset', data_fn)
+    if not path.isfile(data_fn):
+        return None
+    return data_fn
+
+
 def fromarchive(archive_path, dir=None):
     """Extract an archive and return a SigMFFile.
 
@@ -565,7 +583,6 @@ def fromarchive(archive_path, dir=None):
     the archive will be extracted to a temporary directory. For example,
     `dir` == "." will extract the archive into the current working
     directory.
-
     """
     if not dir:
         dir = tempfile.mkdtemp()
@@ -580,12 +597,13 @@ def fromarchive(archive_path, dir=None):
         metadata = None
 
         for member in members:
-            if member.name.endswith(SIGMF_DATASET_EXT):
-                data_file = path.join(dir, member.name)
-            elif member.name.endswith(SIGMF_METADATA_EXT):
+            if member.name.endswith(SIGMF_METADATA_EXT):
                 bytestream_reader = codecs.getreader("utf-8")  # bytes -> str
                 mdfile_reader = bytestream_reader(archive.extractfile(member))
                 metadata = json.load(mdfile_reader)
+                data_file = get_dataset_filename_from_metadata(member.name, metadata)
+            else:
+                archive.extractfile(member)
     finally:
         archive.close()
 
@@ -611,19 +629,18 @@ def fromfile(filename, skip_checksum=False):
     '''
     fns = get_sigmf_filenames(filename)
     meta_fn = fns['meta_fn']
-    data_fn = fns['data_fn']
     archive_fn = fns['archive_fn']
 
     if (filename.lower().endswith(SIGMF_ARCHIVE_EXT) or not path.isfile(meta_fn)) and path.isfile(archive_fn):
         return fromarchive(archive_fn)
-    if not path.isfile(data_fn):
-        data_fn = None
 
     meta_fp = open(meta_fn, "rb")
     bytestream_reader = codecs.getreader("utf-8")
     mdfile_reader = bytestream_reader(meta_fp)
     metadata = json.load(mdfile_reader)
     meta_fp.close()
+
+    data_fn = get_dataset_filename_from_metadata(meta_fn, metadata)
     return SigMFFile(metadata=metadata, data_file=data_fn, skip_checksum=skip_checksum)
 
 
