@@ -93,7 +93,7 @@ are capitalized after being introduced (e.g., Recording).
 ## Specification
 
 The SigMF specification fundamentally describes two types of information:
-datasets, and metadata associated with those datasets. Taken together, a dataset
+datasets, and metadata associated with those datasets. Taken together, a Dataset
 with its SigMF metadata is a SigMF `Recording`.
 
 Datasets, for purposes of this specification, are sets of digital measurements
@@ -103,10 +103,10 @@ created by digital synthesis or by an Analog-to-Digital Converter. They could
 also be geolocation coordinates from a GNSS receiver, temperature readings
 from a thermal sensor, or any other stored digital measurement information.
 
-Metadata describes the dataset with which it is associated. The metadata
-includes information meant for the human users of the dataset, such as a title
+Metadata describes the Dataset with which it is associated. The metadata
+includes information meant for the human users of the Dataset, such as a title
 and description, and information meant for computer applications (tools) that
-operate on the dataset.
+operate on the Dataset.
 
 This specification defines a schema for metadata using a `core` namespace that 
 is a reserved name and can only be defined by this specification. Other metadata
@@ -116,18 +116,19 @@ model and format for how SigMF data should be stored at-rest (on-disk) using JSO
 ### Files
 
 There are two fundamental filetypes defined by this specification: files with 
-metadata, and the files that contain the datasets described by the metadata. There
-are two types of files containining metadata, a SigMF `Metadata` file, and a SigMF
-`Collection` file. There are also two types of datasets, a SigMF `Dataset` file, 
+metadata, and the files that contain the Datasets described by the metadata. There
+are two types of files containing metadata, a SigMF `Metadata` file, and a SigMF
+`Collection` file. There are also two types of Datasets, a SigMF `Dataset` file, 
 and a `Non-Conforming Dataset` file, abbreviated as `NCD`.
 
 The primary unit of SigMF is a SigMF `Recording`, which comprises a Metadata file
-and the dataset file it describes. Collections are an optional feature that are 
+and the Dataset file it describes. Collections are an optional feature that are 
 used to describe the relationships between multiple Recordings. 
 
 Collections and multiple Recordings can be packaged for easy storage and 
 distribution in a SigMF `Archive`.
 
+```
                  ┌────────────────────┐
                  │                    │
                  │  SigMF Collection  │
@@ -139,11 +140,12 @@ distribution in a SigMF `Archive`.
                             │ links      ├────────────►    SigMF Archive    │
                             │            │            │                     │
                             │            │            │   (optional file)   │
-                  ┌─────────▼─────────┐  │            └─────────────────────┘
-                  │                   │  │
-                  │  SigMF Recording  ├──┘
-                  │                   │
-                  └─────────┬─────────┘
+                 ╔══════════▼══════════╗ │            └─────────────────────┘
+                 ║                     ║ │
+                 ║   SigMF Recording   ╟─┘
+                 ║                     ║
+                 ║ (base SigMF object) ║
+                 ╚══════════╤══════════╝
                             │
                             │ comprises
                             │
@@ -151,7 +153,7 @@ distribution in a SigMF `Archive`.
               │                            │
      ┌────────▼───────┐                    │
      │                │               ┌────▼────┐
-     │ SigMF Metadata ├───────────────► dataset │
+     │ SigMF Metadata ├───────────────► Dataset │
      │                │   describes   └────┬────┘
      │     (file)     │                    │
      └────────────────┘                    │
@@ -165,7 +167,7 @@ distribution in a SigMF `Archive`.
                         │      (file)     │    │                  │
                         └─────────────────┘    │      (file)      │
                                                └──────────────────┘
-
+```
 
 Rules for all files:
 1. All filetypes MUST be stored in separate files on-disk.
@@ -173,13 +175,13 @@ Rules for all files:
    words rather than whitespace or underscores.
 
 Rules for SigMF Metadata files:
-1. A Metadata file MUST only describe one dataset file.
+1. A Metadata file MUST only describe one Dataset file.
 1. A Metadata file MUST be stored in UTF-8 encoding.
 1. A Metadata file MUST have a `.sigmf-meta` filename extension.
-1. A Metadata file MUST be in the same directory as the dataset file
+1. A Metadata file MUST be in the same directory as the Dataset file
    it describes.
 1. It is RECOMMENDED that the base filenames (not including file extension) of 
-   a Recording's Metadata and dataset files be identical.
+   a Recording's Metadata and Dataset files be identical.
 
 Rules for SigMF Dataset files:
 1. The Dataset file MUST have a `.sigmf-data` filename extension.
@@ -197,7 +199,7 @@ Rules for SigMF Collection files:
 Rules for SigMF Archive files:
 1. The Archive MUST use the `tar` archive format, as specified by POSIX.1-2001.
 1. The Archive file's filename extension MUST be `.sigmf`.
-1. The Archive MUST contain the following files: for each contained recording
+1. The Archive MUST contain the following files: for each contained Recording
    with some name given here meta-syntactically as `N`, files named `N` (a
    directory), `N/N.sigmf-meta`, and `N/N.sigmf-data`.
 1. The Archive MAY contain a `.sigmf-collection` file in the top-level directory.
@@ -210,8 +212,8 @@ Rules for SigMF Archive files:
 
 There are four orthogonal characteristics of sample data: complex or real, 
 floating-point or integer, bit-width, and endianness. The following ABNF 
-rules specify the dataset formats defined in the Core namespace. Additional
-dataset formats MAY be added through extensions.
+rules specify the Dataset formats defined in the Core namespace. Additional
+Dataset formats MAY be added through extensions.
 
 ```abnf
     dataset-format = (real / complex) ((type endianness) / byte)
@@ -247,9 +249,9 @@ Complex samples MUST be interleaved, with the in-phase component first (i.e.,
 `I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`). When `core:num_channels` in the
 Global object (described below) indicates that the Recording contains more than one channel,
 samples from those channels MUST be interleaved in the same manner, with
-the same index from each channel's sample serially in the recording. For
+the same index from each channel's sample serially in the Recording. For
 example, a Recording with two channels of `ri16_le` representing real-valued
-audio data from a stereo recording and here labeled `L` for left and `R` for
+audio data from a stereo Recording and here labeled `L` for left and `R` for
 right, the data MUST appear as `L[0]` `R[0]` `L[1]` `R[1]` ... `L[n]` `R[n]`.
 The data type specified by `core:data_type` applies to all channels of data
 both real and imaginary parts.
@@ -328,7 +330,7 @@ namespaces MAY be defined by the user as needed.
 1. Extensions MUST have version numbers. It is RECOMMENDED that extensions use
    [Semantic Versioning](https://semver.org/).
 1. An extension namespace MAY define new top-level SigMF Objects, key/value
-   pairs, new files, new dataset formats, or new datatypes.
+   pairs, new files, new Dataset formats, or new datatypes.
 1. New key/value pairs defined by an extension namespace MUST be defined in
    the context of a specific SigMF top-level object - i.e., `global`,
    `captures`, `annotations`, or a new user-defined object.
@@ -347,10 +349,10 @@ object:
 
 | name            | required | type    | description      |
 | --------------- | -------- | --------| -----------------|
-| `datatype`      | true     | string  | The SigMF Dataset format of the stored samples in the dataset file.|
+| `datatype`      | true     | string  | The SigMF Dataset format of the stored samples in the Dataset file.|
 | `sample_rate`   | false    | double  | The sample rate of the signal in samples per second.|
 | `version`       | true     | string  | The version of the SigMF specification used to create the Metadata file.|
-| `num_channels`  | false    | uint    | Total number of interleaved channels in the dataset file. If omitted, this defaults to one.|
+| `num_channels`  | false    | uint    | Total number of interleaved channels in the Dataset file. If omitted, this defaults to one.|
 | `sha512`        | false    | string  | The SHA512 hash of the Dataset file associated with the SigMF file.|
 | `offset`        | false    | uint    | The index number of the first sample in the Dataset. If not provided, this value defaults to zero. Typically used when a Recording is split over multiple files. All sample indices in SigMF are absolute, and so all other indices referenced in metadata for this recording SHOULD be greater than or equal to this value.|
 | `description`   | false    | string  | A text description of the SigMF Recording.|
@@ -360,28 +362,50 @@ object:
 | `recorder`      | false    | string  | The name of the software used to make this SigMF Recording.|
 | `license`       | false    | string  | A URL for the license document under which the Recording is offered.|
 | `hw`            | false    | string  | A text description of the hardware used to make the Recording.|
-| `dataset`       | false    | string  | The full filename of the dataset file this Metadata file describes.|
+| `dataset`       | false    | string  | The full filename of the Dataset file this Metadata file describes.|
 | `trailing_bytes`| false    | uint    | The number of bytes to ignore at the end of a Non-Conforming Dataset file.|
+| `metadata_only` | false    | bool    | Indicates the Metadata file is intentionally distributed without the Dataset.|
 | `geolocation`   | false    | GeoJSON `point` object | The location of the Recording system.|
 | `extensions`    | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
 | `collection`    | false    | string  | The base filename of a `collection` with which this Recording is associated.|
 
 ##### The `dataset` Field
-The `core:dataset` field in the Global object is used to specify the dataset file that
+
+The `core:dataset` field in the Global object is used to specify the Dataset file that
 this Metadata describes. If provided, this string MUST be the complete filename of the
-dataset file, including the extension. The dataset file must be in the local directory,
+Dataset file, including the extension. The Dataset file must be in the local directory,
 and this string MUST NOT include any aspects of filepath other than the filename.
 
-If this field is omitted, the dataset file MUST be a SigMF Dataset file (NOT a
-Non-Conforming Dataset), and MUST have the same base filename as the Metadata file and
-use the `.sigmf-data` extension.
+If a Recording does not have this field, it MUST have a compliant SigMF Dataset (NOT
+a Non-Conforming Dataset) which MUST use the same base filename as the Metadata file
+and use the `.sigmf-data` extension. If a SigMF Recording or Archive is renamed this
+field MUST also be updated, because of this it is RECOMMENDED that Compliant SigMF
+Recordings avoid use of this field.
+
+This field SHOULD NOT be used in conjunction the `core:metadata_only` field. If both
+fields exist and the file specified by `core:dataset` exists, then `core:metadata_only`
+SHOULD be ignored by the application.
 
 ##### The `trailing_bytes` Field
+
 This field is used with Non-Conforming Datasets to indicate some number of bytes that
 trail the sample data in the NCD file that should be ignored for processing. This can
 be used to ignore footer data in non-SigMF filetypes.
 
+##### The `metadata_only` Field
+
+This field should be defined and set to `true` to indicate that the Metadata
+file is being distributed without a corresponding `.sigmf-data` file. This may
+be done when the Dataset will be generated dynamically from information in the
+schema, or because just the schema is sufficient for the intended application. A
+metadata only distribution is not a SigMF Recording.
+
+If a Compliant SigMF Recording uses this field, it MAY indicate that the Dataset
+was dynamically generated from the metadata. This field MAY NOT be used in
+conjunction with Non-Compliant Datasets or the `core:dataset` field.
+
 ##### The `geolocation` Field
+
 The `core:geolocation` field in the Global Object is used to store the
 location of the recording system. The location is stored as a single
 [RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` object
@@ -422,7 +446,7 @@ pairs defined below, and MUST NOT contain any other fields.
 | ---------- | -------- | ------- | --------------------------------------------------------------------------- |
 | `name`     | true     | string  | The name of the SigMF extension namespace.                                  |
 | `version`  | true     | string  | The version of the extension namespace specification used.                  |
-| `optional` | true     | boolean | If this field is `true`, the extension is REQUIRED to parse this recording. |
+| `optional` | true     | boolean | If this field is `true`, the extension is REQUIRED to parse this Recording. |
 
 In the example below, `extension-01` is used, but not necessary, and
 `version 1.2.3` of `extension-02` *is* necessary.
@@ -447,6 +471,7 @@ In the example below, `extension-01` is used, but not necessary, and
 ```
 
 ##### The `collection` Field
+
 This field is used to indicate that this Recording is part of a SigMF Collection 
 (described later in this document). It is strongly RECOMMENDED that if you are 
 building a Collection, that each Recording referenced by that Collection use this 
@@ -463,7 +488,7 @@ capture segment's `core:sample_start` key, ascending.
 Capture Segment Objects are composed of key/value pairs, and each Segment describes
 a chunk of samples that can be mapped into memory for processing. Each Segment
 MUST contain a `core:sample_start` key/value pair, which indicates the sample index
-relative to the dataset where this Segment's metadata applies. The fields that are
+relative to the Dataset where this Segment's metadata applies. The fields that are
 described within a Capture Segment are scoped to that Segment only and need to be
 explicitly declared again if they are valid in subsequent Segments.
 
@@ -472,16 +497,16 @@ Segment Objects:
 
 | name            | required | type   | description                                                                                 |
 | ----------------| -------- | ------ | --------------------------------------------------------------------------------------------|
-| `sample_start`  | true     | uint   | The sample index in the dataset file at which this Segment takes effect.                    |
+| `sample_start`  | true     | uint   | The sample index in the Dataset file at which this Segment takes effect.                    |
 | `global_index`  | false    | uint   | The index of the sample referenced by `sample_start` relative to an original sample stream. |
-| `header_bytes`  | false    | uint   | The number of bytes preceeding a chunk of samples that are not sample data, used for NCDs.  |
+| `header_bytes`  | false    | uint   | The number of bytes preceding a chunk of samples that are not sample data, used for NCDs.  |
 | `frequency`     | false    | double | The center frequency of the signal in Hz.                                                   |
 | `datetime`      | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.|
 
 ##### The `sample_start` Field
 
 This field specifies the sample index where this Segment takes effect relative
-to the recorded dataset file. If the dataset is a SigMF Dataset file, this 
+to the recorded Dataset file. If the Dataset is a SigMF Dataset file, this 
 field can be immediately mapped to physical disk location since conforming
 Datasets only contain sample data.
 
@@ -489,7 +514,7 @@ Datasets only contain sample data.
 
 This field describes the index of the sample referenced by the `sample_start`
 field relative to an original sample stream, the entirety of which may not
-have been captured in a recorded dataset. If ommitted, this value SHOULD
+have been captured in a recorded Dataset. If omitted, this value SHOULD
 be treated as equal to `sample_start`.
 
 For example, some hardware devices are capable of 'counting' samples at
@@ -617,7 +642,7 @@ There is no limit to the number of annotations that can apply to the same group
 of samples. If two annotations have the same `sample_start`, there is no
 defined ordering between them. If `sample_count` is not provided, it SHOULD
 be assumed that the annotation applies from `sample_start` through the end of
-the dataset, in all other cases `sample_count` MUST be provided.
+the Dataset, in all other cases `sample_count` MUST be provided.
 
 The `freq_lower_edge` and `freq_upper_edge` fields SHOULD be at RF if the
 feature is at a known RF frequency. If there is no known center frequency (as
@@ -638,7 +663,7 @@ The `sigmf-collection` file contains metadata in a single top-level object
 called a `collection`. The Collection Object contains key/value pairs that 
 describe relationships between SigMF Recordings.
 
-The Collection object points to specific recordings via a `SigMF Recording tuple`,
+The Collection object points to specific Recordings via a `SigMF Recording tuple`,
 which references the base-name of the Recording and the SHA512 hash of the 
 Metadata file. Tuples MAY be the singular value in a key/value pair, or provided
 in an ordered list via a JSON array.
@@ -662,7 +687,7 @@ The following names are specified in the `core` namespace for use in the `collec
 | `collection_doi` | false    | string                | The registered DOI (ISO 26324) for a Collection.|
 | `license`        | false    | string                | A URL for the license document under which this Collection metadata is offered.|
 | `extensions`     | false    | array                 | A list of objects describing extensions used by this Collection.|
-| `streams`        | false    | array                 | An ordered array of SigMF Recording Tuples, indicating multiple recorded streams of data (e.g., phased array collections).|
+| `streams`        | false    | array                 | An ordered array of SigMF Recording Tuples, indicating multiple recorded streams of data (e.g., channels from a phased array).|
 
 Example `top-level.sigmf-collection` file:
 ```JSON
@@ -702,9 +727,9 @@ to help you make these choices.
 
 The term 'SigMF Compliant' is used throughout this document, which can take on
 one of several contextually dependent meanings. In order for a schema,
-recording, or application to be 'SigMF Compliant', specific conditions MUST be
+Recording, or application to be 'SigMF Compliant', specific conditions MUST be
 met, outlined in the following sections. Provided the below criteria are met, an
-application or dataset can indicate that it is 'SigMF Compliant'.
+application or Recording can indicate that it is 'SigMF Compliant'.
 
 ### SigMF Schema Compliance
 
@@ -719,28 +744,28 @@ In order to be 'SigMF Compliant', a schema MUST meet the following requirements:
 
 ### SigMF Recording Compliance
 
-In order to be 'SigMF Compliant', a recording MUST meet the following
+In order to be 'SigMF Compliant', a Recording MUST meet the following
 requirements:
 
 1. The Recording's schema file MUST be SigMF Compliant.
-1. Adheres to and supports the file naming conventions and dataset formats
+1. Adheres to and supports the file naming conventions and Dataset formats
    specified in this document.
 1. Stores data using the on-disk representation described by the `datatype`.
 
-Non Compliant Datasets might be compliant with SigMF Schema, but are not
-compliant with SigMF Recordings.
+Recordings with Non-Compliant Datasets MAY have SigMF Compliant schema, but
+cannot be SigMF Compliant Recordings.
 
 ### SigMF Collection Compliance
 
 In order to be 'SigMF Compliant', a collection MUST contain only compliant
-recordings.
+Recordings.
 
 ### SigMF Application Compliance
 
 In order to be 'SigMF Compliant', an application MUST meet the following
 requirements:
 
-1. Adheres to and supports the file rules, dataset formats, `objects`,
+1. Adheres to and supports the file rules, Dataset formats, `objects`,
    `namespaces`, and `names` specified by this document.
 1. MUST be able to ignore any `object` or `namespace` not specified by this
    document and still function normally.
@@ -753,13 +778,15 @@ requirements:
    which optional fields are used by the application.
 1. MUST define which extensions are supported, parses ALL required fields in
    listed extension namespaces, and defines which optional fields are used. This
-   definition can be in user documentation or within the code its self, though
+   definition can be in user documentation or within the code itself, though
    explicit documentation is RECOMMENDED.
 
-SigMF Compliant Applications MAY work with non-compliant Schema or Recordings,
-but such operation is NOT guaranteed or implied. Support for SigMF collections
-is OPTIONAL for SigMF compliant applications, however it is RECOMMENDED that
-applications implementing SigMF make use of collections when appropriate for
+Compliant applications are NOT REQUIRED to support Non-Compliant Datasets or
+Metadata Only schema files, but it is RECOMMENDED that they parse the respective
+metadata fields in the `global` object to provide descriptive messages to users
+regarding why the files are not supported. Support for SigMF Collections is
+OPTIONAL for SigMF compliant applications, however it is RECOMMENDED that
+applications implementing SigMF make use of Collections when appropriate for
 interoperability and consistency.
 
 ## Citing SigMF
