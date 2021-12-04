@@ -125,43 +125,43 @@ used to describe the relationships between multiple Recordings.
 Collections and multiple Recordings can be packaged for easy storage and 
 distribution in a SigMF `Archive`.
 
-             ┌────────────────────┐
-             │                    │
-             │  SigMF Collection  │
-             │                    ├──┐
-             │   (optional file)  │  │
-             └──────────┬─────────┘  │
-                        │            │            ┌─────────────────────┐
-                        │            │  stored in │                     │
-                        │ links      ├────────────►    SigMF Archive    │
-                        │            │            │                     │
-                        │            │            │   (optional file)   │
-              ┌─────────▼─────────┐  │            └─────────────────────┘
-              │                   │  │
-              │  SigMF Recording  ├──┘
-              │                   │
-              └─────────┬─────────┘
-                        │
-                        │ comprises
-                        │
-          ┌─────────────┴──────────────┐
-          │                            │
- ┌────────▼───────┐                    │
- │                │               ┌────▼────┐
- │ SigMF Metadata ├───────────────► dataset │
- │                │   describes   └────┬────┘
- │     (file)     │                    │
- └────────────────┘                    │
-                             ┌─────────┴────────────┐
-                             │     is either        │
-                             │                      │
-                    ┌────────▼────────┐    ┌────────▼─────────┐
-                    │                 │    │                  │
-                    │  SigMF Dataset  │    │  Non-Conforming  │
-                    │                 │    │     Dataset      │
-                    │      (file)     │    │                  │
-                    └─────────────────┘    │      (file)      │
-                                           └──────────────────┘
+                 ┌────────────────────┐
+                 │                    │
+                 │  SigMF Collection  │
+                 │                    ├──┐
+                 │   (optional file)  │  │
+                 └──────────┬─────────┘  │
+                            │            │            ┌─────────────────────┐
+                            │            │  stored in │                     │
+                            │ links      ├────────────►    SigMF Archive    │
+                            │            │            │                     │
+                            │            │            │   (optional file)   │
+                  ┌─────────▼─────────┐  │            └─────────────────────┘
+                  │                   │  │
+                  │  SigMF Recording  ├──┘
+                  │                   │
+                  └─────────┬─────────┘
+                            │
+                            │ comprises
+                            │
+              ┌─────────────┴──────────────┐
+              │                            │
+     ┌────────▼───────┐                    │
+     │                │               ┌────▼────┐
+     │ SigMF Metadata ├───────────────► dataset │
+     │                │   describes   └────┬────┘
+     │     (file)     │                    │
+     └────────────────┘                    │
+                                 ┌─────────┴────────────┐
+                                 │     is either        │
+                                 │                      │
+                        ┌────────▼────────┐    ┌────────▼─────────┐
+                        │                 │    │                  │
+                        │  SigMF Dataset  │    │  Non-Conforming  │
+                        │                 │    │     Dataset      │
+                        │      (file)     │    │                  │
+                        └─────────────────┘    │      (file)      │
+                                               └──────────────────┘
 
 
 Rules for all files:
