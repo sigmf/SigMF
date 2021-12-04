@@ -262,6 +262,12 @@ SigMF metadata fundamentally takes the form of key/value pairs:
 "namespace:name": value,
 ```
 
+Metadata field names in the top level `global` object, `captures` segment
+objects, or `annotations` objects MUST be of this form. All fields other than
+those at the top level which contain a `:` delimiter SHALL only use letters,
+numbers, and the `_` character; all other characters are forbidden. Field names
+MUST NOT start with a number and MUST NOT not be C++20 or Python 3.10 keywords.
+
 When stored on-disk (at-rest), these rules apply:
 1. The Metadata file MUST be written in [JSON](http://www.json.org/), as specified
    by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
