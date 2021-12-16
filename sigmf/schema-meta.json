@@ -71,6 +71,21 @@
                 "required": false,
                 "help": "Information about the hardware used (measurement setup, antennas, etc.)"
             },
+            "core:dataset": {
+                "type": "string",
+                "required": false,
+                "help": "The full filename of the dataset file this Metadata file describes."
+            },
+            "core:trailing_bytes": {
+                "type": "uint",
+                "required": false,
+                "help": "The number of bytes to ignore at the end of a Non-Conforming Dataset file."
+            },
+            "core:metadata_only": {
+                "type": "bool",
+                "required": false,
+                "help": "Indicates the Metadata file is intentionally distributed without the dataset."
+            },
             "core:geolocation": {
                 "type": "dict",
                 "required": false,

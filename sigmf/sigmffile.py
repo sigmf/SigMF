@@ -72,6 +72,9 @@ class SigMFFile():
     RECORDER_KEY = "core:recorder"
     LICENSE_KEY = "core:license"
     HW_KEY = "core:hw"
+    DATASET_KEY = "core:dataset"
+    TRAILING_BYTES_KEY = "core:trailing_bytes"
+    METADATA_ONLY_KEY = "core:metadata_only"
     EXTENSIONS_KEY = "core:extensions"
     DATETIME_KEY = "core:datetime"
     LAT_KEY = "core:latitude"
@@ -84,9 +87,9 @@ class SigMFFile():
     CAPTURE_KEY = "captures"
     ANNOTATION_KEY = "annotations"
     VALID_GLOBAL_KEYS = [
-        AUTHOR_KEY, COLLECTION_KEY, DATATYPE_KEY, DATA_DOI_KEY, DESCRIPTION_KEY, EXTENSIONS_KEY, GEOLOCATION_KEY,
-        HASH_KEY, HW_KEY, LICENSE_KEY, META_DOI_KEY, NUM_CHANNELS_KEY, RECORDER_KEY, SAMPLE_RATE_KEY,
-        START_OFFSET_KEY, VERSION_KEY
+        AUTHOR_KEY, COLLECTION_KEY, DATASET_KEY, DATATYPE_KEY, DATA_DOI_KEY, DESCRIPTION_KEY, EXTENSIONS_KEY,
+        GEOLOCATION_KEY, HASH_KEY, HW_KEY, LICENSE_KEY, META_DOI_KEY, METADATA_ONLY_KEY, NUM_CHANNELS_KEY, RECORDER_KEY,
+        SAMPLE_RATE_KEY, START_OFFSET_KEY, TRAILING_BYTES_KEY, VERSION_KEY
     ]
     VALID_CAPTURE_KEYS = [DATETIME_KEY, FREQUENCY_KEY, GLOBAL_INDEX_KEY, START_INDEX_KEY]
     VALID_ANNOTATION_KEYS = [
@@ -290,7 +293,7 @@ class SigMFFile():
             else:
                 sample_count = 0
         else:
-            file_size = path.getsize(self.data_file) # size of dataset in bytes
+            file_size = path.getsize(self.data_file) - self.get_global_field(self.TRAILING_BYTES_KEY, 0)  # in bytes
             sample_size = self.get_sample_size() # size of a sample in bytes
             num_channels = self.get_num_channels()
             sample_count = file_size // sample_size // num_channels
@@ -457,7 +460,11 @@ class SigMFFile():
         elif start_index + count > self.sample_count:
             raise IOError("Cannot read beyond EOF.")
         if self.data_file is None:
-            raise SigMFFileError("No signal data file has been associated with the metadata.")
+            if self.get_global_field(self.METADATA_ONLY_KEY, False):
+                # only if data_file is `None` allows access to dynamically generated datsets
+                raise SigMFFileError("Cannot read samples from a metadata only distribution.")
+            else:
+                raise SigMFFileError("No signal data file has bfeen associated with the metadata.")
 
         dtype = dtype_info(self.get_global_field(self.DATATYPE_KEY))
         is_complex_data = dtype['is_complex']
@@ -555,6 +562,37 @@ def dtype_info(datatype):
     return output_info
 
 
+def get_dataset_filename_from_metadata(meta_fn, metadata=None):
+    '''
+    Parse provided metadata and return the expected data filename. In the case of
+    a metadata only distribution, or if the file does not exist, this will return
+    'None'. The priority for conflicting:
+      1. The file named <METAFILE_BASENAME>.sigmf-meta if it exists
+      2. The file in the `core:dataset` field (Non-Compliant Dataset) if it exists
+      3. None (may be a metadata only distribution)
+    '''
+    compliant_data_fn = get_sigmf_filenames(meta_fn)['data_fn']
+    noncompliant_data_fn = metadata['global'].get("core:dataset", None)
+
+    if path.isfile(compliant_data_fn):
+        if noncompliant_data_fn:
+            warnings.warn(f'Compliant Dataset `{compliant_data_fn}` exists but '
+                    f'"core:dataset" is also defined; using `{compliant_data_fn}`')
+        return compliant_data_fn
+
+    elif noncompliant_data_fn:
+        if path.isfile(noncompliant_data_fn):
+            if metadata['global'].get("core:metadata_only", False):
+                warnings.warn('Schema defines "core:dataset" but "core:meatadata_only" '
+                        f'also exists; using `{noncompliant_data_fn}`')
+            return noncompliant_data_fn
+        else:
+            warnings.warn(f'Non-Compliant Dataset `{noncompliant_data_fn}` is specified '
+                    'in "core:dataset" but does not exist!')
+
+    return None
+
+
 def fromarchive(archive_path, dir=None):
     """Extract an archive and return a SigMFFile.
 
@@ -562,7 +600,6 @@ def fromarchive(archive_path, dir=None):
     the archive will be extracted to a temporary directory. For example,
     `dir` == "." will extract the archive into the current working
     directory.
-
     """
     if not dir:
         dir = tempfile.mkdtemp()
@@ -577,12 +614,13 @@ def fromarchive(archive_path, dir=None):
         metadata = None
 
         for member in members:
-            if member.name.endswith(SIGMF_DATASET_EXT):
-                data_file = path.join(dir, member.name)
-            elif member.name.endswith(SIGMF_METADATA_EXT):
+            if member.name.endswith(SIGMF_METADATA_EXT):
                 bytestream_reader = codecs.getreader("utf-8")  # bytes -> str
                 mdfile_reader = bytestream_reader(archive.extractfile(member))
                 metadata = json.load(mdfile_reader)
+                data_file = get_dataset_filename_from_metadata(member.name, metadata)
+            else:
+                archive.extractfile(member)
     finally:
         archive.close()
 
@@ -608,19 +646,18 @@ def fromfile(filename, skip_checksum=False):
     '''
     fns = get_sigmf_filenames(filename)
     meta_fn = fns['meta_fn']
-    data_fn = fns['data_fn']
     archive_fn = fns['archive_fn']
 
     if (filename.lower().endswith(SIGMF_ARCHIVE_EXT) or not path.isfile(meta_fn)) and path.isfile(archive_fn):
         return fromarchive(archive_fn)
-    if not path.isfile(data_fn):
-        data_fn = None
 
     meta_fp = open(meta_fn, "rb")
     bytestream_reader = codecs.getreader("utf-8")
     mdfile_reader = bytestream_reader(meta_fp)
     metadata = json.load(mdfile_reader)
     meta_fp.close()
+
+    data_fn = get_dataset_filename_from_metadata(meta_fn, metadata)
     return SigMFFile(metadata=metadata, data_file=data_fn, skip_checksum=skip_checksum)
 
 
