@@ -33,7 +33,7 @@ the new fields to be upstreamed into this canonical extension.
 |name|required|type|description|
 |----|--------|----|-----------|
 |`type`|false|string|[type](signal.sigmf-ext.md#the-type-field)|
-|`class`|false|string|[class](signal.sigmf-ext.md#the-class-field)|
+|`mod_class`|false|string|[mod_class](signal.sigmf-ext.md#the-mod_class-field)|
 |`standard`|false|string|Communication standard (e.g., 802.11ac)|
 |`carrier_variant`|false|string|[carrier variant](signal.sigmf-ext.md#the-carrier_variant-field)|
 |`symbol_variant`|false|string|[symbol variant](signal.sigmf-ext.md#the-symbol_variant-field)|
@@ -55,9 +55,9 @@ The `type` field can have the following values:
 |`analog`|analog modulation scheme|
 |`digital`|digital modulation scheme|
 
-#### 3.1.2 The `class` Field
+#### 3.1.2 The `mod_class` Field
 
-The `class` field can have the following values:
+The `mod_class` field can have the following values:
 
 |value|description|
 |----|-------|
@@ -189,7 +189,7 @@ Here is an example of a relatively simple modulation label, which describes a
         "core:label": "FM TDD",
         "signal:detail": {
             "type": "analog",
-            "class": "fm",
+            "mod_class": "fm",
             "duplexing": "tdd",
             "bandwidth": 10000.0
         }
@@ -228,7 +228,7 @@ Here is a more complex example that describes an LTE 5 MHz SC-OFDMA downlink:
         "core:label": "LTE 12",
         "signal:detail": {
             "type": "digital",
-            "class": "qam",
+            "mod_class": "qam",
             "carrier_variant": "single_carrier",
             "order": 16,
             "multiple_access": "ofdma",
@@ -248,7 +248,7 @@ A class variant example describing a pi/4-DQPSK signal:
         "core:label": "pi/4-DQPSK",
         "signal:detail": {
             "type": "digital",
-            "class": "psk",
+            "mod_class": "psk",
             "order": 4,
             "symbol_variant": "differential",
             "class_variant": "pi/4"
