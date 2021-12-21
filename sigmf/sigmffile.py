@@ -231,7 +231,7 @@ class SigMFFile():
         for capture in captures:
             if capture[self.START_INDEX_KEY] > index:
                 break
-            cap_info = dict_merge(cap_info, capture)
+            cap_info = capture
         return cap_info
 
     def add_annotation(self, start_index, length, metadata=None):
