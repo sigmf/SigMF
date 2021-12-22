@@ -22,7 +22,7 @@ The following names are specified in the `wifi` namespace and should be used in 
 |`channel`|true|int|N/A|Wi-Fi channel of captured signal|
 |`start_time_s`|true|float|seconds|Start time of RF burst (relative time to start time of main capture file).|
 |`stop_time_s`|true|float|seconds|Stop time of RF burst (relative time to start time of main capture file).|
-|`frame_duration_s`|true|float|seconds|Duration of RF burst (`stop_time_s` –`start_time_s`).|
+|`frame_duration_s`|true|float|seconds|Duration of RF burst (`stop_time_s` - `start_time_s`).|
 |`MCS`|true|int|N/A|Wi-Fi signal Modulation and Coding Scheme (MCS).|
 |`MAC_frame_type`|true|string|N/A|Wi-Fi MAC frame type.|
 |`MAC_ta`|true|string|N/A|Wi-Fi transmitter MAC address.|

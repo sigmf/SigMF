@@ -17,8 +17,8 @@ The following names are specified in the `antenna` namespace and should be used 
 |`low_frequency`|false|float|Hz|Low frequency of operational range.|
 |`high_frequency`|false|float|Hz|High frequency of operational range.|
 |`gain`|false|float|dBi|Antenna gain in direction of maximum radiation or reception.|
-|`horizontal_gain_pattern`|false|array of floats|dBi|Antenna gain pattern in horizontal plane from 0 to 359 degrees in 1 degree steps.|
-|`vertical_gain_pattern`|false|array of floats|dBi|Antenna gain pattern in vertical plane from -90 to +90 degrees in 1 degree steps.|
+|`horizontal_gain_pattern`|false|float array|dBi|Antenna gain pattern in horizontal plane from 0 to 359 degrees in 1 degree steps.|
+|`vertical_gain_pattern`|false|float array|dBi|Antenna gain pattern in vertical plane from -90 to +90 degrees in 1 degree steps.|
 |`horizontal_beam_width`|false|float|degrees|Horizontal 3-dB beamwidth.|
 |`vertical_beam_width`|false|float|degrees|Vertical 3-dB beamwidth.|
 |`cross_polar_discrimination`|false|float|N/A|Cross-polarization discrimination.|
