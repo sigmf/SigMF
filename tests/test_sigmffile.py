@@ -100,6 +100,7 @@ def test_multichannel_types():
         'u32': np.uint32,
         'i32': np.int32,
         'f32': np.float32,
+        'f64': np.float64,
     }
     raw_count = 16
     _, temp_path = tempfile.mkstemp()
