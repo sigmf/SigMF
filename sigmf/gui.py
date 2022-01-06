@@ -159,7 +159,7 @@ class WindowInput(WindowElementGroup):
         el_text = {}
         el_help = {WindowInput.DATA_BYTE_ORDER: 'Data Type Help'}
         el_multiline = [DESCRIPTION]
-        el_selector = {WindowInput.DATA_SAMPLE_SIZE: [8, 16, 32],
+        el_selector = {WindowInput.DATA_SAMPLE_SIZE: [8, 16, 32, 64],
                        WindowInput.DATA_BYTE_ORDER: ['little endian', 'big endian']}
         el_checkbox = [WindowInput.DATA_TYPE_COMPLEX, WindowInput.DATA_TYPE_UNSIGNED, WindowInput.DATA_TYPE_FIXEDPOINT]
         el_size = {
@@ -316,7 +316,7 @@ def update_capture_screen(capture_data_input, capture_text_blocks, capture_dict)
 def update_global_screen(window_data_input, window_text_blocks, window_dict, archive):
     data_type = window_dict[SigMFFile.DATATYPE_KEY]
     data_info = dtype_info(data_type)
-    sample_size = 32 if '32' in data_type else 16 if '16' in data_type else 8 if '8' in data_type else None
+    sample_size = 64 if '64' in datatype else 32 if '32' in data_type else 16 if '16' in data_type else 8 if '8' in data_type else None
     assert sample_size is not None
     window_text_blocks[WindowInput.DATA_TYPE_FIXEDPOINT].Update(bool(data_info['is_fixedpoint']))
     window_text_blocks[WindowInput.DATA_TYPE_UNSIGNED].Update(bool(data_info['is_unsigned']))
@@ -553,7 +553,7 @@ def main():
                 '\t\tComplex data: \"c\"\n'
                 '\t\tFixedpoint data: \"f\"\n'
                 '\tElementBitSize:\n'
-                '\t\t32 bits, 16 bits, or 8 bits\n'
+                '\t\t64 bits, 32 bits, 16 bits, or 8 bits\n'
                 '\tEndianness:\n'
                 '\t\tl: Little Endian\n'
                 '\t\tb: Big Endian\n\n\n\n'
