@@ -222,7 +222,7 @@ Dataset formats MAY be added through extensions.
     complex = "c"
 
     type = floating-point / signed-integer / unsigned-integer
-    floating-point = "f32"
+    floating-point = "f32" / "f64"
     signed-integer = "i32" / "i16"
     unsigned-integer = "u32" / "u16"
 
