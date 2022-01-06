@@ -39,3 +39,44 @@ TEST_METADATA = {
     }
 }
 
+# Data0 is a test of a compliant two capture recording
+TEST_U8_DATA0 = list(range(256))
+TEST_U8_META0 = {
+    SigMFFile.ANNOTATION_KEY: [],
+    SigMFFile.CAPTURE_KEY: [ {SigMFFile.START_INDEX_KEY: 0, SigMFFile.HEADER_BYTES_KEY: 0},
+                             {SigMFFile.START_INDEX_KEY: 0, SigMFFile.HEADER_BYTES_KEY: 0} ],   # very strange..but technically legal?
+    SigMFFile.GLOBAL_KEY: {SigMFFile.DATATYPE_KEY: 'ru8', SigMFFile.TRAILING_BYTES_KEY: 0}
+}
+# Data1 is a test of a two capture recording with header_bytes and trailing_bytes set
+TEST_U8_DATA1 = [0xfe]*32 + list(range(192)) + [0xff]*32
+TEST_U8_META1 = {
+    SigMFFile.ANNOTATION_KEY: [],
+    SigMFFile.CAPTURE_KEY: [ {SigMFFile.START_INDEX_KEY: 0, SigMFFile.HEADER_BYTES_KEY: 32},
+                             {SigMFFile.START_INDEX_KEY: 128} ],
+    SigMFFile.GLOBAL_KEY: {SigMFFile.DATATYPE_KEY: 'ru8', SigMFFile.TRAILING_BYTES_KEY: 32}
+}
+# Data2 is a test of a two capture recording with multiple header_bytes set
+TEST_U8_DATA2 = [0xfe]*32 + list(range(128)) + [0xfe]*16 + list(range(128,192)) + [0xff]*16
+TEST_U8_META2 = {
+    SigMFFile.ANNOTATION_KEY: [],
+    SigMFFile.CAPTURE_KEY: [ {SigMFFile.START_INDEX_KEY: 0, SigMFFile.HEADER_BYTES_KEY: 32},
+                             {SigMFFile.START_INDEX_KEY: 128, SigMFFile.HEADER_BYTES_KEY: 16} ],
+    SigMFFile.GLOBAL_KEY: {SigMFFile.DATATYPE_KEY: 'ru8', SigMFFile.TRAILING_BYTES_KEY: 16}
+}
+# Data3 is a test of a three capture recording with multiple header_bytes set
+TEST_U8_DATA3 = [0xfe]*32 + list(range(128)) + [0xfe]*32 + list(range(128,192))
+TEST_U8_META3 = {
+    SigMFFile.ANNOTATION_KEY: [],
+    SigMFFile.CAPTURE_KEY: [ {SigMFFile.START_INDEX_KEY: 0, SigMFFile.HEADER_BYTES_KEY: 32},
+                             {SigMFFile.START_INDEX_KEY: 32},
+                             {SigMFFile.START_INDEX_KEY: 128, SigMFFile.HEADER_BYTES_KEY: 32} ],
+    SigMFFile.GLOBAL_KEY: {SigMFFile.DATATYPE_KEY: 'ru8'}
+}
+# Data4 is a two channel version of Data0
+TEST_U8_DATA4 = [0xfe]*32 + [y for y in list(range(96)) for i in [0,1]] + [0xff]*32
+TEST_U8_META4 = {
+    SigMFFile.ANNOTATION_KEY: [],
+    SigMFFile.CAPTURE_KEY: [ {SigMFFile.START_INDEX_KEY: 0, SigMFFile.HEADER_BYTES_KEY: 32},
+                             {SigMFFile.START_INDEX_KEY: 64} ],
+    SigMFFile.GLOBAL_KEY: {SigMFFile.DATATYPE_KEY: 'ru8', SigMFFile.TRAILING_BYTES_KEY: 32, SigMFFile.NUM_CHANNELS_KEY: 2}
+}

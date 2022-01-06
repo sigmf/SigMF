@@ -49,6 +49,11 @@ This module can be installed the typical way:
 pip install .
 ```
 
+To run the included QA tests:
+```bash
+pytest
+```
+
 ## Use Cases
 
 ### Load a SigMF archive; read all samples & metadata
