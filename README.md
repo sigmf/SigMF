@@ -1,11 +1,11 @@
-![Rendered version of the Official SigMF Logo](logo/sigmf_logo.png)
+<p align="center">
+<img src="https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/logo/sigmf_logo.png" width="30%" />
+</p>
 
 # Signal Metadata Format (SigMF)
 
-Welcome to the SigMF project! The SigMF specification document is the
-`sigmf-spec.md` file in this repository:
-
-[Signal Metadata Format Specification](sigmf-spec.md)
+Welcome to the SigMF project! The [SigMF specification document](sigmf-spec.md) is the
+`sigmf-spec.md` file in this repository.  Below we discuss why and how you might use SigMF in your projects.
 
 ## Introduction
 
@@ -24,9 +24,39 @@ sharing of data, prevents the "bitrot" of datasets wherein details of the
 capture are lost over time, and makes it possible for different tools to operate
 on the same dataset, thus enabling data portability between tools and workflows.
 
-(Taken from the
-[Introduction](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#introduction)
-of the specification document.)
+SigMF signal recordings typically involve a data file (e.g. a binary file of IQ
+or RF samples) and a metadata file containing plain text that describes the data.
+Together these files represent one recording, such as `example.sigmf-data` and
+`example.sigmf-meta`.  Here is a minimal example of a SigMF `.sigmf-meta` file:
+
+```yaml
+{
+    "global": {
+        "core:datatype": "cf32_le"
+        "core:sample_rate": 1000000,
+        "core:hw": "PlutoSDR with 915 MHz whip antenna",
+        "core:author": "Art Vandelay",
+        "core:version": "1.0.0",
+    },
+    "captures": [
+        {
+            "core:sample_start": 0
+            "core:frequency": 915000000,
+        }
+    ],
+    "annotations": []
+}
+```
+
+## Using SigMF
+
+There are currently four ways that you can use SigMF:
+
+1. Within **Python**, using the Python package included in this repo and discussed below
+2. Within **C++** using the [header-only C++ library **libsigmf**](https://github.com/deepsig/libsigmf) maintained by DeepSig
+3. Within **GNU Radio** using the [out-of-tree module **gr-sigmf**](https://github.com/skysafe/gr-sigmf) maintained by SkySafe
+4. Manually, using our examples and the [spec itself](sigmf-spec.md), even if it's simply editing a text file
+
 
 ## Contributing
 
@@ -41,7 +71,11 @@ maintained for posterity.
 Anyone is welcome to get involved - indeed, the more people involved in the
 discussions, the more useful the standard is likely to be.
 
-## Getting Started
+## SigMF Python Package
+
+If you are interested in using SigMF within Python, we recommend using our Python package which lives within this repo.
+
+### Installation
 
 This module can be installed the typical way:
 
@@ -54,9 +88,9 @@ To run the included QA tests:
 pytest
 ```
 
-## Use Cases
+### Use Cases
 
-### Load a SigMF archive; read all samples & metadata
+#### Load a SigMF archive; read all samples & metadata
 
 ```python
 import sigmf
@@ -67,13 +101,13 @@ handle.get_captures() # returns list of 'captures' dictionaries
 handle.get_annotations() # returns list of all annotations
 ```
 
-### Verify SigMF dataset integrity & compliance
+#### Verify SigMF dataset integrity & compliance
 
 ```bash
 sigmf_validate example.sigmf 
 ```
 
-### Load a SigMF dataset; read its annotation, metadata, and samples
+#### Load a SigMF dataset; read its annotation, metadata, and samples
 
 ```python
 from sigmf import SigMFFile, sigmffile
@@ -108,7 +142,7 @@ for adx, annotation in enumerate(annotations):
     samples = signal.read_samples(annotation_start_idx, annotation_length)
 ```
 
-### Write a SigMF file from a numpy array
+#### Write a SigMF file from a numpy array
 
 ```python
 import datetime as dt
@@ -153,20 +187,20 @@ meta.tofile('example.sigmf-meta') # extension is optional
 
 ## Frequently Asked Questions
 
-#### Is this a GNU Radio effort?
+### Is this a GNU Radio effort?
 
 *No*, this is not a GNU Radio-specific effort. It is hosted under the GNU Radio
 Github account because this effort first emerged from a group of GNU Radio core
 developers, but the goal of the project to provide a standard that will be
 useful to anyone and everyone, regardless of tool or workflow.
 
-#### Is this specific to wireless communications?
+### Is this specific to wireless communications?
 
 *No*, similar to the response, above, the goal is to create something that is
 generally applicable to _signal processing_, regardless of whether or not the
 application is communications related.
 
-#### It seems like some issues take a long time to resolve?
+### It seems like some issues take a long time to resolve?
 
 Yes, and in most cases this is by design. Since the goal of this project is
 create a broadly useful standards document, it is in our best interest to make
