@@ -50,7 +50,7 @@ Together these files represent one recording, such as `example.sigmf-data` and
 
 ## Using SigMF
 
-There are currently four ways that you can use SigMF:
+There are four community-supported projects for using SigMF:
 
 1. Within **Python**, using the Python package included in this repo and discussed below
 2. Within **C++** using the [header-only C++ library **libsigmf**](https://github.com/deepsig/libsigmf) maintained by DeepSig
