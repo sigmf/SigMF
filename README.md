@@ -24,12 +24,12 @@ sharing of data, prevents the "bitrot" of datasets wherein details of the
 capture are lost over time, and makes it possible for different tools to operate
 on the same dataset, thus enabling data portability between tools and workflows.
 
-SigMF signal recordings typically involve a data file (e.g. a binary file of IQ
+SigMF signal recordings typically involve a data file (e.g., a binary file of IQ
 or RF samples) and a metadata file containing plain text that describes the data.
 Together these files represent one recording, such as `example.sigmf-data` and
 `example.sigmf-meta`.  Here is a minimal example of a SigMF `.sigmf-meta` file:
 
-```yaml
+```json
 {
     "global": {
         "core:datatype": "cf32_le"
@@ -52,7 +52,7 @@ Together these files represent one recording, such as `example.sigmf-data` and
 
 There are at least four ways you can use SigMF today, thanks to the community-supported projects:
 
-1. Within **Python**, using the Python package included in this repo and discussed below (avoid installing with pip for the time being, 1.0.0 isn't on PyPI yet)
+1. Within **Python**, using the Python package included in this repo and discussed below
 2. Within **C++** using the [header-only C++ library **libsigmf**](https://github.com/deepsig/libsigmf) maintained by DeepSig
 3. Within **GNU Radio** using the [out-of-tree module **gr-sigmf**](https://github.com/skysafe/gr-sigmf) maintained by SkySafe
 4. Manually, using our examples and the [spec itself](sigmf-spec.md), even if it's simply editing a text file
