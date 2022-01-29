@@ -48,8 +48,9 @@ Copyright of contributions to SigMF are retained by their original authors. All 
   - [Licensing](#licensing)
   - [SigMF Compliance](#sigmf-compliance)
     - [SigMF Schema Compliance](#sigmf-schema-compliance)
-    - [SigMF Dataset Compliance](#sigmf-dataset-compliance)
-    - [SigMF Application Compliance](#sigmf-applications-compliance)
+    - [SigMF Recording Compliance](#sigmf-recording-compliance)
+    - [SigMF Collection Compliance](#sigmf-collection-compliance)
+    - [SigMF Application Compliance](#sigmf-application-compliance)
   - [Citing SigMF](#citing-sigmf)
   - [Acknowledgements](#acknowledgements)
 
