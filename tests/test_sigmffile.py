@@ -23,11 +23,27 @@ import shutil
 import tempfile
 import json
 import numpy as np
+import unittest
 
 from sigmf import sigmffile, utils
 from sigmf.sigmffile import SigMFFile
 
 from .testdata import *
+
+
+class TestClassMethods(unittest.TestCase):
+    def setUp(self):
+        '''assure tests have a valid SigMF object to work with'''
+        _, temp_path = tempfile.mkstemp()
+        TEST_FLOAT32_DATA.tofile(temp_path)
+        self.sigmf_object = SigMFFile(TEST_METADATA, data_file=temp_path)
+
+    def test_iterator_basic(self):
+        '''make sure default batch_size works'''
+        count = 0
+        for _ in self.sigmf_object:
+            count += 1
+        self.assertEqual(count, len(self.sigmf_object))
 
 
 def simulate_capture(sigmf_md, n, capture_len):
