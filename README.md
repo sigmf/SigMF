@@ -36,12 +36,12 @@ Together these files represent one recording, such as `example.sigmf-data` and
         "core:sample_rate": 1000000,
         "core:hw": "PlutoSDR with 915 MHz whip antenna",
         "core:author": "Art Vandelay",
-        "core:version": "1.0.0",
+        "core:version": "1.0.0"
     },
     "captures": [
         {
             "core:sample_start": 0,
-            "core:frequency": 915000000,
+            "core:frequency": 915000000
         }
     ],
     "annotations": []
