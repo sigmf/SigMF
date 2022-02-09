@@ -32,7 +32,7 @@ Together these files represent one recording, such as `example.sigmf-data` and
 ```json
 {
     "global": {
-        "core:datatype": "cf32_le"
+        "core:datatype": "cf32_le",
         "core:sample_rate": 1000000,
         "core:hw": "PlutoSDR with 915 MHz whip antenna",
         "core:author": "Art Vandelay",
