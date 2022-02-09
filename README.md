@@ -40,7 +40,7 @@ Together these files represent one recording, such as `example.sigmf-data` and
     },
     "captures": [
         {
-            "core:sample_start": 0
+            "core:sample_start": 0,
             "core:frequency": 915000000,
         }
     ],
