@@ -77,9 +77,17 @@ If you are interested in using SigMF within Python, we recommend using our Pytho
 
 ### Installation
 
-This module can be installed the typical way:
+To install the latest released version of the SigMF package, install it from pip:
 
 ```bash
+pip install sigmf
+```
+
+To install the latest development version, build the package from source:
+
+```bash
+git clone https://github.com/gnuradio/SigMF.git
+cd SigMF
 pip install .
 ```
 
