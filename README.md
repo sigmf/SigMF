@@ -154,6 +154,8 @@ for adx, annotation in enumerate(annotations):
 
 ```python
 import datetime as dt
+import numpy as np
+import sigmf
 from sigmf import SigMFFile
 from sigmf.utils import get_data_type_str
 

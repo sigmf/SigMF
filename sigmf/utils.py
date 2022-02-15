@@ -93,7 +93,10 @@ def get_endian_str(ray):
 
 def get_data_type_str(ray):
     """
-    Return the SigMF datatype string for the datatype of `ray`.
+    Return the SigMF datatype string for the datatype of numpy array `ray`.
+
+    NOTE: this function only supports native numpy types so interleaved complex
+    integer types are not supported.
     """
     if not isinstance(ray, np.ndarray):
         raise error.SigMFError('Argument must be a numpy array')
@@ -104,10 +107,15 @@ def get_data_type_str(ray):
     data_type_str = ''
     if atype.kind == 'c':
         data_type_str += 'cf'
+        # units are component bits, numpy complex types len(I)+len(Q)
+        data_type_str += str(atype.itemsize * 8 // 2)
     elif atype.kind == 'f':
-        data_type_str += 'f'
+        data_type_str += 'rf'
+        data_type_str += str(atype.itemsize * 8)  # units are bits
     elif atype.kind in ('u','i'):
-        data_type_str += atype.kind
-    data_type_str += str(atype.itemsize * 8)  # units is bits
-    data_type_str += get_endian_str(ray)
+        data_type_str += 'r' + atype.kind
+        data_type_str += str(atype.itemsize * 8)  # units are bits
+    if (atype.itemsize > 1):
+        # only append endianness for types over 8 bits
+        data_type_str += get_endian_str(ray)
     return data_type_str
