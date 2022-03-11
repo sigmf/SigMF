@@ -619,7 +619,9 @@ def dtype_info(datatype):
         else:
             raise SigMFFileError("Unrecognized endianness specifier: '{}'".format(dtype[1]))
     dtype = dtype[0]
-    if "32" in dtype:
+    if "64" in dtype:
+        sample_size = 8
+    elif "32" in dtype:
         sample_size = 4
     elif "16" in dtype:
         sample_size = 2
