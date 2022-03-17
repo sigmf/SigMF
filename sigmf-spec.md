@@ -239,8 +239,10 @@ samples stored in little-endian", the string `"ru16_be"` specifies "real
 unsigned 16-bit samples stored in big-endian", and the string `"cu8"` specifies
 "complex unsigned byte".
 
-Note that only IEEE-754 single-precision and double-precision floating-point types
-are supported by the SigMF Core namespace.
+Only IEEE-754 single-precision and double-precision floating-point types are
+supported by the SigMF Core namespace. Note that complex data types are
+specified by the bit width of the individual I/Q components, and not by the
+total complex pair bitwidth (like Numpy).
 
 The samples SHOULD be written to the Dataset file without separation, and the
 Dataset file MUST NOT contain any other characters (e.g., delimiters,
