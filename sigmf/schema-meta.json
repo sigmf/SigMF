@@ -159,6 +159,11 @@
                 "required": false,
                 "pattern": "",
                 "help": "An ISO-8601 string indicating the timestamp of the sample index specified by sample_start. (e.g., 2017-02-01T15:05:03.000Z)"
+            },
+            "core:capture_tags": {
+                "type": "string_list",
+                "required": false,
+                "help": "A list of short form human/machine-readable strings indicating features of this segment."
             }
         }
     },
