@@ -34,12 +34,6 @@ For greatest compatibility, it is RECOMMENDED that this value default to
 `#00ffffff` (fully opaque white) for foreground features and `#ffffffff` (fully
 transparent) for background features.
 
-### 0.2 The `styles` object
-
-The `style_dict` object is a JSON object containg style information by short
-form name. This is a simple mechanism to prevent every annotation from defining
-these fields multiple times.
-
 ## 1 Global
 
 The `presentation` extension adds the following fields to the `global` SigMF
@@ -48,15 +42,34 @@ object:
 |name|required|type|description|
 |----|--------|----|-----------|
 |`capture_default`|false|`presentation_style`|Default style to be used for captures when a style is not specified.|
-|`capture_styles`|false|object|Color of the fill of the annotation, this is generally used with defined alpha channel.|
+|`capture_styles`|false|list of `style_entry`|Color of the fill of the annotation, this is generally used with defined alpha channel.|
 |`annotation_default`|false|`presentation_style`|Default style to be used for annotations when a style is not specified.|
-|`annotation_styles`|false|object|Color of the foreground captures segment display features.|
+|`annotation_styles`|false|list of `style_entry`|Color of the foreground captures segment display features.|
 
-Both `capture_styles` and `annotation_styles` objects have keys that represent
-capture segments or annotation `label` fields they apply to and values
-consisting of `presentation_style` objects, see examples in Section 4 below.
+Both `capture_styles` and `annotation_styles` are JSON object containg style
+information by short form name. This is a simple mechanism to prevent every
+annotation or capture segment from defining these fields repeatedly. These
+objects have keys that represent capture segments or annotation `label` fields
+they apply to and values consisting of `presentation_style` objects.
 
-### 1.1 The `presentation_style` object
+In a `capture_styles` object the `key` field MAY be underdetermined if there are
+multiple `capture_tags`. The first entry in the `capture_tags` list for which
+a `captures_styles` `key` exists SHOULD be used.
+
+Applications implementing this extension will generally parse the `*_styles`
+fields into a dictionary for easy reference.
+
+### 1.1 The `style_entry` object
+
+The `presentation_style` object is a JSON dictionary entry and is implemented
+for dictionary emulation for efficient serialization:
+
+|name|required|type|description|
+|----|--------|----|-----------|
+|`key`|true|string|Color of the fill of the annotation, this is generally used with defined alpha channel.|
+|`style`|true|`presentation_style`|Color of the fill of the annotation, this is generally used with defined alpha channel.|
+
+### 1.2 The `presentation_style` object
 
 The `presentation_style` object is a JSON object where each value is an object with
 the following form:
@@ -69,9 +82,11 @@ the following form:
 |`fill_color`|false|color|`#ffffffff`|Color of the background, generally used with significant alpha.|
 |`comment`|false|string||User comment field, any string is fine.|
 
-The `display_type` field is required for `presentation_style` objects.
+The `key` and `display_type` fields are required for all `presentation_style`
+objects. When describing a capture segment, the `key` field refers only to the
+first key in the captures list.
 
-### 1.1.1 The `presentation_style` `display_type` field
+### 1.1.1 The `display_type` field
 
 The `display_type` field can have the following values:
 
@@ -143,33 +158,61 @@ annotations above:
 ```json
   "global": {
     ...
-    "presentation:capture_styles": {
-      "VALID": {
-        "display_type": "none",
-        "comment": "Valid capture segments have no unique presentation."
+    "presentation:capture_styles": [
+      {
+        "key": "VALID",
+        "style": {
+          "display_type": "none",
+          "comment": "Valid capture segments have no unique presentation."
+        }
       },
-      "INVALID": {
-        "display_type": "diagonal"
-        "line_color": "#80ffff00",
-        "line_width": "3.0",
-        "fill_color": "#c0000000",
-        "comment": "Invalid sections are shaded slightly grey with yellow diagonal lines."
+      {
+        "key": "INVALID",
+        "stye": {
+          "display_type": "diagonal"
+          "line_color": "#80ffff00",
+          "line_width": "3.0",
+          "fill_color": "#c0000000",
+          "comment": "Invalid sections are shaded slightly grey with yellow diagonal lines."
+        }
       }
-    },
-    "presentation:annotation_styles": {
-      "signal1": {
-        "display_type": "box",
-        "line_color": "#00ff0000",
-        "comment": "Box signals labeled 'signal1' in RED."
+    ],
+    "presentation:annotation_styles": [
+      {
+        "key": "signal1",
+        "style": {
+          "display_type": "box",
+          "line_color": "#00ff0000",
+          "comment": "Box signals labeled 'signal1' in RED."
+        }
       },
-      "signal2": {
-        "display_type": "box",
-        "line_color": "#0000ff00",
-        "comment": "Box signals labeled 'signal1' in GREEN."
+      {
+        "key": "signal2",
+        "style": {
+          "display_type": "box",
+          "line_color": "#0000ff00",
+          "comment": "Box signals labeled 'signal1' in GREEN."
+        }
       }
-    }
+    ]
   },
-  "captures": [...],
+  "captures": [
+    {
+      "core:sample_start": 0,
+      "core:capture_tags": ["VALID"],
+      "core:frequency": 100000000.0
+    },
+    {
+      "core:sample_start": 100000,
+      "core:capture_tags": ["INVALID","SATURATION"],
+      "core:frequency": 100000000.0
+    }
+    {
+      "core:sample_start": 101000,
+      "core:capture_tags": ["VALID"],
+      "core:frequency": 100000000.0
+    }
+  ],
   "annotations": [
     {
       "core:sample_start": 1000,
