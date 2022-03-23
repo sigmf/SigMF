@@ -7,7 +7,8 @@ to help define how SigMF metadata should be presented graphically to users.
 All fields in the `presentation` extension are optional, thus any SigMF
 application using this extension is not required to implement any particular
 feature. It is RECOMMENDED that applications adhering to the `presentation`
-extension use default values in this document.
+extension use default values in this document. It is also RECOMMENDED that
+applications implementing this extension describe what fields are implemented.
 
 ## 0 Datatypes
 
@@ -31,7 +32,7 @@ ARGB format was selected over RGBA for compatibility with QColor objects, RGBA
 color specification is invalid and will result in incorrect display of content.
 
 For greatest compatibility, it is RECOMMENDED that this value default to
-`#00ffffff` (fully opaque white) for foreground features and `#ffffffff` (fully
+`#ffffffff` (fully opaque white) for foreground features and `#00ffffff` (fully
 transparent) for background features.
 
 ## 1 Global
@@ -77,9 +78,11 @@ the following form:
 |name|required|type|default|description|
 |----|--------|----|-------|-----------|
 |`display_type`|true|`display_type`||Color of the fill of the annotation, this is generally used with defined alpha channel.|
-|`line_color`|false|color|`#00ffffff`|Color of the foreground captures segment display features.|
+|`line_color`|false|color|`#ffffffff`|Color of the foreground captures segment display features.|
 |`line_width`|false|double|1.0|Width of the line (in pixels) surrounding the annotation, fractional values are permitted.|
-|`fill_color`|false|color|`#ffffffff`|Color of the background, generally used with significant alpha.|
+|`fill_color`|false|color|`#00ffffff`|Color of the background, generally used with significant alpha.|
+|`text_color`|false|color|`#ffffffff`|Color of any text rendered next to the annotation (label/comment fields, etc).|
+|`text_size`|false|double|8|Size (pt) of text rendered next to the annotation (label/comment fields, etc).|
 |`comment`|false|string||User comment field, any string is fine.|
 
 The `key` and `display_type` fields are required for all `presentation_style`
@@ -116,7 +119,7 @@ SigMF object:
 |name|required|type|default|description|
 |----|--------|----|-------|-----------|
 |`style`|false|[presentation style](presentation.sigmf-ext.md#the-presentation-style-field)|{}|Style to use for the annotation.|
-|`color`|false|`color`|`0x00ffffff`|Simple specification for the annotation box color.|
+|`color`|false|`color`|`0xffffffff`|Simple suggestion for the annotation color, to be interpreted by the application.|
 
 The `color` and `style` fields SHOULD NOT both be provided. In the event of an
 overdetermined specification for color, the first specification found below
@@ -140,7 +143,7 @@ different box colors (red, then green) in the annotations directly:
       "core:label": "signal1",
       "core:freq_lower_edge": 119000000,
       "core:freq_upper_edge": 120000000,
-      "presentation:color": "#00ff0000"
+      "presentation:color": "#ffff0000"
     },
     {
       "core:sample_start": 5000,
@@ -148,7 +151,7 @@ different box colors (red, then green) in the annotations directly:
       "core:label": "signal2",
       "core:freq_lower_edge": 119000000,
       "core:freq_upper_edge": 120000000,
-      "presentation:color": "#0000ff00"
+      "presentation:color": "#ff00ff00"
     },
   ]
 ```
@@ -163,7 +166,8 @@ annotations above:
         "key": "VALID",
         "style": {
           "display_type": "none",
-          "comment": "Valid capture segments have no unique presentation."
+          "text_size": 0,
+          "comment": "Valid capture segments have no unique presentation, text disabled."
         }
       },
       {
@@ -172,8 +176,10 @@ annotations above:
           "display_type": "diagonal"
           "line_color": "#80ffff00",
           "line_width": "3.0",
-          "fill_color": "#c0000000",
-          "comment": "Invalid sections are shaded slightly grey with yellow diagonal lines."
+          "text_color": "#ffffff00",
+          "text_size": 18,
+          "fill_color": "#40000000",
+          "comment": "Invalid sections are shaded slightly grey with yellow diagonal lines and large, bright yellow text."
         }
       }
     ],
@@ -182,7 +188,7 @@ annotations above:
         "key": "signal1",
         "style": {
           "display_type": "box",
-          "line_color": "#00ff0000",
+          "line_color": "#ff0000",
           "comment": "Box signals labeled 'signal1' in RED."
         }
       },
@@ -190,7 +196,7 @@ annotations above:
         "key": "signal2",
         "style": {
           "display_type": "box",
-          "line_color": "#0000ff00",
+          "line_color": "#00ff00",
           "comment": "Box signals labeled 'signal1' in GREEN."
         }
       }
