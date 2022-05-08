@@ -1,4 +1,4 @@
-# The `spatial` SigMF Extension Namespace v0.0.2
+# The `spatial` SigMF Extension Namespace v1.0.0
 
 This document defines the `spatial` extension namespace for the Signal Metadata
 Format (SigMF) specification. This extension namespace contains objects to help
@@ -7,7 +7,7 @@ to directional antennas and multichannel phase-coherent datasets used for signal
 direction of arrival and beamforming.
 
 Multichannel datasets can be stored in SigMF Collections or as multichannel
-interleaved data depending on the application, Collections are RECOMMENDED due
+interleaved data depending on the application. Collections are RECOMMENDED due
 to the easier processing and better application support.
 
 The `spatial` extension makes use of cartesian coordinates to define array
@@ -52,7 +52,10 @@ have any value it is RECOMMENDED that it be between 0 and 360 or +/- 180.
 |`el_error`|false|float|degrees|Error or uncertainty in the elevation component.|
 |`range_error`|false|float|meters|Error or uncertainty in the range component.|
 
-The `az_error`, `el_error`, and `range_error` fields SHOULD NOT be used if the
+The `az_error`, `el_error`, and `range_error` field units are degrees, but the
+exact meaning of 'error' in this context is not explicitly defined. Applications
+SHOULD specify their specific meaning, and in general this should be interpreted
+as an uncertainty range. The error fields should be SHOULD NOT be used if the
 corresponding field estimates are not included.
 
 ```json
@@ -91,6 +94,10 @@ Collection. It may be tempting to use the `core:num_channels` field however
 that field specifies how many interleaved channels are present in a single
 Dataset whereas spatial Recordings may be spread over several individual
 Datasets in a SigMF Collection.
+
+In the case of a multichannel dataset, the `channel_num` specifies the first
+channel in the dataset. If all data is contained within that dataset then the
+`channel_num` field MUST be equal to zero.
 
 ## 2 Captures
 
@@ -200,7 +207,8 @@ a 4 element uniform linear array with element spacing of 20cm pointed due west.
     "core:datatype": "ci16_le",
     "core:sample_rate": 40000000,
     "antenna:gain": 0,
-    "spatial:num_elements": 4
+    "spatial:num_elements": 4,
+    "spatial:channel_num": 0
   },
   "captures": [
     {
@@ -254,7 +262,8 @@ the aperture (see figure above for reference).
     "core:datatype": "ci16_le",
     "core:sample_rate": 40000000,
     "antenna:gain": 6,
-    "spatial:num_elements": 6
+    "spatial:num_elements": 6,
+    "spatial:channel_num": 4
   },
   "captures": [
     {
@@ -313,7 +322,8 @@ Here is an example of a 4 element aperture with square geometry in the XY plane:
     "core:datatype": "ci16_le",
     "core:sample_rate": 40000000,
     "antenna:gain": 6,
-    "spatial:num_elements": 6
+    "spatial:num_elements": 6,
+    "spatial:channel_num": 0
   },
   "captures": [
     {
