@@ -374,8 +374,8 @@ object:
 
 ##### The `dataset` Field
 
-The `core:dataset` field in the Global object is used to specify the Dataset file that
-this Metadata describes. If provided, this string MUST be the complete filename of the
+The `dataset` field in the Global object is used to specify the Dataset file that this
+Metadata describes. If provided, this string MUST be the complete filename of the
 Dataset file, including the extension. The Dataset file must be in the local directory,
 and this string MUST NOT include any aspects of filepath other than the filename.
 
@@ -405,12 +405,12 @@ metadata only distribution is not a SigMF Recording.
 
 If a Compliant SigMF Recording uses this field, it MAY indicate that the Dataset
 was dynamically generated from the metadata. This field MAY NOT be used in
-conjunction with Non-Compliant Datasets or the `core:dataset` field.
+conjunction with Non-Conforming Datasets or the `core:dataset` field.
 
 ##### The `geolocation` Field
 
-The `core:geolocation` field in the Global Object is used to store the
-location of the recording system. The location is stored as a single
+The `geolocation` field in the Global Object is used to store the location
+of the recording system. The location is stored as a single
 [RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` object
 using the convention defined by [RFC 5870](https://www.rfc-editor.org/rfc/rfc5870.txt).
 Per the GeoJSON specification, the point coordinates use the WGS84 coordinate
@@ -441,8 +441,8 @@ as specified in RFC 7946 Section 7.1.
 
 ##### The `extensions` Field
 
-The `core:extensions` field in the Global Object is an array of `extension objects`
-that describe SigMF extensions. Extension Objects MUST contain the three key/value 
+The `extensions` field in the Global Object is an array of `extension objects`
+that describe SigMF extensions. Extension Objects MUST contain the three key/value
 pairs defined below, and MUST NOT contain any other fields.
 
 | name       | required | type    | description                                                                 |
@@ -755,7 +755,7 @@ requirements:
    specified in this document.
 1. Stores data using the on-disk representation described by the `datatype`.
 
-Recordings with Non-Compliant Datasets MAY have SigMF Compliant schema, but
+Recordings with Non-Conforming Datasets MAY have SigMF Compliant schema, but
 cannot be SigMF Compliant Recordings.
 
 ### SigMF Collection Compliance
@@ -784,7 +784,7 @@ requirements:
    definition can be in user documentation or within the code itself, though
    explicit documentation is RECOMMENDED.
 
-Compliant applications are NOT REQUIRED to support Non-Compliant Datasets or
+Compliant applications are NOT REQUIRED to support Non-Conforming Datasets or
 Metadata Only schema files, but it is RECOMMENDED that they parse the respective
 metadata fields in the `global` object to provide descriptive messages to users
 regarding why the files are not supported. Support for SigMF Collections is
