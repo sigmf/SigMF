@@ -32,14 +32,14 @@ section below).
 
 This extension defines the following datatypes:
 
-|type|long-form name|description|
+|name|long-form name|description|
 |----|--------------|-----------|
-|bearing|signal direction bearing|Quantitative representation of a direction with optional error.|
-|cartesian_point|cartesian position|Cartesian coordinate triplet [x, y, z]|
+|bearing|signal direction bearing|JSON [bearing](spatial.sigmf-ext.md#01-the-bearing-object) object containing a quantitative representation of a direction with optional error fields.|
+|cartesian_point|cartesian position|JSON [cartesian_point](spatial.sigmf-ext.md#02-the-cartesian-point-object) containing a cartesian coordinate point triplet.|
 
 ### 0.1 The `bearing` Object
 
-The `bearing` field is used to describe relative one or two dimensional signal
+A `bearing` object is used to describe relative one or two dimensional signal
 directions. The units are always in degrees; while it is legal for this field to
 have any value it is RECOMMENDED that it be between 0 and 360 or +/- 180.
 
@@ -55,8 +55,8 @@ have any value it is RECOMMENDED that it be between 0 and 360 or +/- 180.
 The `az_error`, `el_error`, and `range_error` field units are degrees, but the
 exact meaning of 'error' in this context is not explicitly defined. Applications
 SHOULD specify their specific meaning, and in general this should be interpreted
-as an uncertainty range. The error fields should be SHOULD NOT be used if the
-corresponding field estimates are not included.
+as an uncertainty range. The error fields SHOULD NOT be included if the
+corresponding estimate fields are not present.
 
 ```json
   "bearing": {
@@ -71,13 +71,13 @@ corresponding field estimates are not included.
 
 ### 0.2 The `cartesian_point` Object
 
-The `cartesian_point` field is used to describe a single point in the Cartesian
+A `cartesian_point` object is used to describe a single point in the Cartesian
 coordinate reference system. This object is necessary to define the phase center
 geometries for multidimensional arrays, and other cartesian locations.
 
 |name|required|type|units|description|
 |----|--------|----|-----|-----------|
-|`point`|true|float array|meters|Cartesian Point defined by a element array of [x,y,z] referenced to the `spatial` CRS.|
+|`point`|true|array|meters|A point defined by three float elements [x,y,z] referenced to the `spatial` CRS.|
 
 
 ## 1 Global
@@ -87,7 +87,7 @@ The `spatial` extension adds the following fields to the `global` SigMF object:
 |name|required|type|units|description|
 |----|--------|----|-----|-----------|
 |`num_elements`|true|int|N/A|Defines the number of phase centers / channels collected in the Collection or multichannel Dataset.|
-|`channel_num`|true|int|N/A|The channel number, shares index with `element_geometry`.|
+|`channel_index`|true|int|N/A|The channel number, represents the index into `element_geometry`.|
 
 The number of elements MUST be defined here and is constant for a given
 Collection. It may be tempting to use the `core:num_channels` field however
@@ -95,9 +95,9 @@ that field specifies how many interleaved channels are present in a single
 Dataset whereas spatial Recordings may be spread over several individual
 Datasets in a SigMF Collection.
 
-In the case of a multichannel dataset, the `channel_num` specifies the first
+In the case of a multichannel dataset, the `channel_index` specifies the first
 channel in the dataset. If all data is contained within that dataset then the
-`channel_num` field MUST be equal to zero.
+`channel_index` field MUST be equal to zero.
 
 ## 2 Captures
 
@@ -105,10 +105,10 @@ The `spatial` extension adds the following fields to `captures` segment objects:
 
 |name|required|type|units|description|
 |----|--------|----|-----|-----------|
-|`element_geometry`|true|`cartesian_point` array|meters|Defines the relative arrangement of the array.|
-|`aperture_bearing`|false|bearing|degrees|Bearing of aperture boresight in this segment.|
-|`emitter_bearing`|false|bearing|degrees|Bearing of signals in this segment.|
-|`phase_offset`|false|double|degrees|Phase offset relative to channel 0.|
+|`element_geometry`|true|array|N/A|One or more `cartesian_point` objects defining the relative arrangement of the array.|
+|`aperture_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing of aperture boresight in this segment.|
+|`emitter_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing of signals in this segment.|
+|`phase_offset`|false|double|degrees|Phase offset of the data in this capture relative to channel 0.|
 |`calibration`|false|[calibration](spatial.sigmf-ext.md#21-the-calibration-object)|Reserved for calibration.|
 
 The `element_geometry` object MUST be included in each `captures` segment if the
@@ -149,7 +149,7 @@ already phase aligned.
 
 The `calibration` object is a special captures segment metadata field that
 indicates the segment is used for calibration. This might be used to show that
-a tone or broadboand noise signal was generated to perform phase alignment in
+a tone or broadband noise signal was generated to perform phase alignment in
 post-processing. The resulting value from post-processing calibration can then
 be stored in the `captures` object `phase_offset` field .
 
@@ -158,11 +158,11 @@ be treated as normal data.
 
 |name|required|type|description|
 |----|--------|----|-----------|
-|`caltype`|true|[caltype](spatial.sigmf-ext.md#211-the-caltype-field)|Type of calibration data contained.|
+|`caltype`|true|string|A specific [caltype](spatial.sigmf-ext.md#211-the-caltype-field).|
 |`bearing`|false|bearing|The bearing of the calibration signal.|
 |`cal_geometry`|false|`cartesian_point`|The position of the calibration antenna phase center relative to the `spatial` CRS.|
 
-Either the `bearing` or the `cal_geometry` field MUST be provided if a captures
+Either the `bearing` or `cal_geometry` field SHOULD be provided if a captures
 segment includes the `calibration` field. The `bearing` object is best used to
 describe a remote calibration source location in a spherical coordinate system;
 the `cal_geometry` is best used when the calibration emitter is local to the
@@ -176,6 +176,7 @@ The `caltype` field can have one of the following values:
 |-----|-----------|
 |`tone`|This segment contains a tone for calibration purposes.|
 |`xcorr`|This segment contains a signal for crosscorrelation calibration purposes.|
+|`ref`|A known reference emission.|
 |`other`|This segment contains another type of calibration signal.|
 
 ## 3 Annotations
@@ -183,10 +184,10 @@ The `caltype` field can have one of the following values:
 This extension adds the following optional fields to the `annotations` SigMF
 object:
 
-|name|required|type|description|
-|----|--------|----|-----------|
-|`signal_azimuth`|false|double|Azimuth in degrees east of north associated with the specific annotation.|
-|`signal_bearing`|false|`bearing`|Bearing associated with the specific annotation.|
+|name|required|type|units|description|
+|----|--------|----|-----|-----------|
+|`signal_azimuth`|false|double|degrees|Azimuth in degrees east of north associated with the specific annotation.|
+|`signal_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing associated with the specific annotation.|
 
 These fields represent the direction to a specific signal relative to the
 `aperture_bearing` and can be utilized when the signals contained in a Recording
@@ -208,7 +209,7 @@ a 4 element uniform linear array with element spacing of 20cm pointed due west.
     "core:sample_rate": 40000000,
     "antenna:gain": 0,
     "spatial:num_elements": 4,
-    "spatial:channel_num": 0
+    "spatial:channel_index": 0
   },
   "captures": [
     {
@@ -263,7 +264,7 @@ the aperture (see figure above for reference).
     "core:sample_rate": 40000000,
     "antenna:gain": 6,
     "spatial:num_elements": 6,
-    "spatial:channel_num": 4
+    "spatial:channel_index": 4
   },
   "captures": [
     {
@@ -322,8 +323,8 @@ Here is an example of a 4 element aperture with square geometry in the XY plane:
     "core:datatype": "ci16_le",
     "core:sample_rate": 40000000,
     "antenna:gain": 6,
-    "spatial:num_elements": 6,
-    "spatial:channel_num": 0
+    "spatial:num_elements": 4,
+    "spatial:channel_index": 0
   },
   "captures": [
     {
