@@ -35,22 +35,24 @@ This extension defines the following datatypes:
 |name|long-form name|description|
 |----|--------------|-----------|
 |bearing|signal direction bearing|JSON [bearing](spatial.sigmf-ext.md#01-the-bearing-object) object containing a quantitative representation of a direction with optional error fields.|
-|cartesian_point|cartesian position|JSON [cartesian_point](spatial.sigmf-ext.md#02-the-cartesian-point-object) containing a cartesian coordinate point triplet.|
+|cartesian_point|cartesian position|JSON [cartesian_point](spatial.sigmf-ext.md#02-the-cartesian-point-object) object containing a cartesian coordinate point triplet.|
 
 ### 0.1 The `bearing` Object
 
-A `bearing` object is used to describe relative one or two dimensional signal
-directions. The units are always in degrees; while it is legal for this field to
-have any value it is RECOMMENDED that it be between 0 and 360 or +/- 180.
+A `bearing` object is used to describe relative one or two dimensional
+directions. The angular fields within the `bearing` object are always specified
+in degrees, and linear distances in meters. While it is legal for angular fields
+to have any value it is RECOMMENDED that these values be wrapped to a consistent
+representation (e.g.: between 0 to 360, or +/- 180).
 
 |name|required|type|units|description|
 |----|--------|----|-----|-----------|
-|`azimuth`|false|float|degrees|Azimuth component of the direction in degrees increasing clockwise.|
-|`elevation`|false|float|degrees|Elevation component of the direction in degrees above horizon.|
-|`range`|false|float|meters|Line-of-sight slant range to emitter, if known, in meters.|
-|`az_error`|false|float|degrees|Error or uncertainty in the azimuth component.|
-|`el_error`|false|float|degrees|Error or uncertainty in the elevation component.|
-|`range_error`|false|float|meters|Error or uncertainty in the range component.|
+|`azimuth`|false|double|degrees|Azimuth component of the direction in degrees increasing clockwise.|
+|`elevation`|false|double|degrees|Elevation component of the direction in degrees above horizon.|
+|`range`|false|double|meters|Line-of-sight slant range to emitter, if known, in meters.|
+|`az_error`|false|double|degrees|Error or uncertainty in the azimuth component.|
+|`el_error`|false|double|degrees|Error or uncertainty in the elevation component.|
+|`range_error`|false|double|meters|Error or uncertainty in the range component.|
 
 The `az_error`, `el_error`, and `range_error` field units are degrees, but the
 exact meaning of 'error' in this context is not explicitly defined. Applications
@@ -58,14 +60,16 @@ SHOULD specify their specific meaning, and in general this should be interpreted
 as an uncertainty range. The error fields SHOULD NOT be included if the
 corresponding estimate fields are not present.
 
+An example of a `bearing` object is shown below:
+
 ```json
   "bearing": {
     "azimuth": 211.2,
     "elevation": 15.0,
     "range": 30,
-    "az_error": 0.1,
-    "el_error": 0.1,
-    "range_error": 0.1
+    "az_error": 2.5,
+    "el_error": 7.5,
+    "range_error": 0.25
   }
 ```
 
@@ -77,8 +81,12 @@ geometries for multidimensional arrays, and other cartesian locations.
 
 |name|required|type|units|description|
 |----|--------|----|-----|-----------|
-|`point`|true|array|meters|A point defined by three float elements [x,y,z] referenced to the `spatial` CRS.|
+|`point`|false|array|meters|A point defined by three double elements [x,y,z] referenced to the `spatial` CRS.|
+|`unknown`|false|bool|N/A|Always set to `true` - indicates that this point is not known.|
 
+`cartesian_point` objects represent a point in 3D space, and MUST contain either
+a `point` or `unknown` field. `unknown` fields are placeholders when the exact
+information is not known or does not matter.
 
 ## 1 Global
 
@@ -105,23 +113,11 @@ The `spatial` extension adds the following fields to `captures` segment objects:
 
 |name|required|type|units|description|
 |----|--------|----|-----|-----------|
-|`element_geometry`|true|array|N/A|One or more `cartesian_point` objects defining the relative arrangement of the array.|
 |`aperture_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing of aperture boresight in this segment.|
 |`emitter_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing of signals in this segment.|
+|`element_geometry`|false|array|N/A|An array containing `cartesian_point` objects that specify the relative physical geometry of the antenna elements.|
 |`phase_offset`|false|double|degrees|Phase offset of the data in this capture relative to channel 0.|
 |`calibration`|false|[calibration](spatial.sigmf-ext.md#21-the-calibration-object)|Reserved for calibration.|
-
-The `element_geometry` object MUST be included in each `captures` segment if the
-`spatial` extension is used, and defines the position of the phase centers of
-the array elements relative to the electrical phase center of the overall array.
-The value MUST be an array of `cartesian_point` objects, usually of length
-`num_elements`. Because the element phase centers can change with frequency, the
-values are defined separately for each segment in the `captures` object.
-
-There are two special cases for the `element_geometry` field. If data contained
-only references a single single phase center aperture, as can be the case with
-a normal directional antenna, the `cartesian_point` value MUST be [0,0,0]. If
-the element geometry is unknown, this value MAY be defined as an empty array [].
 
 The `aperture_bearing` field within a `captures` segment can be used to specify
 a fixed aperture boresight bearing. For single element or uniform planar array
@@ -136,6 +132,17 @@ ground truth bearing of all signals contained within a multichannel dataset,
 relative to the `aperture_bearing`. This is useful for reference data which is
 well controlled, but is not well suited for arbitrary signals or data with more
 than one emitter location.
+
+The `element_geometry` object MAY be included in each `captures` segment to
+specify phase center geometry at different frequencies. Including this in the
+`captures` segment is optional, and is only needed for multi frequency captures
+where the element phase centers also move with frequency. This object MUST be
+defined if there is not a `sigmf-collection` file that specifies the
+`element_geometry`. This array MUST be of length `num_elements` (if specifying
+the geometry of the entire array), OR of length `core:num_channels` (if
+specifying only the elements contained in this Recording). The `captures` scope
+definition of `element_geometry` SHALL take priority over a value specified in
+a `collection`.
 
 The `phase_offset` field is a double precision value used when a dataset is
 captured from a RF device that is phase cohenert but not phase-aligned. Datasets
@@ -197,10 +204,26 @@ for simplicity because many applications only require azimuth, but the
 measurement error is needed. Only one of these SHOULD be used for an individual
 annotation; if both are provided the `signal_bearing` object has priority.
 
-## 4 Examples
+## 4 Collection
+
+This extension adds the following fields to the SigMF `collection` object:
+
+|name|required|type|units|description|
+|----|--------|----|-----|-----------|
+|`element_geometry`|true|array|N/A|An array of `cartesian_point` objects that specify the nominal electrical geometry of the array elements in this collection.|
+
+The `element_geometry` field describes the phase center geometry of each element
+relative to the `spatial` coordinate reference system and MUST be specified for
+collections implementing the `spatial` extension, though the `point` may be
+`unknown`. Single channel datasets should contain a single `point` at `[0,0,0]`.
+If the `captures` object of a Recording defines this field, that value should be
+used at a higher priority than what is specified here.
+
+## 5 Examples
 
 Here is an example of how the `global` and captures fields can be specified for
 a 4 element uniform linear array with element spacing of 20cm pointed due west.
+Only a single channel is contained in this recording.
 
 ```json
 {
@@ -215,15 +238,12 @@ a 4 element uniform linear array with element spacing of 20cm pointed due west.
     {
       "core:sample_start": 0,
       "core:frequency": 740000000.0,
-      "spatial:element_geometry": [
-        { "point": [0, 0.3,0] },
-        { "point": [0, 0.1,0] },
-        { "point": [0,-0.1,0] },
-        { "point": [0,-0.3,0] }
-      ],
       "spatial:aperture_bearing": {
         "azimuth": 270
-      }
+      },
+      "spatial:element_geometry": [
+        { "point": [0, 0.3,0] }
+      ]
     }
   ],
   ...
@@ -270,6 +290,9 @@ the aperture (see figure above for reference).
     {
       "core:sample_start": 0,
       "core:frequency": 1260000000.0,
+      "spatial:aperture_bearing": {
+        "azimuth": 1.13124
+      },
       "spatial:element_geometry": [
         { "point": [0, 0.1, 0.05] },
         { "point": [0,   0, 0.05] },
@@ -277,10 +300,7 @@ the aperture (see figure above for reference).
         { "point": [0, 0.1,-0.05] },
         { "point": [0,   0,-0.05] },
         { "point": [0,-0.1,-0.05] }
-      ],
-      "spatial:aperture_bearing": {
-        "azimuth": 1.13124
-      }
+      ]
     }
   ],
   "annotations": [
@@ -335,7 +355,7 @@ Here is an example of a 4 element aperture with square geometry in the XY plane:
         { "point": [ 0.25,-0.25,0] },
         { "point": [-0.25,-0.25,0] },
         { "point": [-0.25, 0.25,0] }
-      ],
+      ]
     }
   ],
   "annotations": [
@@ -369,5 +389,34 @@ Here is an example of a 4 element aperture with square geometry in the XY plane:
     },
     ...
   ]
+}
+```
+
+An example `collection` object implementing the `spatial` extension for a four
+element recording:
+```JSON
+{
+    "collection": {
+        "core:version": "v1.0.0",
+        "core:extensions" : [
+            {
+            "name": "spatial",
+            "version": "1.0.0",
+            "optional": false
+            }
+        ],
+        "core:streams": [
+            ["example-channel-0-basename", "hash"],
+            ["example-channel-1-basename", "hash"],
+            ["example-channel-2-basename", "hash"],
+            ["example-channel-3-basename", "hash"]
+        ],
+        "spatial:element_geometry": [
+            { "point": [ 0.5, 0.5,0] },
+            { "point": [ 0.5,-0.5,0] },
+            { "point": [-0.5,-0.5,0] },
+            { "point": [-0.5, 0.5,0] }
+        ]
+    }
 }
 ```
