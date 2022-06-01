@@ -2,9 +2,10 @@
 
 This document defines the `spatial` extension namespace for the Signal Metadata
 Format (SigMF) specification. This extension namespace contains objects to help
-store information about spatially diverse data, specifically information applied
-to directional antennas and multichannel phase-coherent datasets used for signal
-direction of arrival and beamforming.
+store information about data where geospatial context is important, specifically
+information applied to moving receivers or emitters, directional antennas and
+multichannel phase-coherent datasets used for signal direction of arrival and
+beamforming.
 
 Multichannel datasets can be stored in SigMF Collections or as multichannel
 interleaved data depending on the application. Collections are RECOMMENDED due
@@ -96,6 +97,7 @@ The `spatial` extension adds the following fields to the `global` SigMF object:
 |----|--------|----|-----|-----------|
 |`num_elements`|true|int|N/A|Defines the number of phase centers / channels collected in the Collection or multichannel Dataset.|
 |`channel_index`|true|int|N/A|The channel number, represents the index into `element_geometry`.|
+|`sensor_track`|false|array|N/A|An array of GeoJSON `Point` objects describing a moving sensor.|
 
 The number of elements MUST be defined here and is constant for a given
 Collection. It may be tempting to use the `core:num_channels` field however
@@ -106,6 +108,40 @@ Datasets in a SigMF Collection.
 In the case of a multichannel dataset, the `channel_index` specifies the first
 channel in the dataset. If all data is contained within that dataset then the
 `channel_index` field MUST be equal to zero.
+
+The `sensor_track` field is as an alternative to the `core:geolocation` field
+for use when the sensor's position is varying with time. This uses an array of
+the same GeoJSON `Point` objects that are used for the `core:geolocation` field,
+with an optional `time` field containing an ISO-8601 string as shown in the
+example below. If this `time` field is not provided, it MAY be assumed that the
+`point` objects are uniformly sampled at the `core:sample_rate`.
+
+```JSON
+  "global": {
+    ...
+    "spatial:sensor_track": [
+      {
+        "type": "Point",
+        "coordinates": [-115.799956, 37.247585, 1370.0],
+        "time": "2019-09-20T14:23:19.408Z"
+      },
+      {
+        "type": "Point",
+        "coordinates": [-115.792494, 37.233465, 1370.0],
+        "time": "2019-09-20T14:23:46.912Z"
+      },
+      {
+        "type": "Point",
+        "coordinates": [-115.784581, 37.218468, 1370.0],
+        "time": "2019-09-20T14:24:14.576Z"
+      }
+    ]
+    ...
+  }
+```
+
+The `sensor_track` field can be used within SigMF Collections to define an
+independent position stream by using the `core:metadata_only` field.
 
 ## 2 Captures
 
