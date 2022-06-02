@@ -18,7 +18,7 @@ the attributes of wireless communications signals and their emitters.
 This extension adds the following optional field to the `annotations` global SigMF object:
 
 |name|required|type|description|
-|----|--------------|-------|----------|
+|----|--------|----|----|-----------|
 |`detail`|false|[Detail](signal.sigmf-ext.md#the-detail-object)|Emission details (standard, modulation, etc.)|
 |`emitter`|false|[Emitter](signal.sigmf-ext.md#the-emitter-object)|Emitter details (manufacturer, geo coordinates, etc.)|
 
@@ -42,7 +42,7 @@ the new fields to be upstreamed into this canonical extension.
 |`multiplexing`|false|string|[multiplexing](signal.sigmf-ext.md#the-multiplexing-field)|
 |`multiple_access`|false|string|[multiple access](signal.sigmf-ext.md#the-multiple_access-field)|
 |`spreading`|false|string|[spreading](signal.sigmf-ext.md#the-spreading-field)|
-|`channel_bw`|false|float|[bandwidth](signal.sigmf-ext.md#the-bandwidth-field)|
+|`channel_bw`|false|double|[bandwidth](signal.sigmf-ext.md#the-bandwidth-field)|
 |`channel`|false|uint|[channel](signal.sigmf-ext.md#the-channel-field)|
 |`class_variant`|false|string|[class variant](signal.sigmf-ext.md#the-class_variant-field)|
 
@@ -150,7 +150,7 @@ The `spreading` field can have the following values:
 
 #### 3.1.10 The `bandwidth` Field
 
-The `channel_bw` field has a float value that describes the channel bandwidth of
+The `channel_bw` field has a numeric value describing the channel bandwidth of
 the signal. Note that this is different from what may be reported in the `core`
 namespace within an annotation which describes the occupied spectrum of a
 signal, which may or may not be comparable to the actual channel bandwidth of
