@@ -17,7 +17,7 @@ complicated rapidly so the union of these two cordinate reference systems (CRS)
 is illustrated in Figure 1 below. The ISO 80000-2:2019 compliant cartesian and
 spherical systems have a specific relationship with the reported azimuth and
 elevation, which use the conventional geospatial definitions (degrees east of
-north, and degrees above horizon respectively).
+true north, and degrees above horizon respectively).
 
 ![SigMF Spatial Coordinate Reference System](spatial_crs.png)
 
@@ -113,6 +113,7 @@ The `spatial` extension adds the following fields to `captures` segment objects:
 
 |name|required|type|units|description|
 |----|--------|----|-----|-----------|
+|`aperture_azimuth`|false|double|degrees|Azimuth of the aperture boresight in degrees east of true north.|
 |`aperture_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing of aperture boresight in this segment.|
 |`emitter_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing of signals in this segment.|
 |`element_geometry`|false|array|N/A|An array containing `cartesian_point` objects that specify the relative physical geometry of the antenna elements.|
@@ -125,7 +126,8 @@ apertures, the boresight is defined as the direction of peak gain when fed with
 a uniform phase signal; for more complicated arrays this value is determined by
 antenna mechanical or electrical geometry and will be specific to the design.
 The azimuth is specified in degrees east of true north and elevation (if
-provided) is in degrees above the horizon.
+provided) is in degrees above the horizon. The `aperture_azimuth` field is also
+available for simpler specification when this is more appropriate.
 
 The `emitter_bearing` field within a `captures` segment is used to specify the
 ground truth bearing of all signals contained within a multichannel dataset,
@@ -193,7 +195,7 @@ object:
 
 |name|required|type|units|description|
 |----|--------|----|-----|-----------|
-|`signal_azimuth`|false|double|degrees|Azimuth in degrees east of north associated with the specific annotation.|
+|`signal_azimuth`|false|double|degrees|Azimuth in degrees east of true north associated with the specific annotation.|
 |`signal_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing associated with the specific annotation.|
 
 These fields represent the direction to a specific signal relative to the
@@ -222,8 +224,15 @@ used at a higher priority than what is specified here.
 ## 5 Examples
 
 Here is an example of how the `global` and captures fields can be specified for
-a 4 element uniform linear array with element spacing of 20cm pointed due west.
-Only a single channel is contained in this recording.
+a single channel Recording of a 4 element uniform linear array with element
+spacing of 20cm pointed due west with annotated signal emissions originating
+from the north-east. Note that the `signal_azimuth` fields show in the
+`annotations` metadata reflect an aimuth of approximately 135* instead of the
+expected 45* (north-east). This is because annotation azimuths are documented
+relative to the boresight of the antenna. To convert to degrees east of true
+north, the aperture azimuth must be accounted for:
+
+`(270 + 135) % 360 = 45`
 
 ```json
 {
@@ -238,15 +247,29 @@ Only a single channel is contained in this recording.
     {
       "core:sample_start": 0,
       "core:frequency": 740000000.0,
-      "spatial:aperture_bearing": {
-        "azimuth": 270
-      },
+      "spatial:aperture_azimuth": 270.0,
       "spatial:element_geometry": [
         { "point": [0, 0.3,0] }
       ]
     }
   ],
-  ...
+  "annotations": [
+    {
+      "core:sample_start": 38012637,
+      "core:sample_count": 100991,
+      "core:freq_upper_edge": 731503448.0,
+      "core:freq_lower_edge": 730165112.0,
+      "spatial:signal_azimuth": 133.821
+    },
+    {
+      "core:sample_start": 780208811,
+      "core:sample_count": 100018,
+      "core:freq_upper_edge": 731250189.0,
+      "core:freq_lower_edge": 730165114.0,
+      "spatial:signal_azimuth": 135.904
+    },
+    ...
+  ]
 }
 ```
 
