@@ -523,6 +523,7 @@ def main():
             add_capture(capture_data_input, capture, capture_selector_dict, f, from_archive=True)
 
     while True:
+        window.read()
         validate_button.Update(text='Update')
         load_button.Update(text='Load')
         submit_button.Update(text='Save Archive')
