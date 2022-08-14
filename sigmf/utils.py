@@ -22,8 +22,8 @@
 
 from copy import deepcopy
 from datetime import datetime
-import numpy as np
 import sys
+import numpy as np
 
 from . import error
 
@@ -53,30 +53,11 @@ def dict_merge(a_dict, b_dict):
     return result
 
 
-def insert_sorted_dict_list(dict_list, new_entry, key, force_insertion=False):
-    """
-    Insert new_entry (which must be a dict) into a sorted list of other dicts.
-    If force_insertion is True, new_entry will NOT overwrite an existing entry
-    with the same key.
-    Returns the new list, which is still sorted.
-    """
-    for index, entry in enumerate(dict_list):
-        if not entry:
-            continue
-        if entry[key] == new_entry[key] and not force_insertion:
-            dict_list[index] = dict_merge(entry, new_entry)
-            return dict_list
-        if entry[key] > new_entry[key]:
-            dict_list.insert(index, new_entry)
-            return dict_list
-    dict_list = dict_list + [new_entry]
-    return dict_list
-
-
 def get_schema_path(module_path):
     """
     """
     return module_path
+
 
 def get_endian_str(ray):
     if not isinstance(ray, np.ndarray):
@@ -91,6 +72,7 @@ def get_endian_str(ray):
         # endianness must be either '=' (native) or '|' (doesn't matter)
         return '_le' if sys.byteorder == 'little' else '_be'
 
+
 def get_data_type_str(ray):
     """
     Return the SigMF datatype string for the datatype of numpy array `ray`.
@@ -101,9 +83,8 @@ def get_data_type_str(ray):
     if not isinstance(ray, np.ndarray):
         raise error.SigMFError('Argument must be a numpy array')
     atype = ray.dtype
-    if atype.kind not in ('u','i','f','c'):
+    if atype.kind not in ('u', 'i', 'f', 'c'):
         raise error.SigMFError('Unsupported data type:', atype)
-
     data_type_str = ''
     if atype.kind == 'c':
         data_type_str += 'cf'
@@ -112,7 +93,7 @@ def get_data_type_str(ray):
     elif atype.kind == 'f':
         data_type_str += 'rf'
         data_type_str += str(atype.itemsize * 8)  # units are bits
-    elif atype.kind in ('u','i'):
+    elif atype.kind in ('u', 'i'):
         data_type_str += 'r' + atype.kind
         data_type_str += str(atype.itemsize * 8)  # units are bits
     if (atype.itemsize > 1):

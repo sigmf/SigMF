@@ -122,7 +122,7 @@ handle.get_annotations() # returns list of all annotations
 #### Verify SigMF dataset integrity & compliance
 
 ```bash
-sigmf_validate example.sigmf 
+sigmf_validate example.sigmf
 ```
 
 #### Load a SigMF dataset; read its annotation, metadata, and samples
@@ -201,7 +201,6 @@ meta.add_annotation(100, 200, metadata = {
 })
 
 # check for mistakes & write to disk
-assert meta.validate()
 meta.tofile('example.sigmf-meta') # extension is optional
 ```
 

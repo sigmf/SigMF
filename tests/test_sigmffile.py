@@ -85,17 +85,12 @@ def test_add_annotation():
 
 
 def test_fromarchive(test_sigmffile):
-    print("test_sigmffile is:\n",test_sigmffile)
+    print("test_sigmffile is:\n", test_sigmffile)
     tf = tempfile.mkstemp()[1]
     td = tempfile.mkdtemp()
     archive_path = test_sigmffile.archive(name=tf)
     result = sigmffile.fromarchive(archive_path=archive_path, dir=td)
-
     assert result._metadata == test_sigmffile._metadata == TEST_METADATA
-
-    #data = np.fromfile(result.data_file, dtype=np.float32)
-    #assert np.array_equal(data, TEST_FLOAT32_DATA)
-
     os.remove(tf)
     shutil.rmtree(td)
 

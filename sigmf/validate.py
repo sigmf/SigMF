@@ -20,146 +20,84 @@
 
 '''SigMF Validator'''
 
+import jsonschema
+
 from . import schema
 
-import json
 
-
-class ValidationResult(object):
-    '''Amends a validation result (True, False) with an error string.'''
-    def __init__(self, value=False, error=None):
-        self.error = error
-        self.value = value
-
-    def __bool__(self):
-        return self.value
-    __nonzero__ = __bool__
-
-    def __str__(self):
-        if self.value or self.error is None:
-            return str(self.value)
-        return str(self.error)
-
-
-def match_type(value, our_type):
-    '''Checks if value matches our_type'''
-    return value is None or {
-        'string': lambda x: isinstance(x, str),
-        'uint': lambda x: isinstance(x, int) and x >= 0,
-        'double': lambda x: isinstance(x, float) or isinstance(x, int),
-    }[our_type](value)
-
-
-def validate_key(data_value, ref_dict, section, key):
+def extend_with_default(validator_class):
     '''
-    Validates a key/value pair entry in a chunk.
+    Boilerplate code from [1] to retrieve jsonschema default dict.
+
+    References
+    ----------
+    [1] https://python-jsonschema.readthedocs.io/en/stable/faq/
+    '''
+    validate_properties = validator_class.VALIDATORS["properties"]
+
+    def set_defaults(validator, properties, instance, topschema):
+        for property, subschema in properties.items():
+            if "default" in subschema:
+                instance.setdefault(property, subschema["default"])
+
+        for error in validate_properties(
+            validator, properties, instance, topschema,
+        ):
+            yield error
+
+    return jsonschema.validators.extend(
+        validator_class, {"properties": set_defaults},
+    )
+
+
+def get_default_metadata(ref_schema=schema.get_schema()):
+    '''
+    retrieve defaults from schema
+    FIXME: not working yet
+    '''
+    default = {}
+    validator = extend_with_default(jsonschema.Draft7Validator)
+    validator(ref_schema).validate(default)
+    return default
+
+
+def validate(metadata, ref_schema=schema.get_schema()):
+    '''
+    Check that the provided `metadata` dict is valid according to the `ref_schema` dict.
+    Walk entire schema and check all keys.
 
     Parameters
     ----------
-    data_value
-        Valid or invaid entry in metadata for validation.
-    ref_dict: dict
-        A dictionary containing reference information.
-    section: str
-        The section in which this key/value pair is stored ("global", etc.).
-        This is for better error reporting only.
-    key: str
-        The key of this key/value pair ("core:Version", etc.). This is for better error reporting only.
+    metadata : dict
+        The SigMF metadata to be validated.
+    ref_schema : dict, optional
+        The schema that holds the SigMF metadata definition.
+        Since the schema evolves over time, we may want to be able to check
+        against different versions in the *future*.
 
     Returns
     -------
-    True or ValidationResult
+    None, will raise error if invalid.
     '''
-    if ref_dict.get('required') and data_value is None:
-        return ValidationResult(
-            False,
-            f'In Section `{section}`, an entry is missing required key `{key}`'
-            )
-    if 'type' in ref_dict and not match_type(data_value, ref_dict["type"]):
-        return ValidationResult(
-            False,
-            f'In Section `{section}`, entry `{key}={data_value}` is not of type `{ref_dict["type"]}`'
-            )
-    # if "py_re" in ref_dict and not re.match(ref_dict["py_re"], data_value):
-        # return ValidationResult(False, "regex fail")
-    return True
+    validator = jsonschema.Draft7Validator(schema=ref_schema)
+    validator.validate(instance=metadata)
 
-
-def validate_key_throw(*args):
-    """
-    Like validate_key, but throws a ValueError when invalid.
-    """
-    validation_result = validate_key(*args)
-    if not validation_result:
-        raise ValueError(str(validation_result))
-    return validation_result
-
-
-def validate_section_dict(data_section, ref_section, section):
-    if not isinstance(data_section, dict):
-        return ValidationResult(False, f'Section `{section}` exists, but is not a dict.')
-    key_validation_results = (
-        validate_key(
-            data_section.get(key),
-            ref_section["keys"].get(key),
-            section, key
-        ) for key in ref_section["keys"]
-    )
-    for result in key_validation_results:
-        if not bool(result):
-            return result
-    return True
-
-
-def validate_section_dict_list(data_section, ref_section, section):
-    if not isinstance(data_section, list) or \
-            not all((isinstance(x, dict) for x in data_section)):
-        return ValidationResult(False, f'Section `{section}` exists, but is not a list of dicts.')
-    sort_key = ref_section.get('sort')
-    last_index = (data_section[0].get(sort_key, 0) if len(data_section) else 0) - 1
-    for chunk in data_section:
-        key_validation_results = (
-            validate_key(
-                chunk.get(key),
-                ref_section['keys'].get(key),
-                section, key
-            ) for key in ref_section['keys']
-        )
-        for result in key_validation_results:
-            if not bool(result):
-                return result
-        this_index = chunk.get(sort_key, 0)
-        if this_index <= last_index:
-            return ValidationResult(
-                False,
-                f'In Section `{section}`, chunk starting at index {this_index} is ahead of previous section.'
-                )
-        last_index = this_index
-    return True
-
-
-def validate_section(data_section, ref_section, section):
-    '''Validates a section (e.g. global, capture, etc.).'''
-    if ref_section["required"] and data_section is None:
-        return ValidationResult(False, f'Required section `{section}` not found.')
-    return {
-        'dict': validate_section_dict,
-        'dict_list': validate_section_dict_list,
-    }[ref_section['type']](data_section, ref_section, section)
-
-
-def validate(data, ref=None):
-    if ref is None:
-        ref = schema.get_schema()
-    for result in (validate_section(data.get(key), ref.get(key), key) for key in ref):
-        if not result:
-            return result
-    return True
+    # assure capture and annotation order
+    # TODO: There is a way to do this with just the schema apparently.
+    for key in ['captures', 'annotations']:
+        count = -1
+        for item in metadata[key]:
+            new_count = item['core:sample_start']
+            if new_count < count:
+                raise jsonschema.exceptions.ValidationError(f'{key} has bad order')
+            else:
+                count = new_count
 
 
 def main():
     import argparse
     import logging
+    import json
 
     from . import sigmffile
     from . import error
@@ -192,12 +130,8 @@ def main():
         log.error(err)
         log.error('Unable to decode malformed JSON.')
         exit(1)
-    result = signal.validate()
-    if result:
-        log.info('Validation OK!')
-    else:
-        log.error(result)
-        exit(1)
+    signal.validate()
+    log.info('Validation OK!')
 
 
 if __name__ == '__main__':

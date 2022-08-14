@@ -36,9 +36,9 @@ SIGMF_DATASET_EXT = ".sigmf-data"
 class SigMFArchive():
     """Archive a SigMFFile.
 
-    A `.sigmf` file must include both valid metadata and data. If metadata
-    is not valid, raise `SigMFValidationError`. If `self.data_file` is not
-    set or the requested output file is not writable, raise `SigMFFileError`.
+    A `.sigmf` file must include both valid metadata and data.
+    If `self.data_file` is not set or the requested output file
+    is not writable, raise `SigMFFileError`.
 
     Parameters:
 
@@ -64,7 +64,6 @@ class SigMFArchive():
                        - archive1/
                          - archive1.sigmf-meta
                          - archive1.sigmf-data
-
     """
     def __init__(self, sigmffile, name=None, fileobj=None):
         self.sigmffile = sigmffile
@@ -130,10 +129,7 @@ class SigMFArchive():
             raise error.SigMFFileError(err)
 
     def _validate_sigmffile_metadata(self):
-        valid_md = self.sigmffile.validate()
-        if not valid_md:
-            err = "invalid metadata - {!s}"
-            raise error.SigMFValidationError(err.format(valid_md))
+        self.sigmffile.validate()
 
     def _get_archive_name(self):
         if self.fileobj and not self.name:
