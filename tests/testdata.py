@@ -34,7 +34,6 @@ TEST_METADATA = {
         SigMFFile.DATATYPE_KEY: 'rf32_le',
         SigMFFile.HASH_KEY: 'f4984219b318894fa7144519185d1ae81ea721c6113243a52b51e444512a39d74cf41a4cec3c5d000bd7277cc71232c04d7a946717497e18619bdbe94bfeadd6',
         SigMFFile.NUM_CHANNELS_KEY: 1,
-        SigMFFile.START_OFFSET_KEY: 0,
         SigMFFile.VERSION_KEY: __version__
     }
 }

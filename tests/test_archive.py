@@ -6,6 +6,7 @@ from os import path
 
 import numpy as np
 import pytest
+import jsonschema
 
 from sigmf import error
 from sigmf.archive import SIGMF_DATASET_EXT, SIGMF_METADATA_EXT
@@ -29,7 +30,7 @@ def test_without_data_file_throws_fileerror(test_sigmffile):
 def test_invalid_md_throws_validationerror(test_sigmffile):
     del test_sigmffile._metadata["global"]["core:datatype"]  # required field
     with tempfile.NamedTemporaryFile() as temp:
-        with pytest.raises(error.SigMFValidationError):
+        with pytest.raises(jsonschema.exceptions.ValidationError):
             test_sigmffile.archive(name=temp.name)
 
 

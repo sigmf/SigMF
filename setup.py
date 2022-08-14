@@ -39,7 +39,7 @@ setup(
     package_data={
         'sigmf': ['*.json'],
     },
-    install_requires=['numpy'],
+    install_requires=['numpy', 'jsonschema'],
     extras_require={
         'gui': 'pysimplegui==4.0.0'
     },
