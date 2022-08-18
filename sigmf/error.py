@@ -33,7 +33,7 @@ class SigMFValidationError(SigMFError):
 
 class SigMFAccessError(SigMFError):
     """Exceptions related to accessing the contents of SigMF metadata, notably
-    when expexted fields are missing or accessing out of bounds captures."""
+    when expected fields are missing or accessing out of bounds captures."""
     pass
 
 

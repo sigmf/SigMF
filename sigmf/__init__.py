@@ -22,6 +22,7 @@ __version__ = '1.0.1'
 
 from .archive import SigMFArchive
 from .sigmffile import SigMFFile
+from .archivereader import SigMFArchiveReader
 
 from . import archive
 from . import error
@@ -29,3 +30,4 @@ from . import schema
 from . import sigmffile
 from . import validate
 from . import utils
+from . import archivereader
