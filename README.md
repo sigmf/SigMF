@@ -204,6 +204,69 @@ meta.add_annotation(100, 200, metadata = {
 meta.tofile('example.sigmf-meta') # extension is optional
 ```
 
+#### Load a SigMF Archive and slice its data without untaring it
+
+Since an *archive* is merely a tarball (uncompressed), and since there any many
+excellent tools for manipulating tar files, it's fairly straightforward to
+access the *data* part of a SigMF archive without untaring it.
+This is a compelling feature because 1) archives make it harder for the `-data`
+and the `-meta` to get separated, and 2) some datasets are so large that it can
+be impractical (due to available disk space, or slow network speeds if the
+archive file resides on a network file share) or simply obnoxious to untar it
+first.
+
+```python
+In [1]: import sigmf
+
+In [2]: arc = sigmf.SigMFArchiveReader('/src/LTE.sigmf')
+
+In [3]: arc.shape
+Out[3]: (15379532,)
+
+In [4]: arc.ndim
+Out[4]: 1
+
+In [5]: arc[:10]
+Out[5]: 
+array([-20.+11.j, -21. -6.j, -17.-20.j, -13.-52.j,   0.-75.j,  22.-58.j,
+        48.-44.j,  49.-60.j,  31.-56.j,  23.-47.j], dtype=complex64)
+```
+
+The preceeding example exhibits another feature of this approach; the archive
+`LTE.sigmf` is actually `complex-int16`'s on disk, for which there is no
+corresponding type in `numpy`.
+However, the `.sigmffile` member keeps track of this, and converts the data
+to `numpy.complex64` *after* slicing it, that is, after reading it from disk.
+
+```python
+In [6]: arc.sigmffile.get_global_field(sigmf.SigMFFile.DATATYPE_KEY)
+Out[6]: 'ci16_le'
+
+In [7]: arc.sigmffile._memmap.dtype
+Out[7]: dtype('int16')
+
+In [8]: arc.sigmffile._return_type
+Out[8]: '<c8'
+```
+
+Another supported mode is the case where you might have an archive that *is not
+on disk* but instead is simply `bytes` in a python variable.
+Instead of needing to write this out to a temporary file before being able to
+read it, this can be done "in mid air" or "without touching the ground (disk)".
+
+```python
+In [1]: import sigmf, io
+
+In [2]: sigmf_bytes = io.BytesIO(open('/src/LTE.sigmf', 'rb').read())
+
+In [3]: arc = sigmf.SigMFArchiveReader(archive_buffer=sigmf_bytes)
+
+In [4]: arc[:10]
+Out[4]: 
+array([-20.+11.j, -21. -6.j, -17.-20.j, -13.-52.j,   0.-75.j,  22.-58.j,
+        48.-44.j,  49.-60.j,  31.-56.j,  23.-47.j], dtype=complex64)
+```
+
 ## Frequently Asked Questions
 
 ### Is this a GNU Radio effort?
