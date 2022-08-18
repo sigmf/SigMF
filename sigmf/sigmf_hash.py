@@ -21,14 +21,26 @@
 '''Hashing Functions'''
 
 import hashlib
+import os
 
 
-def calculate_sha512(filename):
+def calculate_sha512(filename=None, fileobj=None, offset_and_size=None):
     """
-    Returns sha512 of filename
+    Return sha512 of file or fileobj.
     """
     the_hash = hashlib.sha512()
-    with open(filename, "rb") as handle:
-        for buff in iter(lambda: handle.read(4096), b""):
-            the_hash.update(buff)
+    if filename is not None:
+        fileobj = open(filename, "rb")
+    if offset_and_size is None:
+        bytes_to_hash = os.path.getsize(filename)
+    else:
+        fileobj.seek(offset_and_size[0])
+        bytes_to_hash = offset_and_size[1]
+    bytes_read = 0
+    while bytes_read < bytes_to_hash:
+        buff = fileobj.read(min(4096, (bytes_to_hash - bytes_read)))
+        the_hash.update(buff)
+        bytes_read += len(buff)
+    if filename is not None:
+        fileobj.close()
     return the_hash.hexdigest()

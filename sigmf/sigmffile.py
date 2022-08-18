@@ -85,7 +85,7 @@ class SigMFFile():
         AUTHOR_KEY, COLLECTION_DOI_KEY, DESCRIPTION_KEY, EXTENSIONS_KEY, LICENSE_KEY, STREAMS_KEY, VERSION_KEY
     ]
 
-    def __init__(self, metadata=None, data_file=None, global_info=None, skip_checksum=False):
+    def __init__(self, metadata=None, data_file=None, global_info=None, skip_checksum=False, map_readonly=True):
         '''
         API for SigMF I/O
 
@@ -99,11 +99,16 @@ class SigMFFile():
             Set global field shortcut if creating new object.
         skip_checksum: bool, default False
             When True will skip calculating hash on data_file (if present) to check against metadata.
+        map_readonly: bool, default True
+            Indicates whether assignments on the numpy.memmap are allowed.
         '''
         self.version = None
         self.schema = None
         self.data_file = None
         self.sample_count = 0
+        self._memmap = None
+        self.shape = None
+        self.is_complex_data = False  # numpy.iscomplexobj(self._memmap) is not adequate for fixed-point complex case
 
         if metadata is None:
             self._metadata = get_default_metadata(self.get_schema())
@@ -116,7 +121,7 @@ class SigMFFile():
         if global_info is not None:
             self.set_global_info(global_info)
         if data_file is not None:
-            self.set_data_file(data_file, skip_checksum=skip_checksum)
+            self.set_data_file(data_file, skip_checksum, map_readonly=map_readonly)
 
     def __str__(self):
         return self.dumps()
@@ -150,10 +155,10 @@ class SigMFFile():
             # is_fixed_point and is_complex
             if self._memmap.ndim == 2:
                 # num_channels==1
-                a = a[0].astype(self._return_type) + 1.j * a[1].astype(self._return_type)
+                a = a[:,0].astype(self._return_type) + 1.j * a[:,1].astype(self._return_type)
             elif self._memmap.ndim == 3:
                 # num_channels>1
-                a = a[:,0].astype(self._return_type) + 1.j * a[:,1].astype(self._return_type)
+                a = a[:,:,0].astype(self._return_type) + 1.j * a[:,:,1].astype(self._return_type)
             else:
                 raise ValueError("unhandled ndim in SigMFFile.__getitem__(); this shouldn't happen")
         return a
@@ -216,7 +221,7 @@ class SigMFFile():
         Overwrite the global info with a new dictionary.
         """
         self._validate_dict_in_section(new_global, self.GLOBAL_KEY)
-        self._metadata[self.GLOBAL_KEY] = new_global
+        self._metadata[self.GLOBAL_KEY] = new_global.copy()
 
     def get_global_info(self):
         """
@@ -384,11 +389,12 @@ class SigMFFile():
                 sample_count = 0
         else:
             header_bytes = sum([c.get(self.HEADER_BYTES_KEY, 0) for c in self.get_captures()])
-            file_size = path.getsize(self.data_file) - self.get_global_field(self.TRAILING_BYTES_KEY, 0) - header_bytes  # bytes
+            file_size = path.getsize(self.data_file) if self.offset_and_size is None else self.offset_and_size[1]
+            file_data_size = file_size - self.get_global_field(self.TRAILING_BYTES_KEY, 0) - header_bytes  # bytes
             sample_size = self.get_sample_size() # size of a sample in bytes
             num_channels = self.get_num_channels()
-            sample_count = file_size // sample_size // num_channels
-            if file_size % (sample_size * num_channels) != 0:
+            sample_count = file_data_size // sample_size // num_channels
+            if file_data_size % (sample_size * num_channels) != 0:
                 warnings.warn(f'File `{self.data_file}` does not contain an integer '
                     'number of samples across channels. It may be invalid data.')
             if len(annotations) > 0 and annotations[-1][self.START_INDEX_KEY] + annotations[-1][self.LENGTH_INDEX_KEY] > sample_count:
@@ -403,14 +409,17 @@ class SigMFFile():
         Also returns a string representation of the hash.
         """
         old_hash = self.get_global_field(self.HASH_KEY)
-        new_hash = sigmf_hash.calculate_sha512(self.data_file)
+        if self.data_file is not None:
+            new_hash = sigmf_hash.calculate_sha512(self.data_file, offset_and_size=self.offset_and_size)
+        else:
+            new_hash = sigmf_hash.calculate_sha512(fileobj=self.data_buffer, offset_and_size=self.offset_and_size)
         if old_hash:
             if old_hash != new_hash:
                 raise SigMFFileError('Calculated file hash does not match associated metadata.')
 
         return self.set_global_field(self.HASH_KEY, new_hash)
 
-    def set_data_file(self, data_file, skip_checksum=False):
+    def set_data_file(self, data_file=None, data_buffer=None, skip_checksum=False, offset=0, size_bytes=None, map_readonly=True):
         """
         Set the datafile path, then recalculate sample count. If not skipped,
         update the hash and return the hash string.
@@ -419,29 +428,40 @@ class SigMFFile():
             raise SigMFFileError("Error setting data file, the DATATYPE_KEY must be set in the global metadata first.")
 
         self.data_file = data_file
+        self.data_buffer = data_buffer
+        self.offset_and_size = None if (offset == 0 and size_bytes is None) else (offset, size_bytes)
         self._count_samples()
 
         dtype = dtype_info(self.get_global_field(self.DATATYPE_KEY))
+        self.is_complex_data = dtype['is_complex']
         num_channels = self.get_num_channels()
         self.ndim = 1 if (num_channels < 2) else 2
-        is_complex_data = dtype['is_complex']
-        is_fixedpoint_data = dtype['is_fixedpoint']
 
-        memmap_shape = (-1,)
+        complex_int_separates = dtype['is_complex'] and dtype['is_fixedpoint']
+        mapped_dtype_size = dtype['component_size'] if complex_int_separates else dtype['sample_size']
+        mapped_length = None if size_bytes is None else size_bytes // mapped_dtype_size
+        mapped_reshape = (-1,)  # we can't use -1 in mapped_length ...
         if num_channels > 1:
-            memmap_shape = memmap_shape + (num_channels,)
-        if is_complex_data and is_fixedpoint_data:
-            # There is no corresponding numpy type, so we'll have to add another axis, length of 2
-            memmap_shape = memmap_shape + (2,)
+            mapped_reshape = mapped_reshape + (num_channels,)
+        if complex_int_separates:
+            # There is no corresponding numpy type, so we'll have to add another axis, with length of 2
+            mapped_reshape = mapped_reshape + (2,)
         self._return_type = dtype['memmap_convert_type']
-        #print('memmap()ing', self.get_global_field(self.DATATYPE_KEY), 'with', dtype['memmap_map_type'])
+        common_args = {'dtype': dtype['memmap_map_type'], 'offset': offset}
         try:
-            self._memmap = np.memmap(self.data_file, offset=0, dtype=dtype['memmap_map_type']).reshape(memmap_shape)
+            if self.data_file is not None:
+                open_mode = 'r' if map_readonly else 'r+'
+                memmap_shape = None if mapped_length is None else (mapped_length,)
+                raveled = np.memmap(self.data_file, mode=open_mode, shape=memmap_shape, **common_args)
+            elif self.data_buffer is not None:
+                buffer_count = -1 if mapped_length is None else mapped_length
+                raveled = np.frombuffer(self.data_buffer.getbuffer(), count=buffer_count, **common_args)
+            else:
+                raise ValueError('In sigmffile.set_data_file(), either data_file or data_buffer must be not None')
         except:  # TODO include likely exceptions here
-            warnings.warn('Failed to memory-map array from file')
-            self._memmap = None
-            self.shape = None
+            warnings.warn('Failed to create data array from memory-map-file or buffer!')
         else:
+            self._memmap = raveled.reshape(mapped_reshape)
             self.shape = self._memmap.shape if (self._return_type is None) else self._memmap.shape[:-1]
 
         if skip_checksum:
@@ -548,6 +568,7 @@ class SigMFFile():
         else:
             with open(fns['meta_fn'], 'w') as fp:
                 self.dump(fp, pretty=pretty)
+                fp.write('\n')  # text files should end in carriage return
 
     def read_samples_in_capture(self, index=0, autoscale=True):
         '''
@@ -614,14 +635,14 @@ class SigMFFile():
         internal function for reading samples from datafile
         '''
         dtype = dtype_info(self.get_global_field(self.DATATYPE_KEY))
-        is_complex_data = dtype['is_complex']
+        self.is_complex_data = dtype['is_complex']
         is_fixedpoint_data = dtype['is_fixedpoint']
         is_unsigned_data = dtype['is_unsigned']
         data_type_in = dtype['sample_dtype']
         component_type_in = dtype['component_dtype']
         component_size = dtype['component_size']
 
-        data_type_out = np.dtype("f4") if not is_complex_data else np.dtype("f4, f4")
+        data_type_out = np.dtype("f4") if not self.is_complex_data else np.dtype("f4, f4")
         num_channels = self.get_num_channels()
 
         fp = open(self.data_file, "rb")
@@ -639,7 +660,7 @@ class SigMFFile():
                     data -= 2**(component_size*8-1)
                 data *= 2**-(component_size*8-1)
                 data = data.view(data_type_out)
-            if is_complex_data:
+            if self.is_complex_data:
                 data = data.view(np.complex64)
         else:
             data = data.view(component_type_in)
