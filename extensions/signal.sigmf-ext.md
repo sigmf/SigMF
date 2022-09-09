@@ -18,7 +18,7 @@ the attributes of wireless communications signals and their emitters.
 This extension adds the following optional field to the `annotations` global SigMF object:
 
 |name|required|type|description|
-|----|--------|----|----|-----------|
+|----|--------|----|-----------|
 |`detail`|false|[Detail](signal.sigmf-ext.md#the-detail-object)|Emission details (standard, modulation, etc.)|
 |`emitter`|false|[Emitter](signal.sigmf-ext.md#the-emitter-object)|Emitter details (manufacturer, geo coordinates, etc.)|
 
@@ -80,7 +80,7 @@ The `mod_class` field can have the following values:
 The `carrier_variant` field can have the following values:
 
 |value|description|
-|----|----|-------|
+|-----|-----------|
 |`with_carrier`|with-carrier modulation|
 |`suppressed_carrier`|suppressed-carrier modulation|
 |`reduced_carrier`|reduced-carrier modulation|
@@ -92,7 +92,7 @@ The `carrier_variant` field can have the following values:
 The `symbol_variant` field can have the following values:
 
 |value|description|
-|----|----|-------|
+|-----|-----------|
 |`differential`|differential modulation|
 |`offset`|offset modulation (sometimes called 'staggered')|
 
