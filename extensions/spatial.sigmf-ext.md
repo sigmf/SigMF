@@ -13,9 +13,9 @@ to the easier processing and better application support.
 The `spatial` extension makes use of cartesian coordinates to define array
 geometry, and spherical coordinates for reporting bearings. This, coupled with
 the various methods for defining boresights and bearing references can become
-complicated rapidly so the union of these two cordinate reference systems (CRS)
-is illustrated in Figure 1 below. The ISO 80000-2:2019 compliant cartesian and
-spherical systems have a specific relationship with the reported azimuth and
+complicated rapidly so the union of these two coordinate  reference systems
+(CRS) is illustrated in Figure 1 below. The ISO 80000-2:2019 compliant cartesian
+and spherical systems have a specific relationship with the reported azimuth and
 elevation, which use the conventional geospatial definitions (degrees east of
 true north, and degrees above horizon respectively).
 
@@ -117,7 +117,7 @@ The `spatial` extension adds the following fields to `captures` segment objects:
 |`aperture_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing of aperture boresight in this segment.|
 |`emitter_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing of signals in this segment.|
 |`element_geometry`|false|array|N/A|An array containing `cartesian_point` objects that specify the relative physical geometry of the antenna elements.|
-|`phase_offset`|false|double|degrees|Phase offset of the data in this capture relative to channel 0.|
+|`phase_offset`|false|double|degrees|Phase offset of the data in this capture relative to a common phase reference plane.|
 |`calibration`|false|[calibration](spatial.sigmf-ext.md#21-the-calibration-object)|Reserved for calibration.|
 
 The `aperture_bearing` field within a `captures` segment can be used to specify
@@ -147,12 +147,14 @@ definition of `element_geometry` SHALL take priority over a value specified in
 a `collection`.
 
 The `phase_offset` field is a double precision value used when a dataset is
-captured from a RF device that is phase cohenert but not phase-aligned. Datasets
+captured from a RF device that is phase coherent but not phase-aligned. Datasets
 making use of this field can be post-processed to align the data and this field
-can be set to zero. This value is always relative to channel 0, and therefore
-MUST be zero for channel 0. If this field is omitted then it is assumed that the
+can be set to zero. This value is normally relative to channel 0, and therefore
+will be zero for channel 0. If this field is omitted then it is assumed that the
 value is zero, and thus it is always OPTIONAL for channel 0 or datasets that are
-already phase aligned.
+already phase aligned. Including this value set to zero can explicitly identify
+the dataset as phase-aligned. To phase-align the data to the phase reference
+plane, the inverse of this factor is applied: exp(-i*radians(phase_offset)).
 
 ### 2.1 The `calibration` Object
 
@@ -160,7 +162,7 @@ The `calibration` object is a special captures segment metadata field that
 indicates the segment is used for calibration. This might be used to show that
 a tone or broadband noise signal was generated to perform phase alignment in
 post-processing. The resulting value from post-processing calibration can then
-be stored in the `captures` object `phase_offset` field .
+be stored in the `captures` object `phase_offset` field.
 
 If this field is not defined for a `captures` segment, then that segment SHOULD
 be treated as normal data.
@@ -173,9 +175,9 @@ be treated as normal data.
 
 Either the `bearing` or `cal_geometry` field SHOULD be provided if a captures
 segment includes the `calibration` field. The `bearing` object is best used to
-describe a remote calibration source location in a spherical coordinate system;
-the `cal_geometry` is best used when the calibration emitter is local to the
-multi-element array.
+describe a remote calibration source location in a spherical coordinate system,
+while the `cal_geometry` is best used when the calibration emitter is local to
+the multi-element array.
 
 #### 2.1.1 The `caltype` field
 
@@ -184,7 +186,7 @@ The `caltype` field can have one of the following values:
 |value|description|
 |-----|-----------|
 |`tone`|This segment contains a tone for calibration purposes.|
-|`xcorr`|This segment contains a signal for crosscorrelation calibration purposes.|
+|`xcorr`|This segment contains a signal for cross-correlation calibration purposes.|
 |`ref`|A known reference emission.|
 |`other`|This segment contains another type of calibration signal.|
 
@@ -224,7 +226,7 @@ used at a higher priority than what is specified here.
 ## 5 Examples
 
 Here is an example of how the `global` and captures fields can be specified for
-a single channel Recording of a 4 element uniform linear array with element
+a single channel Recording of a four element uniform linear array with element
 spacing of 20cm pointed due west with annotated signal emissions originating
 from the north-east. Note that the `signal_azimuth` fields show in the
 `annotations` metadata reflect an aimuth of approximately 135* instead of the
@@ -358,7 +360,7 @@ the aperture (see figure above for reference).
 }
 ```
 
-Here is an example of a 4 element aperture with square geometry in the XY plane:
+Here is an example of a four element aperture with square geometry in the XY plane:
 
 ```json
 {
