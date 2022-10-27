@@ -502,9 +502,10 @@ Segment Objects:
 | ----------------| -------- | ------ | --------------------------------------------------------------------------------------------|
 | `sample_start`  | true     | uint   | The sample index in the Dataset file at which this Segment takes effect.                    |
 | `global_index`  | false    | uint   | The index of the sample referenced by `sample_start` relative to an original sample stream. |
-| `header_bytes`  | false    | uint   | The number of bytes preceding a chunk of samples that are not sample data, used for NCDs.  |
+| `header_bytes`  | false    | uint   | The number of bytes preceding a chunk of samples that are not sample data, used for NCDs.   |
 | `frequency`     | false    | double | The center frequency of the signal in Hz.                                                   |
 | `datetime`      | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.|
+| `capture_tags`  | false    | array  | A list of short form human/machine-readable strings indicating features of this segment.    |
 
 ##### The `sample_start` Field
 
@@ -612,6 +613,51 @@ The ABNF description is:
 
 Thus, timestamps take the form of `YYYY-MM-DDTHH:MM:SS.SSSZ`, where any number
 of digits for fractional seconds is permitted.
+
+##### The `capture_tags` Field
+
+This field provides high level contextual information to specific capture
+segments. For example, this can flag parts of a Recording containing saturated
+data, or can be used to specify portions of data that should be ignored by
+subsequent processing stages, or highlight areas that are important. Use of
+`capture_tags` differs from annotations in that tags are intended to describe
+coarse intermittent features common to all data in a given temporal range, and
+many annotations may exist within the segments. There are some situations where
+either may be appropriate.
+
+This field is a list of one or more strings, and in general the most important
+tag should be the first list item. This field MAY be used by visualization
+software to style a given segment a certain way.
+
+Standard tags are: `default`, `invalid`, `important`. The tag `default` is
+implied in the absense of this field, but an empty list is NOT valid. Any string
+is allowed as an entry in this list, but it is RECOMMENDED that strings be
+limited to no more than 20 characters. The following example shows this field
+used to indicate 1000 samples of saturated data:
+
+```json
+{
+  "global": {...},
+  "captures": [
+    {
+      "core:sample_start": 0,
+      "core:capture_tags": ["default"],
+      "core:frequency": 100000000.0
+    },
+    {
+      "core:sample_start": 100000,
+      "core:capture_tags": ["invalid", "saturated"],
+      "core:frequency": 100000000.0
+    },
+    {
+      "core:sample_start": 101000,
+      "core:capture_tags": ["default"],
+      "core:frequency": 100000000.0
+    }
+  ],
+  "annotations": []
+}
+```
 
 #### Annotations Array
 
