@@ -60,7 +60,7 @@ There are at least four ways you can use SigMF today, thanks to the community-su
 
 ## Contributing
 
-The SigMF standards effort is organized within this Github repository.
+The SigMF standards effort is organized entirely within this Github repository.
 Questions, suggestions, bug reports, etc., are discussed in [the issue
 tracker](https://github.com/gnuradio/SigMF/issues), feel free to create
 a new issue and provide your input, even if it's not a traditional issue.
@@ -74,7 +74,7 @@ discussions, the more useful the standard is likely to be.
 
 ## Extensions
 
-The "Core" SigMF standard is intentionally kept limited in size, and instead additional metadata fields can be added through [SigMF Extensions](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/sigmf-spec.md#extension-namespaces).  For example, the [signal extension](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/extensions/signal.sigmf-ext.md) provides a standard way to specify modulation schemes and other attributes of wireless comms signals. Some extensions live within this repo, the [extensions directory](https://github.com/gnuradio/SigMF/tree/sigmf-v1.x/extensions), while others are maintained by third parties.  Below we include a listing of some popular SigMF extensions, to have your extension included on this list, open a PR.
+The "Core" SigMF standard is intentionally kept limited in scope, additional metadata fields can be added through [SigMF Extensions](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/sigmf-spec.md#extension-namespaces). For example, the [signal extension](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/extensions/signal.sigmf-ext.md) provides a standard way to specify modulation schemes and other attributes of wireless comms signals. Several general purpose canonical extensions live within this repository directly in the [extensions directory](https://github.com/gnuradio/SigMF/tree/sigmf-v1.x/extensions), while others are maintained by third parties. Below we include a listing of some popular, compliant SigMF extensions. To have your extension reviewed for inclusion on this list, please open a PR adding the repository to the list below:
 
 * [NTIA's series of extensions](https://github.com/NTIA/sigmf-ns-ntia)
 
