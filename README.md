@@ -65,12 +65,15 @@ Questions, suggestions, bug reports, etc., are discussed in [the issue
 tracker](https://github.com/gnuradio/SigMF/issues), feel free to create
 a new issue and provide your input, even if it's not a traditional issue.
 Changes to the specification only occur through [Pull Requests](https://github.com/gnuradio/SigMF/pulls).
+This ensures that the history and background of all discussions and changes are maintained for posterity.
 
-This ensures that the history and background of all discussions and changes are
-maintained for posterity.
+There is also a SigMF chat room on [GNU Radio's Matrix chat server](https://wiki.gnuradio.org/index.php/Chat)
+where you can ask SigMF-related questions, or participate in various discussions.
+Lastly, there are monthly SigMF calls covering a variety of topics, on the third Monday of each month
+at 11:30AM Eastern/New York Time, please email marc@gnuradio.org for an invite and Zoom link.
 
 Anyone is welcome to get involved - indeed, the more people involved in the
-discussions, the more useful the standard is likely to be.
+discussions, the more useful the standard is likely to be!
 
 ## Extensions
 
