@@ -1,7 +1,7 @@
 name: Continuous Integration
 on: [push]
 jobs:
-  build:
+  build-sigmf-python-package:
     runs-on: ubuntu-latest
     strategy:
       matrix:
