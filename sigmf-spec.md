@@ -27,24 +27,18 @@ Copyright of contributions to SigMF are retained by their original authors. All 
   - [Introduction](#introduction)
   - [Conventions Used in this Document](#conventions-used-in-this-document)
   - [Specification](#specification)
-    - [Files](#files)
-    - [SigMF Archives](#sigmf-archives)
-    - [Dataset Format](#dataset-format)
-    - [Metadata Format](#metadata-format)
+    - [SigMF File Types](#sigmf-file-types)
+    - [SigMF Dataset Format](#sigmf-dataset-format)
+    - [SigMF Metadata Format](#sigmf-metadata-format)
       - [Datatypes](#datatypes)
       - [Namespaces](#namespaces)
         - [Extension Namespaces](#extension-namespaces)
       - [Global Object](#global-object)
-        - [The `geolocation` Field](#the-geolocation-field)
-        - [The `extensions` Field](#the-extensions-field)
-        - [The `collection` Field](#the-collection-field)
       - [Captures Array](#captures-array)
         - [Capture Segment Objects](#capture-segment-objects)
-          - [The `global_index` Pair](#the-global_index-pair)
-          - [The `datetime` Pair](#the-datetime-pair)
       - [Annotations Array](#annotations-array)
         - [Annotation Segment Objects](#annotation-segment-objects)
-    - [Collection Format](#collection-format)
+    - [SigMF Collection Format](#sigmf-collection-format)
   - [Licensing](#licensing)
   - [SigMF Compliance](#sigmf-compliance)
     - [SigMF Schema Compliance](#sigmf-schema-compliance)
@@ -114,7 +108,7 @@ is a reserved name and can only be defined by this specification. Other metadata
 MAY be described by extension namespaces. This specification also defines a 
 model and format for how SigMF data should be stored at-rest (on-disk) using JSON.
 
-### Files
+### SigMF File Types
 
 There are two fundamental filetypes defined by this specification: files with 
 metadata, and the files that contain the Datasets described by the metadata. There
@@ -372,7 +366,7 @@ object:
 | `extensions`    | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
 | `collection`    | false    | string  | The base filename of a `collection` with which this Recording is associated.|
 
-##### The `dataset` Field
+**The `dataset` Field**
 
 The `dataset` field in the Global object is used to specify the Dataset file that this
 Metadata describes. If provided, this string MUST be the complete filename of the
@@ -389,13 +383,13 @@ This field SHOULD NOT be used in conjunction the `core:metadata_only` field. If 
 fields exist and the file specified by `core:dataset` exists, then `core:metadata_only`
 SHOULD be ignored by the application.
 
-##### The `trailing_bytes` Field
+**The `trailing_bytes` Field**
 
 This field is used with Non-Conforming Datasets to indicate some number of bytes that
 trail the sample data in the NCD file that should be ignored for processing. This can
 be used to ignore footer data in non-SigMF filetypes.
 
-##### The `metadata_only` Field
+ **Rhe `metadata_only` Field**
 
 This field should be defined and set to `true` to indicate that the Metadata
 file is being distributed without a corresponding `.sigmf-data` file. This may
@@ -407,7 +401,7 @@ If a Compliant SigMF Recording uses this field, it MAY indicate that the Dataset
 was dynamically generated from the metadata. This field MAY NOT be used in
 conjunction with Non-Conforming Datasets or the `core:dataset` field.
 
-##### The `geolocation` Field
+**The `geolocation` Field**
 
 The `geolocation` field in the Global Object is used to store the location
 of the recording system. The location is stored as a single
@@ -439,7 +433,7 @@ documented in a SigMF Extension document.
 *Note:* Objects named `geometry` or `properties` are prohibited Foreign Members
 as specified in RFC 7946 Section 7.1.
 
-##### The `extensions` Field
+**The `extensions` Field**
 
 The `extensions` field in the Global Object is an array of `extension objects`
 that describe SigMF extensions. Extension Objects MUST contain the three key/value
@@ -473,7 +467,7 @@ In the example below, `extension-01` is used, but not necessary, and
   }
 ```
 
-##### The `collection` Field
+**The `collection` Field**
 
 This field is used to indicate that this Recording is part of a SigMF Collection 
 (described later in this document). It is strongly RECOMMENDED that if you are 
@@ -486,7 +480,7 @@ The `captures` value is an array of `capture segment objects` that describe the
 parameters of the signal capture. It MUST be sorted by the value of each
 capture segment's `core:sample_start` key, ascending.
 
-#### Capture Segment Objects
+##### Capture Segment Objects
 
 Capture Segment Objects are composed of key/value pairs, and each Segment describes
 a chunk of samples that can be mapped into memory for processing. Each Segment
@@ -506,14 +500,14 @@ Segment Objects:
 | `frequency`     | false    | double | The center frequency of the signal in Hz.                                                   |
 | `datetime`      | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.|
 
-##### The `sample_start` Field
+**The `sample_start` Field**
 
 This field specifies the sample index where this Segment takes effect relative
 to the recorded Dataset file. If the Dataset is a SigMF Dataset file, this 
 field can be immediately mapped to physical disk location since conforming
 Datasets only contain sample data.
 
-##### The `global_index` Field
+**The `global_index` Field**
 
 This field describes the index of the sample referenced by the `sample_start`
 field relative to an original sample stream, the entirety of which may not
@@ -547,7 +541,7 @@ datastream, indicating that 500 samples were lost before they could be recorded.
    ...
 ```
 
-##### The `header_bytes` Field
+**The `header_bytes` Field**
 
 This field specifies a number of bytes that are not valid sample data that 
 are physically located at the start of where the chunk of samples referenced 
@@ -585,7 +579,7 @@ of the previous Segment of samples plus two headers).
 }
 ```
 
-##### The `datetime` Field
+**The `datetime` Field**
 
 This key/value pair MUST be an ISO-8601 string, as defined by [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt),
 where the only allowed `time-offset` is `Z`, indicating the UTC/Zulu timezone.
@@ -641,11 +635,15 @@ Segment Objects:
 | `latitude`        | false    |        | The latitude corresponding to the annotation (DEPRECATED, use `core:geolocation`).  |
 | `longitude`       | false    |        | The longitude corresponding to the annotation (DEPRECATED, use `core:geolocation`). |
 
+**The Sample Index Fields**
+
 There is no limit to the number of annotations that can apply to the same group
 of samples. If two annotations have the same `sample_start`, there is no
 defined ordering between them. If `sample_count` is not provided, it SHOULD
 be assumed that the annotation applies from `sample_start` through the end of
 the Dataset, in all other cases `sample_count` MUST be provided.
+
+**The `freq_*_edge` Fields**
 
 The `freq_lower_edge` and `freq_upper_edge` fields SHOULD be at RF if the
 feature is at a known RF frequency. If there is no known center frequency (as
@@ -655,12 +653,14 @@ fields SHOULD be relative to baseband. It is REQUIRED that both `freq_lower_edge
 and `freq_upper_edge` be provided, or neither; the use of just one field is not
 allowed.
 
+**The `label` Field**
+
 The `label` field MAY be used for any purpose, but it is RECOMMENDED that it be
 limited to no more than 20 characters as a common use is a short form GUI
 indicator. Similarly, it is RECOMMENDED that any user interface making use of 
 this field be capable of displaying up to 20 characters.
 
-### Collection Format
+### SigMF Collection Format
 
 The `sigmf-collection` file contains metadata in a single top-level object 
 called a `collection`. The Collection Object contains key/value pairs that 
