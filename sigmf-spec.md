@@ -768,6 +768,8 @@ Recordings.
 In order to be 'SigMF Compliant', an application MUST meet the following
 requirements:
 
+1. Is capable of parsing and loading SigMF Compliant Recordings. Support for
+   SigMF Collections and Archives is RECOMMENDED but not REQUIRED.
 1. Adheres to and supports the file rules, Dataset formats, `objects`,
    `namespaces`, and `names` specified by this document.
 1. MUST be able to ignore any `object` or `namespace` not specified by this
@@ -783,14 +785,19 @@ requirements:
    listed extension namespaces, and defines which optional fields are used. This
    definition can be in user documentation or within the code itself, though
    explicit documentation is RECOMMENDED.
+1. Support for ALL SigMF Datatypes is NOT REQUIRED as certain datatypes may not
+   make sense for a particular application, but Compliant applications MUST
+   define which datatypes are supported, and be capable of loading Compliant
+   Recordings using supported datatypes.
 
 Compliant applications are NOT REQUIRED to support Non-Conforming Datasets or
 Metadata Only schema files, but it is RECOMMENDED that they parse the respective
 metadata fields in the `global` object to provide descriptive messages to users
-regarding why the files are not supported. Support for SigMF Collections is
-OPTIONAL for SigMF compliant applications, however it is RECOMMENDED that
-applications implementing SigMF make use of Collections when appropriate for
-interoperability and consistency.
+regarding why the files are not supported.
+
+Support for SigMF Collections is OPTIONAL for SigMF Compliant applications,
+however it is RECOMMENDED that applications implementing SigMF make use of
+Collections when appropriate for interoperability and consistency.
 
 ## Citing SigMF
 
