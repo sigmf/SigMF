@@ -166,16 +166,16 @@ distribution in a SigMF `Archive`.
 
 Rules for all files:
 1. All filetypes MUST be stored in separate files on-disk.
-1. It is RECOMMENDED that filenames use hyphens to separate 
-   words rather than whitespace or underscores.
+1. It is RECOMMENDED that filenames use hyphens to separate words rather than
+   whitespace or underscores.
 
 Rules for SigMF Metadata files:
 1. A Metadata file MUST only describe one Dataset file.
 1. A Metadata file MUST be stored in UTF-8 encoding.
 1. A Metadata file MUST have a `.sigmf-meta` filename extension.
-1. A Metadata file MUST be in the same directory as the Dataset file
-   it describes.
-1. It is RECOMMENDED that the base filenames (not including file extension) of 
+1. A Metadata file MUST be in the same directory as the Dataset file it
+   describes.
+1. It is RECOMMENDED that the base filenames (not including file extension) of
    a Recording's Metadata and Dataset files be identical.
 
 Rules for SigMF Dataset files:
@@ -187,21 +187,19 @@ Rules for SigMF Non-Conforming Dataset files:
 Rules for SigMF Collection files:
 1. The Collection file MUST be stored in UTF-8 encoding.
 1. The Collection file MUST have a `.sigmf-collection` filename extension.
-1. The `sigmf-collection` file MUST be either in the same directory as the 
-   Recordings that it references, or in the top-level directory of an Archive 
+1. The `sigmf-collection` file MUST be either in the same directory as the
+   Recordings that it references, or in the top-level directory of an Archive
    (described in later section).
 
 Rules for SigMF Archive files:
 1. The Archive MUST use the `tar` archive format, as specified by POSIX.1-2001.
 1. The Archive file's filename extension MUST be `.sigmf`.
-1. The Archive MUST contain the following files: for each contained Recording
-   with some name given here meta-syntactically as `N`, files named `N` (a
-   directory), `N/N.sigmf-meta`, and `N/N.sigmf-data`.
-1. The Archive MAY contain a `.sigmf-collection` file in the top-level directory.
-1. It is RECOMMENDED that if Recordings in an archive represent continuous
-   data that has been split into separate Recordings, that their filenames
-   reflect the order of the series by appending a hyphenated zero-based index
-   (e.g., `N-0`, `N-1`, `N-2`, etc.,).
+1. The Archive MUST contain at least one SigMF Recording.
+1. The Archive MAY contain one `.sigmf-collection` file in the top-level
+   directory.
+1. SigMF Archives MAY contain additional files (not specified by SigMF), and
+   arbitrary directory structures, but the SigMF files within the Archive MUST
+   adhere to all rules above when the archive is extracted.
 
 ### SigMF Dataset Format
 
@@ -272,7 +270,7 @@ When stored on-disk (at-rest), these rules apply:
    by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 1. The entire contents of the Metadata file MUST be contained within a single
    top-level JSON Object.
-2. The top-level Object MUST contain three JSON Objects named `global`, `captures`,
+1. The top-level Object MUST contain three JSON Objects named `global`, `captures`,
    and `annotations`.
 1. Metadata key/value pairs SHALL NOT be assumed to have carried over between
    capture or annotation segments. If a name/value pair applies to a particular
