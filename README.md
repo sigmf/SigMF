@@ -62,18 +62,28 @@ There are at least four ways you can use SigMF today, thanks to the community-su
 
 The SigMF standards effort is organized entirely within this Github repository.
 Questions, suggestions, bug reports, etc., are discussed in [the issue
-tracker](https://github.com/gnuradio/SigMF/issues). Changes to the specification
-only occur through [Pull Requests](https://github.com/gnuradio/SigMF/pulls).
+tracker](https://github.com/gnuradio/SigMF/issues), feel free to create
+a new issue and provide your input, even if it's not a traditional issue.
+Changes to the specification only occur through [Pull Requests](https://github.com/gnuradio/SigMF/pulls).
+This ensures that the history and background of all discussions and changes are maintained for posterity.
 
-This ensures that the history and background of all discussions and changes are
-maintained for posterity.
+There is also a SigMF chat room on [GNU Radio's Matrix chat server](https://wiki.gnuradio.org/index.php/Chat)
+where you can ask SigMF-related questions, or participate in various discussions.
+Lastly, there are monthly SigMF calls covering a variety of topics, on the third Monday of each month
+at 11:30AM Eastern/New York Time, please email marc@gnuradio.org for an invite and Zoom link.
 
 Anyone is welcome to get involved - indeed, the more people involved in the
-discussions, the more useful the standard is likely to be.
+discussions, the more useful the standard is likely to be!
+
+## Extensions
+
+The "Core" SigMF standard is intentionally kept limited in scope, additional metadata fields can be added through [SigMF Extensions](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/sigmf-spec.md#extension-namespaces). For example, the [signal extension](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/extensions/signal.sigmf-ext.md) provides a standard way to specify modulation schemes and other attributes of wireless comms signals. Several general purpose canonical extensions live within this repository directly in the [extensions directory](https://github.com/gnuradio/SigMF/tree/sigmf-v1.x/extensions), while others are maintained by third parties. Below we include a listing of some popular, compliant SigMF extensions. To have your extension reviewed for inclusion on this list, please open a PR adding the repository to the list below:
+
+* [NTIA's series of extensions](https://github.com/NTIA/sigmf-ns-ntia)
 
 ## SigMF Python Package
 
-If you are interested in using SigMF within Python, we recommend using our Python package which lives within this repo.
+If you are interested in using SigMF within Python, we recommend using our Python package which lives within this repo, and works with Python 3.6 and higher.
 
 ### Installation
 
@@ -192,6 +202,69 @@ meta.add_annotation(100, 200, metadata = {
 
 # check for mistakes & write to disk
 meta.tofile('example.sigmf-meta') # extension is optional
+```
+
+#### Load a SigMF Archive and slice its data without untaring it
+
+Since an *archive* is merely a tarball (uncompressed), and since there any many
+excellent tools for manipulating tar files, it's fairly straightforward to
+access the *data* part of a SigMF archive without untaring it.
+This is a compelling feature because 1) archives make it harder for the `-data`
+and the `-meta` to get separated, and 2) some datasets are so large that it can
+be impractical (due to available disk space, or slow network speeds if the
+archive file resides on a network file share) or simply obnoxious to untar it
+first.
+
+```python
+In [1]: import sigmf
+
+In [2]: arc = sigmf.SigMFArchiveReader('/src/LTE.sigmf')
+
+In [3]: arc.shape
+Out[3]: (15379532,)
+
+In [4]: arc.ndim
+Out[4]: 1
+
+In [5]: arc[:10]
+Out[5]: 
+array([-20.+11.j, -21. -6.j, -17.-20.j, -13.-52.j,   0.-75.j,  22.-58.j,
+        48.-44.j,  49.-60.j,  31.-56.j,  23.-47.j], dtype=complex64)
+```
+
+The preceeding example exhibits another feature of this approach; the archive
+`LTE.sigmf` is actually `complex-int16`'s on disk, for which there is no
+corresponding type in `numpy`.
+However, the `.sigmffile` member keeps track of this, and converts the data
+to `numpy.complex64` *after* slicing it, that is, after reading it from disk.
+
+```python
+In [6]: arc.sigmffile.get_global_field(sigmf.SigMFFile.DATATYPE_KEY)
+Out[6]: 'ci16_le'
+
+In [7]: arc.sigmffile._memmap.dtype
+Out[7]: dtype('int16')
+
+In [8]: arc.sigmffile._return_type
+Out[8]: '<c8'
+```
+
+Another supported mode is the case where you might have an archive that *is not
+on disk* but instead is simply `bytes` in a python variable.
+Instead of needing to write this out to a temporary file before being able to
+read it, this can be done "in mid air" or "without touching the ground (disk)".
+
+```python
+In [1]: import sigmf, io
+
+In [2]: sigmf_bytes = io.BytesIO(open('/src/LTE.sigmf', 'rb').read())
+
+In [3]: arc = sigmf.SigMFArchiveReader(archive_buffer=sigmf_bytes)
+
+In [4]: arc[:10]
+Out[4]: 
+array([-20.+11.j, -21. -6.j, -17.-20.j, -13.-52.j,   0.-75.j,  22.-58.j,
+        48.-44.j,  49.-60.j,  31.-56.j,  23.-47.j], dtype=complex64)
 ```
 
 ## Frequently Asked Questions
