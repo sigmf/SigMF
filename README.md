@@ -163,7 +163,9 @@ for adx, annotation in enumerate(annotations):
     samples = signal.read_samples(annotation_start_idx, annotation_length)
 ```
 
-#### Write a SigMF file from a numpy array
+#### Create and save a Collection of SigMF Recordings from numpy arrays
+
+First, create a single SigMF Recording and save it to disk
 
 ```python
 import datetime as dt
@@ -176,16 +178,16 @@ from sigmf.utils import get_data_type_str
 data = np.zeros(1024, dtype=np.complex64)
 
 # write those samples to file in cf32_le
-data.tofile('example.sigmf-data')
+data.tofile('example_cf32.sigmf-data')
 
 # create the metadata
 meta = SigMFFile(
-    data_file='example.sigmf-data', # extension is optional
+    data_file='example_cf32.sigmf-data', # extension is optional
     global_info = {
         SigMFFile.DATATYPE_KEY: get_data_type_str(data),  # in this case, 'cf32_le'
         SigMFFile.SAMPLE_RATE_KEY: 48000,
         SigMFFile.AUTHOR_KEY: 'jane.doe@domain.org',
-        SigMFFile.DESCRIPTION_KEY: 'All zero example file.',
+        SigMFFile.DESCRIPTION_KEY: 'All zero complex float32 example file.',
         SigMFFile.VERSION_KEY: sigmf.__version__,
     }
 )
@@ -204,7 +206,53 @@ meta.add_annotation(100, 200, metadata = {
 })
 
 # check for mistakes & write to disk
-meta.tofile('example.sigmf-meta') # extension is optional
+meta.tofile('example_cf32.sigmf-meta') # extension is optional
+```
+
+Now lets add another SigMF Recording and associate them with a SigMF Collection:
+
+```python
+from sigmf import SigMFCollection
+
+data_ci16 = np.zeros(1024, dtype=np.complex64)
+
+#rescale and save as a complex int16 file:
+data_ci16 *= pow(2, 15)
+data_ci16.view(np.float32).astype(np.int16).tofile('example_ci16.sigmf-data')
+
+# create the metadata for the second file
+meta_ci16 = SigMFFile(
+    data_file='example_ci16.sigmf-data', # extension is optional
+    global_info = {
+        SigMFFile.DATATYPE_KEY: 'ci16_le', # get_data_type_str() is only valid for numpy types
+        SigMFFile.SAMPLE_RATE_KEY: 48000,
+        SigMFFile.DESCRIPTION_KEY: 'All zero complex int16 file.',
+        SigMFFile.VERSION_KEY: sigmf.__version__,
+    }
+)
+meta_ci16.add_capture(0, metadata=meta.get_capture_info(0))
+meta_ci16.tofile('example_ci16.sigmf-meta')
+
+collection = SigMFCollection(['example_cf32.sigmf-meta', 'example_ci16.sigmf-meta'],
+        metadata = {'collection': {
+            SigMFCollection.AUTHOR_KEY: 'sigmf@sigmf.org',
+            SigMFCollection.DESCRIPTION_KEY: 'Collection of two all zero files.',
+            SigMFCollection.VERSION_KEY: sigmf.__version__,
+        }
+    }
+)
+streams = collection.get_stream_names()
+sigmf = [collection.get_SigMFFile(stream) for stream in streams]
+collection.tofile('example_zeros.sigmf-collection')
+```
+
+The SigMF Collection and its associated Recordings can now be loaded like this:
+
+```python
+from sigmf import sigmffile
+collection = sigmffile.fromfile('example_zeros')
+ci16_sigmffile = collection.get_SigMFFile(stream_name='example_ci16')
+cf32_sigmffile = collection.get_SigMFFile(stream_name='example_cf32')
 ```
 
 #### Load a SigMF Archive and slice its data without untaring it

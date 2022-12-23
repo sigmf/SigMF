@@ -7,7 +7,7 @@
 __version__ = '1.1.0'
 
 from .archive import SigMFArchive
-from .sigmffile import SigMFFile
+from .sigmffile import SigMFFile, SigMFCollection
 from .archivereader import SigMFArchiveReader
 
 from . import archive
