@@ -83,7 +83,10 @@ The "Core" SigMF standard is intentionally kept limited in scope, additional met
 
 ## SigMF Python Package
 
-If you are interested in using SigMF within Python, we recommend using our Python package which lives within this repo, and works with Python 3.6 and higher.
+If you are interested in using SigMF within Python, we recommend using our
+Python package which lives within this repo, and works with Python 3.6 and
+higher. This module is distributed freely under the terms GNU Lesser GPL v3
+License.
 
 ### Installation
 
