@@ -30,11 +30,90 @@ import warnings
 import numpy as np
 
 from . import __version__, schema, sigmf_hash, validate
-from .archive import SigMFArchive, SIGMF_DATASET_EXT, SIGMF_METADATA_EXT, SIGMF_ARCHIVE_EXT
+from .archive import SigMFArchive, SIGMF_DATASET_EXT, SIGMF_METADATA_EXT, SIGMF_ARCHIVE_EXT, SIGMF_COLLECTION_EXT
 from .utils import dict_merge
 from .error import SigMFFileError, SigMFAccessError
 
-class SigMFFile():
+class SigMFMetafile():
+    VALID_KEYS = {}
+    def __init__(self):
+        self.version = None
+        self.schema = None
+        self._metadata = None
+        self.shape = None
+
+    def __str__(self):
+        return self.dumps()
+
+    def __repr__(self):
+        return f'SigMFFile({self})'
+
+    def __iter__(self):
+        '''special method to iterate through samples'''
+        self.iter_position = 0
+        return self
+
+    def ordered_metadata(self):
+        '''
+        Get a nicer representation of _metadata. Will sort keys, but put the
+        top-level fields 'global', 'captures', 'annotations' in front.
+
+        Returns
+        -------
+        ordered_meta : OrderedDict
+            Cleaner representation of _metadata with top-level keys correctly
+            ordered and the rest of the keys sorted.
+        '''
+        ordered_meta = OrderedDict()
+        for top_key in self.VALID_KEYS.keys():
+            assert top_key in self._metadata
+            ordered_meta[top_key] = json.loads(json.dumps(self._metadata[top_key], sort_keys=True))
+        # If there are other top-level keys, they go later
+        # TODO: sort potential `other` top-level keys
+        for oth_key, oth_val in self._metadata.items():
+            if oth_key not in self.VALID_KEYS.keys():
+                ordered_meta[oth_key] = json.loads(json.dumps(oth_val, sort_keys=True))
+        return ordered_meta
+
+    def dump(self, filep, pretty=True):
+        '''
+        Write metadata to a file.
+
+        Parameters
+        ----------
+        filep : object
+            File pointer or something that json.dump() can handle.
+        pretty : bool, default True
+            When True will write more human-readable output, otherwise will be flat JSON.
+        '''
+        json.dump(
+            self.ordered_metadata(),
+            filep,
+            indent=4 if pretty else None,
+            separators=(',', ': ') if pretty else None,
+        )
+
+    def dumps(self, pretty=True):
+        '''
+        Get a string representation of the metadata.
+
+        Parameters
+        ----------
+        pretty : bool, default True
+            When True will write more human-readable output, otherwise will be flat JSON.
+
+        Returns
+        -------
+        string
+            String representation of the metadata using json formatter.
+        '''
+        return json.dumps(
+            self.ordered_metadata(),
+            indent=4 if pretty else None,
+            separators=(',', ': ') if pretty else None,
+        )
+
+class SigMFFile(SigMFMetafile):
     START_INDEX_KEY = "core:sample_start"
     LENGTH_INDEX_KEY = "core:sample_count"
     GLOBAL_INDEX_KEY = "core:global_index"
@@ -67,8 +146,6 @@ class SigMFFile():
     LON_KEY = "core:longitude"
     GEOLOCATION_KEY = "core:geolocation"
     COLLECTION_KEY = "core:collection"
-    COLLECTION_DOI_KEY = "core:collection_doi"
-    STREAMS_KEY = "core:streams"
     GLOBAL_KEY = "global"
     CAPTURE_KEY = "captures"
     ANNOTATION_KEY = "annotations"
@@ -81,12 +158,7 @@ class SigMFFile():
     VALID_ANNOTATION_KEYS = [
         COMMENT_KEY, FHI_KEY, FLO_KEY, GENERATOR_KEY, LABEL_KEY, LAT_KEY, LENGTH_INDEX_KEY, LON_KEY, START_INDEX_KEY
     ]
-    VALID_RECORDING_KEYS = {GLOBAL_KEY:     VALID_GLOBAL_KEYS,
-                            CAPTURE_KEY:    VALID_CAPTURE_KEYS,
-                            ANNOTATION_KEY: VALID_ANNOTATION_KEYS}
-    VALID_COLLECTION_KEYS = [
-        AUTHOR_KEY, COLLECTION_DOI_KEY, DESCRIPTION_KEY, EXTENSIONS_KEY, LICENSE_KEY, STREAMS_KEY, VERSION_KEY
-    ]
+    VALID_KEYS = {GLOBAL_KEY: VALID_GLOBAL_KEYS, CAPTURE_KEY: VALID_CAPTURE_KEYS, ANNOTATION_KEY: VALID_ANNOTATION_KEYS}
 
     def __init__(self, metadata=None, data_file=None, global_info=None, skip_checksum=False, map_readonly=True):
         '''
@@ -105,17 +177,13 @@ class SigMFFile():
         map_readonly: bool, default True
             Indicates whether assignments on the numpy.memmap are allowed.
         '''
-        self.version = None
-        self.schema = None
+        super(SigMFFile, self).__init__()
         self.data_file = None
         self.sample_count = 0
         self._memmap = None
-        self.shape = None
         self.is_complex_data = False  # numpy.iscomplexobj(self._memmap) is not adequate for fixed-point complex case
 
         if metadata is None:
-            # get_default_metadata
-            # self._metadata = validate.get_default_metadata(self.get_schema())
             self._metadata = {self.GLOBAL_KEY:{}, self.CAPTURE_KEY:[], self.ANNOTATION_KEY:[]}
             self._metadata[self.GLOBAL_KEY][self.NUM_CHANNELS_KEY] = 1
             self._metadata[self.GLOBAL_KEY][self.VERSION_KEY] = __version__
@@ -128,19 +196,8 @@ class SigMFFile():
         if data_file is not None:
             self.set_data_file(data_file, skip_checksum, map_readonly=map_readonly)
 
-    def __str__(self):
-        return self.dumps()
-
-    def __repr__(self):
-        return f'SigMFFile({self})'
-
     def __len__(self):
         return self._memmap.shape[0]
-
-    def __iter__(self):
-        '''special method to iterate through samples'''
-        self.iter_position = 0
-        return self
 
     def __next__(self):
         '''get next batch of samples'''
@@ -466,67 +523,6 @@ class SigMFFile():
         version = self.get_global_field(self.VERSION_KEY)
         validate.validate(self._metadata, self.get_schema())
 
-    def ordered_metadata(self):
-        '''
-        Get a nicer representation of _metadata. Will sort keys, but put the
-        top-level fields 'global', 'captures', 'annotations' in front.
-
-        Returns
-        -------
-        ordered_meta : OrderedDict
-            Cleaner representation of _metadata with top-level keys correctly
-            ordered and the rest of the keys sorted.
-        '''
-        ordered_meta = OrderedDict()
-        top_sort_order = ['global', 'captures', 'annotations']
-        for top_key in top_sort_order:
-            assert top_key in self._metadata
-            ordered_meta[top_key] = json.loads(json.dumps(self._metadata[top_key], sort_keys=True))
-        # If there are other top-level keys, they go later
-        # TODO: sort potential `other` top-level keys
-        for oth_key, oth_val in self._metadata.items():
-            if oth_key not in top_sort_order:
-                ordered_meta[oth_key] = json.loads(json.dumps(oth_val, sort_keys=True))
-        return ordered_meta
-
-    def dump(self, filep, pretty=True):
-        '''
-        Write metadata to a file.
-
-        Parameters
-        ----------
-        filep : object
-            File pointer or something that json.dump() can handle.
-        pretty : bool, default True
-            When True will write more human-readable output, otherwise will be flat JSON.
-        '''
-        json.dump(
-            self.ordered_metadata(),
-            filep,
-            indent=4 if pretty else None,
-            separators=(',', ': ') if pretty else None,
-        )
-
-    def dumps(self, pretty=True):
-        '''
-        Get a string representation of the metadata.
-
-        Parameters
-        ----------
-        pretty : bool, default True
-            When True will write more human-readable output, otherwise will be flat JSON.
-
-        Returns
-        -------
-        string
-            String representation of the metadata using json formatter.
-        '''
-        return json.dumps(
-            self.ordered_metadata(),
-            indent=4 if pretty else None,
-            separators=(',', ': ') if pretty else None,
-        )
-
     def archive(self, name=None, fileobj=None):
         """Dump contents to SigMF archive format.
 
@@ -658,6 +654,150 @@ class SigMFFile():
         fp.close()
         return data
 
+
+class SigMFCollection(SigMFMetafile):
+    VERSION_KEY = "core:version"
+    DESCRIPTION_KEY = "core:description"
+    AUTHOR_KEY = "core:author"
+    COLLECTION_DOI_KEY = "core:collection_doi"
+    LICENSE_KEY = "core:license"
+    EXTENSIONS_KEY = "core:extensions"
+    STREAMS_KEY = "core:streams"
+    COLLECTION_KEY = "collection"
+    VALID_COLLECTION_KEYS = [
+        AUTHOR_KEY, COLLECTION_DOI_KEY, DESCRIPTION_KEY, EXTENSIONS_KEY, LICENSE_KEY, STREAMS_KEY, VERSION_KEY
+    ]
+    VALID_KEYS = {COLLECTION_KEY: VALID_COLLECTION_KEYS}
+
+    def __init__(self, metafiles=None, metadata=None, skip_checksums=False):
+        """Create a SigMF Collection object.
+
+        Parameters:
+
+        metafiles -- A list of SigMF metadata filenames objects comprising the Collection,
+                    there must be at least one file. If the files do not exist, this will
+                    raise a SigMFFileError.
+
+        metadata  -- collection metadata to use, if not provided this will populate a
+                    minimal set of default metadata. The core:streams field will be
+                    regenerated automatically
+        """
+        super(SigMFCollection, self).__init__()
+        self.skip_checksums = skip_checksums
+
+        if metadata is None:
+            self._metadata = {self.COLLECTION_KEY:{}}
+            self._metadata[self.COLLECTION_KEY][self.VERSION_KEY] = __version__
+            self._metadata[self.COLLECTION_KEY][self.STREAMS_KEY] = []
+        else:
+            self._metadata = metadata
+
+        if metafiles is None:
+            self.metafiles = []
+        else:
+            self.set_streams(metafiles)
+
+        if not self.skip_checksums:
+            self.verify_stream_hashes()
+
+    def __len__(self):
+        '''
+        the length of a collection is the number of streams
+        '''
+        return len(self.get_stream_names())
+
+    def verify_stream_hashes(self):
+        '''
+        compares the stream hashes in the collection metadata to the metadata files
+        '''
+        streams = self.get_collection_field(self.STREAMS_KEY, [])
+        for stream in streams:
+            old_hash = stream.get('hash')
+            metafile_name = get_sigmf_filenames(stream.get('name'))['meta_fn']
+            if path.isfile(metafile_name):
+                new_hash = sigmf_hash.calculate_sha512(filename=metafile_name)
+                if old_hash != new_hash:
+                    raise SigMFFileError(f'Calculated file hash for {metafile_name} does not match collection metadata.')
+
+    def set_streams(self, metafiles):
+        '''
+        configures the collection `core:streams` field from the specified list of metafiles
+        '''
+        self.metafiles = metafiles
+        streams = []
+        for metafile in self.metafiles:
+            if metafile.endswith('.sigmf-meta') and path.isfile(metafile):
+                stream = {
+                    "name": get_sigmf_filenames(metafile)['base_fn'],
+                    "hash": sigmf_hash.calculate_sha512(filename=metafile)
+                }
+                streams.append(stream)
+            else:
+                raise SigMFFileError(f'Specifed stream file {metafile} is not a valid SigMF Metadata file')
+        self.set_collection_field(self.STREAMS_KEY, streams)
+
+    def get_stream_names(self):
+        '''
+        returns a list of `name` object(s) from the `collection` level `core:streams` metadata
+        '''
+        return [s.get('name') for s in self.get_collection_field(self.STREAMS_KEY, [])]
+
+    def set_collection_info(self, new_collection):
+        """
+        Overwrite the collection info with a new dictionary.
+        """
+        self._metadata[self.COLLECTION_KEY] = new_collection.copy()
+
+    def get_collection_info(self):
+        """
+        Returns a dictionary with all the collection info.
+        """
+        try:
+            return self._metadata.get(self.COLLECTION_KEY, {})
+        except AttributeError:
+            return {}
+
+    def set_collection_field(self, key, value):
+        """
+        Inserts a value into the collection field.
+        """
+        self._metadata[self.COLLECTION_KEY][key] = value
+
+    def get_collection_field(self, key, default=None):
+        """
+        Return a field from the collection info, or default if the field is not set.
+        """
+        return self._metadata[self.COLLECTION_KEY].get(key, default)
+
+    def tofile(self, file_path, pretty=True):
+        '''
+        Write metadata file
+
+        Parameters
+        ----------
+        file_path : string
+            Location to save.
+        pretty : bool, default True
+            When True will write more human-readable output, otherwise will be flat JSON.
+        '''
+        fns = get_sigmf_filenames(file_path)
+        with open(fns['collection_fn'], 'w') as fp:
+            self.dump(fp, pretty=pretty)
+            fp.write('\n')  # text files should end in carriage return
+
+    def get_SigMFFile(self, stream_name=None, stream_index=None):
+        '''
+        Returns the SigMFFile instance of the specified stream if it exists
+        '''
+        metafile = None
+        if stream_name is not None:
+            if stream_name in self.get_stream_names():
+                metafile = stream_name + '.sigmf_meta'
+        if stream_index is not None and stream_index < self.__len__():
+            metafile = self.get_stream_names()[stream_index] + '.sigmf_meta'
+
+        if metafile is not None:
+            return fromfile(metafile, skip_checksum=self.skip_checksums)
 
 def dtype_info(datatype):
     """
@@ -798,36 +938,49 @@ def fromarchive(archive_path, dir=None):
 
 def fromfile(filename, skip_checksum=False):
     '''
-    Creates and returns a returns a SigMFFile instance with metadata loaded from the specified file.
-    The filename may be that of either a sigmf-meta file, a sigmf-data file, or a sigmf archive.
+    Creates and returns a SigMFFile or SigMFCollection instance with metadata
+    loaded from the specified file. The filename may be that of either a
+    sigmf-meta file, a sigmf-data file, a sigmf-collection file, or a sigmf
+    archive.
 
     Parameters
     ----------
     filename: str
-        Path for SigMF dataset with or without extension.
+        Path for SigMF Metadata, Dataset, Archive or Collection (with or without extension).
     skip_checksum: bool, default False
         When True will not read entire dataset to caculate hash.
 
     Returns
     -------
     object
-        SigMFFile object with dataset & metadata.
+        SigMFFile object with dataset & metadata or a SigMFCollection depending on the type of file
     '''
     fns = get_sigmf_filenames(filename)
     meta_fn = fns['meta_fn']
     archive_fn = fns['archive_fn']
+    collection_fn = fns['collection_fn']
 
     if (filename.lower().endswith(SIGMF_ARCHIVE_EXT) or not path.isfile(meta_fn)) and path.isfile(archive_fn):
         return fromarchive(archive_fn)
 
-    meta_fp = open(meta_fn, "rb")
-    bytestream_reader = codecs.getreader("utf-8")
-    mdfile_reader = bytestream_reader(meta_fp)
-    metadata = json.load(mdfile_reader)
-    meta_fp.close()
+    if (filename.lower().endswith(SIGMF_COLLECTION_EXT) or not path.isfile(meta_fn)) and path.isfile(collection_fn):
+        collection_fp = open(collection_fn, "rb")
+        bytestream_reader = codecs.getreader("utf-8")
+        mdfile_reader = bytestream_reader(collection_fp)
+        metadata = json.load(mdfile_reader)
+        collection_fp.close()
 
-    data_fn = get_dataset_filename_from_metadata(meta_fn, metadata)
-    return SigMFFile(metadata=metadata, data_file=data_fn, skip_checksum=skip_checksum)
+        return SigMFCollection(metadata=metadata, skip_checksums=skip_checksum)
+
+    else:
+        meta_fp = open(meta_fn, "rb")
+        bytestream_reader = codecs.getreader("utf-8")
+        mdfile_reader = bytestream_reader(meta_fp)
+        metadata = json.load(mdfile_reader)
+        meta_fp.close()
+
+        data_fn = get_dataset_filename_from_metadata(meta_fn, metadata)
+        return SigMFFile(metadata=metadata, data_file=data_fn, skip_checksum=skip_checksum)
 
 
 def get_sigmf_filenames(filename):
@@ -839,4 +992,8 @@ def get_sigmf_filenames(filename):
     filename -- the SigMF filename
     """
     filename = path.splitext(filename)[0]
-    return {'data_fn': filename+SIGMF_DATASET_EXT, 'meta_fn': filename+SIGMF_METADATA_EXT, 'archive_fn': filename+SIGMF_ARCHIVE_EXT}
+    return {'base_fn': filename,
+            'data_fn': filename+SIGMF_DATASET_EXT,
+            'meta_fn': filename+SIGMF_METADATA_EXT,
+            'archive_fn': filename+SIGMF_ARCHIVE_EXT,
+            'collection_fn': filename+SIGMF_COLLECTION_EXT}
