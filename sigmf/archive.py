@@ -25,7 +25,7 @@ import shutil
 import tarfile
 import tempfile
 
-from . import error
+from .error import SigMFFileError
 
 
 SIGMF_ARCHIVE_EXT = ".sigmf"
@@ -120,14 +120,14 @@ class SigMFArchive():
         if has_extension and not has_correct_extension:
             apparent_ext = os.path.splitext(name)[-1]
             err = "extension {} != {}".format(apparent_ext, SIGMF_ARCHIVE_EXT)
-            raise error.SigMFFileError(err)
+            raise SigMFFileError(err)
 
         self.name = name if has_correct_extension else name + SIGMF_ARCHIVE_EXT
 
     def _ensure_data_file_set(self):
         if not self.sigmffile.data_file:
             err = "no data file - use `set_data_file`"
-            raise error.SigMFFileError(err)
+            raise SigMFFileError(err)
 
     def _validate_sigmffile_metadata(self):
         self.sigmffile.validate()
@@ -151,7 +151,7 @@ class SigMFArchive():
             else:
                 err = "can't open {!r} for writing".format(self.name)
 
-            raise error.SigMFFileError(err)
+            raise SigMFFileError(err)
 
         return fileobj
 

@@ -84,13 +84,13 @@ def test_add_annotation():
     sigf.add_annotation(start_index=0, length=128, metadata=meta)
 
 
-def test_fromarchive(test_sigmffile):
+def test_fromfile_archive(test_sigmffile):
     print("test_sigmffile is:\n", test_sigmffile)
     tf = tempfile.mkstemp()[1]
     td = tempfile.mkdtemp()
     archive_path = test_sigmffile.archive(name=tf)
-    result = sigmffile.fromarchive(archive_path=archive_path, dir=td)
-    assert result._metadata == test_sigmffile._metadata == TEST_METADATA
+    result = sigmffile.fromfile(filename=archive_path)
+    assert result.sigmffile._metadata == test_sigmffile._metadata == TEST_METADATA
     os.remove(tf)
     shutil.rmtree(td)
 

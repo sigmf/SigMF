@@ -901,41 +901,6 @@ def get_dataset_filename_from_metadata(meta_fn, metadata=None):
 
     return None
 
-
-def fromarchive(archive_path, dir=None):
-    """Extract an archive and return a SigMFFile.
-
-    If `dir` is given, extract the archive to that directory. Otherwise,
-    the archive will be extracted to a temporary directory. For example,
-    `dir` == "." will extract the archive into the current working
-    directory.
-    """
-    if not dir:
-        dir = tempfile.mkdtemp()
-
-    archive = tarfile.open(archive_path, mode="r", format=tarfile.PAX_FORMAT)
-    members = archive.getmembers()
-
-    try:
-        archive.extractall(path=dir)
-
-        data_file = None
-        metadata = None
-
-        for member in members:
-            if member.name.endswith(SIGMF_METADATA_EXT):
-                bytestream_reader = codecs.getreader("utf-8")  # bytes -> str
-                mdfile_reader = bytestream_reader(archive.extractfile(member))
-                metadata = json.load(mdfile_reader)
-                data_file = get_dataset_filename_from_metadata(member.name, metadata)
-            else:
-                archive.extractfile(member)
-    finally:
-        archive.close()
-
-    return SigMFFile(metadata=metadata, data_file=data_file)
-
-
 def fromfile(filename, skip_checksum=False):
     '''
     Creates and returns a returns a SigMFFile or SigMFCollection instance with metadata loaded
@@ -960,7 +925,8 @@ def fromfile(filename, skip_checksum=False):
     collection_fn = fns['collection_fn']
 
     if (filename.lower().endswith(SIGMF_ARCHIVE_EXT) or not path.isfile(meta_fn)) and path.isfile(archive_fn):
-        return fromarchive(archive_fn)
+        from .archivereader import SigMFArchiveReader
+        return SigMFArchiveReader(archive_fn)
 
     if (filename.lower().endswith(SIGMF_COLLECTION_EXT) or not path.isfile(meta_fn)) and path.isfile(collection_fn):
         collection_fp = open(collection_fn, "rb")

@@ -29,7 +29,7 @@ from . import __version__  #, schema, sigmf_hash, validate
 from .sigmffile import SigMFFile
 from .archive import SigMFArchive, SIGMF_DATASET_EXT, SIGMF_METADATA_EXT, SIGMF_ARCHIVE_EXT
 from .utils import dict_merge
-from .error import SigMFFileError, SigMFAccessError
+from .error import SigMFFileError
 
 
 class SigMFArchiveReader():
@@ -45,7 +45,7 @@ class SigMFArchiveReader():
         if self.name is not None:
             if not name.endswith(SIGMF_ARCHIVE_EXT):
                 err = "archive extension != {}".format(SIGMF_ARCHIVE_EXT)
-                raise error.SigMFFileError(err)
+                raise SigMFFileError(err)
 
             tar_obj = tarfile.open(self.name)
 
@@ -83,12 +83,10 @@ class SigMFArchiveReader():
                 print('A member of type', memb.type, 'and name', memb.name, 'was found but not handled, just FYI.')
 
         if data_offset_size is None:
-            raise error.SigMFFileError('No .sigmf-data file found in archive!')
+            raise SigMFFileError('No .sigmf-data file found in archive!')
 
         self.sigmffile = SigMFFile(metadata=json_contents)
         valid_md = self.sigmffile.validate()
-        if not valid_md:
-            print('Metadata in archive did not .validate()!')
 
         self.sigmffile.set_data_file(self.name, data_buffer=archive_buffer, skip_checksum=skip_checksum, offset=data_offset_size[0],
                                      size_bytes=data_offset_size[1], map_readonly=map_readonly)
