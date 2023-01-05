@@ -891,35 +891,11 @@ def get_dataset_filename_from_metadata(meta_fn, metadata=None):
 def fromarchive(archive_path, dir=None):
     """Extract an archive and return a SigMFFile.
 
-    If `dir` is given, extract the archive to that directory. Otherwise,
-    the archive will be extracted to a temporary directory. For example,
-    `dir` == "." will extract the archive into the current working
-    directory.
+    The `dir` parameter is no longer used as this function has been changed to
+    access SigMF archives without extracting them.
     """
-    if not dir:
-        dir = tempfile.mkdtemp()
-
-    archive = tarfile.open(archive_path, mode="r", format=tarfile.PAX_FORMAT)
-    members = archive.getmembers()
-
-    try:
-        archive.extractall(path=dir)
-
-        data_file = None
-        metadata = None
-
-        for member in members:
-            if member.name.endswith(SIGMF_METADATA_EXT):
-                bytestream_reader = codecs.getreader("utf-8")  # bytes -> str
-                mdfile_reader = bytestream_reader(archive.extractfile(member))
-                metadata = json.load(mdfile_reader)
-                data_file = get_dataset_filename_from_metadata(member.name, metadata)
-            else:
-                archive.extractfile(member)
-    finally:
-        archive.close()
-
-    return SigMFFile(metadata=metadata, data_file=data_file)
+    from .archivereader import SigMFArchiveReader
+    return SigMFArchiveReader(archive_path).sigmffile
 
 
 def fromfile(filename, skip_checksum=False):
