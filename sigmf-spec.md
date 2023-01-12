@@ -39,6 +39,7 @@ Copyright of contributions to SigMF are retained by their original authors. All 
       - [Annotations Array](#annotations-array)
         - [Annotation Segment Objects](#annotation-segment-objects)
     - [SigMF Collection Format](#sigmf-collection-format)
+      - [SigMF Recording Objects](#sigmf-recording-objects)
   - [Licensing](#licensing)
   - [SigMF Compliance](#sigmf-compliance)
     - [SigMF Schema Compliance](#sigmf-schema-compliance)
@@ -630,6 +631,7 @@ Segment Objects:
 | `comment`         | false    | string | A human-readable comment.                                                           |
 | `freq_lower_edge` | false    | double | The frequency (Hz) of the lower edge of the feature described by this annotation.   |
 | `freq_upper_edge` | false    | double | The frequency (Hz) of the upper edge of the feature described by this annotation.   |
+| `uuid`            | false    | string | A RFC-4122 compliant UUID string of the form `xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx`.|
 | `latitude`        | false    |        | The latitude corresponding to the annotation (DEPRECATED, use `core:geolocation`).  |
 | `longitude`       | false    |        | The longitude corresponding to the annotation (DEPRECATED, use `core:geolocation`). |
 

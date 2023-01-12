@@ -281,6 +281,12 @@
                                 "description": "The sample index at which this Segment takes effect.",
                                 "minimum": 0,
                                 "type": "integer"
+                            },
+                            "core:uuid": {
+                                "$id": "#/properties/annotations/items/anyOf/0/properties/core%3Auuid",
+                                "description": "RFC-4122 unique identifier.",
+                                "maxLength": 36,
+                                "type": "string"
                             }
                         },
                         "additionalProperties": true
