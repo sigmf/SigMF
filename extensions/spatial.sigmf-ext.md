@@ -50,9 +50,11 @@ representation (e.g.: between 0 to 360, or +/- 180).
 |`azimuth`|false|double|degrees|Azimuth component of the direction in degrees increasing clockwise.|
 |`elevation`|false|double|degrees|Elevation component of the direction in degrees above horizon.|
 |`range`|false|double|meters|Line-of-sight slant range to emitter, if known, in meters.|
+|`range_rate`|false|double|meters/second|Time derivative of line-of-sight slant range to emitter, if known, in meters.|
 |`az_error`|false|double|degrees|Error or uncertainty in the azimuth component.|
 |`el_error`|false|double|degrees|Error or uncertainty in the elevation component.|
 |`range_error`|false|double|meters|Error or uncertainty in the range component.|
+|`range_rate_error`|false|double|meters/second|Error or uncertainty in the range-rate component.|
 
 The `az_error`, `el_error`, and `range_error` field units are degrees, but the
 exact meaning of 'error' in this context is not explicitly defined. Applications
@@ -67,9 +69,11 @@ An example of a `bearing` object is shown below:
     "azimuth": 211.2,
     "elevation": 15.0,
     "range": 30,
+    "range_rate": -1.3,
     "az_error": 2.5,
     "el_error": 7.5,
-    "range_error": 0.25
+    "range_error": 0.25,
+    "range_rate_error": 0.02
   }
 ```
 
