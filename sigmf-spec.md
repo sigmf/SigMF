@@ -242,15 +242,16 @@ Dataset file MUST NOT contain any other characters (e.g., delimiters,
 whitespace, line-endings, EOF characters).
 
 Complex samples MUST be interleaved, with the in-phase component first (i.e.,
-`I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`). When `core:num_channels` in the
-Global Object (described below) indicates that the Recording contains more than one channel,
-samples from those channels MUST be interleaved in the same manner, with
+`I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`). For representing multiple channels
+of complex samples that were captured at the same time, the Collections format
+is recommended.  On the other hand, for real-valued recordings that contain more than
+one channel it is recommended to use the `core:num_channels` field in the
+Global Object (described below).  This requires samples be interleaved, with
 the same index from each channel's sample serially in the Recording. For
 example, a Recording with two channels of `ri16_le` representing real-valued
 audio data from a stereo Recording and here labeled `L` for left and `R` for
 right, the data MUST appear as `L[0]` `R[0]` `L[1]` `R[1]` ... `L[n]` `R[n]`.
-The data type specified by `core:data_type` applies to all channels of data
-both real and imaginary parts.
+The data type specified by `core:data_type` applies to all channels.
 
 ### SigMF Metadata Format
 
