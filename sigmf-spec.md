@@ -244,7 +244,7 @@ whitespace, line-endings, EOF characters).
 Complex samples MUST be interleaved, with the in-phase component first (i.e.,
 `I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`). When representing multiple
 channels of complex valued data that are related, such as IQ data from
-multichannel RF receiver, the SigMF Collections format is recommended for
+multichannel RF receiver, the SigMF [Collection](#sigmf-collection-format) format is recommended for
 best application compatibility. When representing real-valued recordings that
 contain more than one channel, such as from a multichannel data acquisition
 device, use of the interleaved multichannel format via the `core:num_channels`
