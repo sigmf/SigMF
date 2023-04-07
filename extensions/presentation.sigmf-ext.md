@@ -16,7 +16,7 @@ The `presentation` extension defines the following SigMF datatypes:
 
 |type|long-form name|description|
 |----|--------------|-----------|
-|`color`|Hexadecimal Color String|String representing a 24 bit color (with optional alpha value) in hexadecimal form; either "#RRGGBB" or "#AARRGGBB".|
+|`color`|Color String|String representing a color, this may be specified in either "#RRGGBB" or "#RRGGBBAA" hexadecimal form, or one of the 147 SVG named colors.|
 
 ### 0.1 The `color` datatype
 
@@ -28,11 +28,17 @@ the alpha channel by visualization software is RECOMMENDED but OPTIONAL. If
 software is unable to render the alpha channel then it SHOULD ignore the alpha
 value for foreground objects and ignore background objects entirely.
 
-ARGB format was selected over RGBA for compatibility with QColor objects, RGBA
-color specification is invalid and will result in incorrect display of content.
+It is RECOMMENDED that applications include support for hexadecimal and named
+colors, however if support for one or the other is not possible, it is
+permissable for a reasonable default to be used and the application to still be
+SigMF Compliant since support for this extension is not required at all for
+SigMF Compliance.
+
+Note: RGBA is not compatible with QColor objects, which use ARGB. These must be
+converted in QT applications!
 
 For greatest compatibility, it is RECOMMENDED that this value default to
-`#ffffffff` (fully opaque white) for foreground features and `#00ffffff` (fully
+`#ffffffff` (fully opaque white) for foreground features and `#ffffff00` (fully
 transparent) for background features.
 
 ## 1 Global
@@ -80,7 +86,7 @@ the following form:
 |`display_type`|true|`display_type`||Color of the fill of the annotation, this is generally used with defined alpha channel.|
 |`line_color`|false|color|`#ffffffff`|Color of the foreground captures segment display features.|
 |`line_width`|false|double|1.0|Width of the line (in pixels) surrounding the annotation, fractional values are permitted.|
-|`fill_color`|false|color|`#00ffffff`|Color of the background, generally used with significant alpha.|
+|`fill_color`|false|color|`#ffffff00`|Color of the background, generally used with significant alpha.|
 |`text_color`|false|color|`#ffffffff`|Color of any text rendered next to the annotation (label/comment fields, etc).|
 |`text_size`|false|double|8|Size (pt) of text rendered next to the annotation (label/comment fields, etc).|
 |`comment`|false|string||User comment field, any string is fine.|
@@ -143,7 +149,7 @@ different box colors (red, then green) in the annotations directly:
       "core:label": "signal1",
       "core:freq_lower_edge": 119000000,
       "core:freq_upper_edge": 120000000,
-      "presentation:color": "#ffff0000"
+      "presentation:color": "#ff0000ff"
     },
     {
       "core:sample_start": 5000,
@@ -151,7 +157,7 @@ different box colors (red, then green) in the annotations directly:
       "core:label": "signal2",
       "core:freq_lower_edge": 119000000,
       "core:freq_upper_edge": 120000000,
-      "presentation:color": "#ff00ff00"
+      "presentation:color": "#00ff00ff"
     },
   ]
 ```
@@ -174,11 +180,11 @@ annotations above:
         "key": "INVALID",
         "stye": {
           "display_type": "diagonal"
-          "line_color": "#80ffff00",
+          "line_color": "#ffff0080",
           "line_width": "3.0",
-          "text_color": "#ffffff00",
+          "text_color": "#ffff00ff",
           "text_size": 18,
-          "fill_color": "#40000000",
+          "fill_color": "#00000040",
           "comment": "Invalid sections are shaded slightly grey with yellow diagonal lines and large, bright yellow text."
         }
       }
