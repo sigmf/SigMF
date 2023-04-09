@@ -1,0 +1,325 @@
+{
+    "$id": "https://github.com/sigmf/SigMF/spec/1.0.0/schema-meta",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "default": [
+        "global",
+        "captures",
+        "annotations"
+    ],
+    "required": [
+        "global",
+        "captures",
+        "annotations"
+    ],
+    "title": "Schema for SigMF -meta file.",
+    "type": "object",
+    "properties": {
+        "global": {
+            "$id": "#/properties/global",
+            "description": "The `global` object consists of key/value pairs that provide information applicable to the entire Dataset. It contains the information that is minimally necessary to open and parse the Dataset file, as well as general information about the Recording itself.",
+            "required": [
+                "core:datatype",
+                "core:version"
+            ],
+            "type": "object",
+            "properties": {
+                "core:author": {
+                    "$id": "#/properties/global/properties/core%3Aauthor",
+                    "description": "A text identifier for the author potentially including name, handle, email, and/or other ID like Amateur Call Sign.",
+                    "examples": [
+                        "Bruce Wayne bruce@waynetech.com",
+                        "Bruce (K3X)"
+                    ],
+                    "type": "string"
+                },
+                "core:collection": {
+                    "$id": "#/properties/global/properties/core%3Acollection",
+                    "description": "The base filename of a `collection` with which this Recording is associated.",
+                    "type": "string"
+                },
+                "core:dataset": {
+                    "$id": "#/properties/global/properties/core%3Adataset",
+                    "description": "The full filename of the Dataset file this Metadata file describes.",
+                    "type": "string",
+                    "pattern": "^[^\\/\\\\:*?\"<>|]+(\\.[^\\/\\\\:*?\"<>|]+)*$"
+                },
+                "core:data_doi": {
+                    "$id": "#/properties/global/properties/core%3Adata_doi",
+                    "description": "The registered DOI (ISO 26324) for a Recording's Dataset file.",
+                    "type": "string"
+                },
+                "core:datatype": {
+                    "$id": "#/properties/global/properties/core%3Adatatype",
+                    "description": "The SigMF Dataset format of the stored samples in the Dataset file.",
+                    "examples": [
+                        "ri16_le"
+                    ],
+                    "default": "cf32_le",
+                    "pattern": "^(c|r)(f32|f64|i32|i16|u32|u16|i8|u8)(_le|_be)?$",
+                    "type": "string"
+                },
+                "core:description": {
+                    "$id": "#/properties/global/properties/core%3Adescription",
+                    "description": "A text description of the SigMF Recording.",
+                    "type": "string"
+                },
+                "core:hw": {
+                    "$id": "#/properties/global/properties/core%3Ahw",
+                    "description": "A text description of the hardware used to make the Recording.",
+                    "type": "string"
+                },
+                "core:license": {
+                    "$id": "#/properties/global/properties/core%3Alicense",
+                    "description": "A URL for the license document under which the Recording is offered. (RFC 3986)",
+                    "examples": [
+                        "https://creativecommons.org/licenses/by-sa/4.0/"
+                    ],
+                    "format": "uri",
+                    "type": "string"
+                },
+                "core:metadata_only": {
+                    "$id": "#/properties/global/properties/core%3Ametadata_only",
+                    "description": "Indicates the Metadata file is intentionally distributed without the Dataset.",
+                    "type": "boolean"
+                },
+                "core:meta_doi": {
+                    "$id": "#/properties/global/properties/core%3Ameta_doi",
+                    "description": "The registered DOI (ISO 26324) for a Recording's Metadata file.",
+                    "type": "string"
+                },
+                "core:num_channels": {
+                    "$id": "#/properties/global/properties/core%3Anum_channels",
+                    "description": "Total number of interleaved channels in the Dataset file. If omitted, this defaults to one.",
+                    "default": 1,
+                    "minimum": 1,
+                    "maximum": 18446744073709551615,
+                    "type": "integer"
+                },
+                "core:offset": {
+                    "$id": "#/properties/global/properties/core%3Aoffset",
+                    "description": "The index number of the first sample in the Dataset. If not provided, this value defaults to zero. Typically used when a Recording is split over multiple files. All sample indices in SigMF are absolute, and so all other indices referenced in metadata for this recording SHOULD be greater than or equal to this value.",
+                    "default": 0,
+                    "minimum": 0,
+                    "maximum": 18446744073709551615,
+                    "type": "integer"
+                },
+                "core:recorder": {
+                    "$id": "#/properties/global/properties/core%3Arecorder",
+                    "description": "The name of the software used to make this SigMF Recording.",
+                    "type": "string"
+                },
+                "core:sample_rate": {
+                    "$id": "#/properties/global/properties/core%3Asample_rate",
+                    "description": "The sample rate of the signal in samples per second.",
+                    "minimum": 0,
+                    "maximum": 1.7976931348623157E+308,
+                    "type": "number"
+                },
+                "core:sha512": {
+                    "$id": "#/properties/global/properties/core%3Asha512",
+                    "description": "The SHA512 hash of the Dataset file associated with the SigMF file.",
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{128}$"
+                },
+                "core:trailing_bytes": {
+                    "$id": "#/properties/global/properties/core%3Atrailing_bytes",
+                    "description": "The number of bytes to ignore at the end of a Non-Conforming Dataset file.",
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 18446744073709551615
+                },
+                "core:version": {
+                    "$id": "#/properties/global/properties/core%3Aversion",
+                    "description": "The SHA512 hash of the Dataset file associated with the SigMF file.",
+                    "default": "1.0.0",
+                    "type": "string",
+                    "enum": [
+                        "1.0.0"
+                    ]
+                },
+                "core:extensions": {
+                    "$id": "#/properties/global/properties/core%3Aextensions",
+                    "description": "The `core:extensions` field in the Global Object is an array of extension objects that describe SigMF extensions. Extension Objects MUST contain the three key/value pairs defined below, and MUST NOT contain any other fields.",
+                    "type": "array",
+                    "default": [],
+                    "additionalItems": false,
+                    "items": {
+                        "$id": "#/properties/global/properties/core%3Aextensions/items",
+                        "type": "object",
+                        "anyOf": [
+                            {
+                                "$id": "#/properties/global/properties/core%3Aextensions/items/anyOf/0",
+                                "required": [
+                                    "name",
+                                    "version",
+                                    "optional"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "$id": "#/properties/global/properties/core%3Aextensions/items/anyOf/0/properties/name",
+                                        "description": "The name of the SigMF extension namespace.",
+                                        "type": "string"
+                                    },
+                                    "version": {
+                                        "$id": "#/properties/global/properties/core%3Aextensions/items/anyOf/0/properties/version",
+                                        "description": "The version of the extension namespace specification used.",
+                                        "examples": [
+                                            "1.0.0"
+                                        ],
+                                        "type": "string"
+                                    },
+                                    "optional": {
+                                        "$id": "#/properties/global/properties/core%3Aextensions/items/anyOf/0/properties/optional",
+                                        "description": "If this field is `true`, the extension is REQUIRED to parse this Recording.",
+                                        "type": "boolean"
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        ]
+                    }
+                }
+            },
+            "additionalProperties": true
+        },
+        "captures": {
+            "$id": "#/properties/captures",
+            "description": "The `captures` value is an array of capture segment objects that describe the parameters of the signal capture. It MUST be sorted by the value of each capture segment's `core:sample_start` key, ascending.",
+            "default": [],
+            "type": "array",
+            "additionalItems": false,
+            "items": {
+                "$id": "#/properties/captures/items",
+                "type": "object",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/captures/items/anyOf/0",
+                        "required": [
+                            "core:sample_start"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "core:datetime": {
+                                "$id": "#/properties/captures/items/anyOf/0/properties/core%3Adatetime",
+                                "description": "An ISO-8601 string indicating the timestamp of the sample index specified by sample_start.",
+                                "examples": [
+                                    "1955-11-05T14:00:00.000Z"
+                                ],
+                                "pattern": "^([\\+-]?\\d{4}(?!\\d{2}\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$",
+                                "type": "string"
+                            },
+                            "core:frequency": {
+                                "$id": "#/properties/captures/items/anyOf/0/properties/core%3Afrequency",
+                                "description": "The center frequency of the signal in Hz.",
+                                "type": "number",
+                                "minimum": -1.7976931348623157E+308,
+                                "maximum": 1.7976931348623157E+308
+                            },
+                            "core:global_index": {
+                                "$id": "#/properties/captures/items/anyOf/0/properties/core%3Aglobal_index",
+                                "description": "The index of the sample referenced by `sample_start` relative to an original sample stream.",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 18446744073709551615
+                            },
+                            "core:header_bytes": {
+                                "$id": "#/properties/captures/items/anyOf/0/properties/core%3Aheader_bytes",
+                                "description": "The number of bytes preceding a chunk of samples that are not sample data, used for NCDs.",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 18446744073709551615
+                            },
+                            "core:sample_start": {
+                                "$id": "#/properties/captures/items/anyOf/0/properties/core%3Asample_start",
+                                "default": 0,
+                                "description": "Index of first sample of this chunk.",
+                                "minimum": 0,
+                                "maximum": 18446744073709551615,
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        },
+        "annotations": {
+            "$id": "#/properties/annotations",
+            "default": [],
+            "description": "The `annotations` value is an array of annotation segment objects that describe anything regarding the signal data not part of the Captures and Global objects. It MUST be sorted by the value of each Annotation Segment's `core:sample_start` key, ascending.",
+            "type": "array",
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/annotations/items",
+                "type": "object",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/annotations/items/anyOf/0",
+                        "description": "The annotations value is an array of annotation segment objects that describe anything regarding the signal data not part of the Captures and Global objects. It MUST be sorted by the value of each Annotation Segment's `core:sample_start` key, ascending.",
+                        "required": [
+                            "core:sample_start",
+                            "core:sample_count"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "core:comment": {
+                                "$id": "#/properties/annotations/items/anyOf/0/properties/core%3Acomment",
+                                "default": "",
+                                "description": "A human-readable comment.",
+                                "type": "string"
+                            },
+                            "core:freq_lower_edge": {
+                                "$id": "#/properties/annotations/items/anyOf/0/properties/core%3Afreq_lower_edge",
+                                "description": "The frequency (Hz) of the lower edge of the feature described by this annotation.",
+                                "type": "number",
+                                "minimum": -1.7976931348623157E+308,
+                                "maximum": 1.7976931348623157E+308
+                            },
+                            "core:freq_upper_edge": {
+                                "$id": "#/properties/annotations/items/anyOf/0/properties/core%3Afreq_upper_edge",
+                                "description": "The frequency (Hz) of the upper edge of the feature described by this annotation.",
+                                "type": "number",
+                                "minimum": -1.7976931348623157E+308,
+                                "maximum": 1.7976931348623157E+308
+                            },
+                            "core:generator": {
+                                "$id": "#/properties/annotations/items/anyOf/0/properties/core%3Agenerator",
+                                "description": "Human-readable name of the entity that created this annotation.",
+                                "type": "string"
+                            },
+                            "core:label": {
+                                "$id": "#/properties/annotations/items/anyOf/0/properties/core%3Alabel",
+                                "description": "A short form human/machine-readable label for the annotation.",
+                                "type": "string"
+                            },
+                            "core:sample_count": {
+                                "$id": "#/properties/annotations/items/anyOf/0/properties/core%3Asample_count",
+                                "description": "The number of samples that this Segment applies to.",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 18446744073709551615
+                            },
+                            "core:sample_start": {
+                                "$id": "#/properties/annotations/items/anyOf/0/properties/core%3Asample_start",
+                                "default": 0,
+                                "description": "The sample index at which this Segment takes effect.",
+                                "minimum": 0,
+                                "maximum": 18446744073709551615,
+                                "type": "integer"
+                            },
+                            "core:uuid": {
+                                "$id": "#/properties/annotations/items/anyOf/0/properties/core%3Auuid",
+                                "description": "RFC-4122 unique identifier.",
+                                "format": "uuid",
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        }
+    },
+    "additionalProperties": false
+}
