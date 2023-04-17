@@ -202,6 +202,24 @@ Rules for SigMF Archive files:
    arbitrary directory structures, but the SigMF files within the Archive MUST
    adhere to all rules above when the archive is extracted.
 
+When representing real-valued recordings that contain more than one channel, such as from a multichannel data acquisition
+device, use of the interleaved multichannel format via the 
+field in the Global Object (described below) may be more appropriate.
+For example, a Recording with two channels of `ri16_le` representing real-valued
+audio data from a stereo Recording and here labeled `L` for left and `R` for
+right, the data MUST appear as `L[0]` `R[0]` `L[1]` `R[1]` ... `L[n]` `R[n]`.
+
+When representing multiple channels of complex valued data that are related, such as IQ data from multichannel RF receiver,
+you can either use the SigMF [Collection](#sigmf-collection-format) format  or the `core:num_channels` attribute of the global section.
+Using the Collection format, which is  ultimately multiple single channel recordings,
+you'll be able to open a single channel of your Collection in common SDR tools.
+On the other hand, using `core:num_channels` will allow streaming to/from SigMF Archives,
+and there is only one file to deal with, but because the multiple
+channels of IQ will be interleaved, it is no longer a standard binary IQ file, and may have less
+support using common SDR/DSP tools.
+If your start_time's are not aligned, Collections is the only option.
+Certain data structures and operations in memory may benefit from the channels already being interleaved, when using num_channels.
+
 ### SigMF Dataset Format
 
 There are four orthogonal characteristics of sample data: complex or real, 
@@ -242,16 +260,7 @@ Dataset file MUST NOT contain any other characters (e.g., delimiters,
 whitespace, line-endings, EOF characters).
 
 Complex samples MUST be interleaved, with the in-phase component first (i.e.,
-`I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`). When representing multiple
-channels of complex valued data that are related, such as IQ data from
-multichannel RF receiver, the SigMF [Collection](#sigmf-collection-format) format is recommended for
-best application compatibility. When representing real-valued recordings that
-contain more than one channel, such as from a multichannel data acquisition
-device, use of the interleaved multichannel format via the `core:num_channels`
-field in the Global Object (described below) may be more appropriate. For
-example, a Recording with two channels of `ri16_le` representing real-valued
-audio data from a stereo Recording and here labeled `L` for left and `R` for
-right, the data MUST appear as `L[0]` `R[0]` `L[1]` `R[1]` ... `L[n]` `R[n]`.
+`I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`). 
 
 ### SigMF Metadata Format
 
