@@ -361,7 +361,7 @@ Object:
 | `dataset`       | false    | string  | The full filename of the Dataset file this Metadata file describes.|
 | `trailing_bytes`| false    | uint    | The number of bytes to ignore at the end of a Non-Conforming Dataset file.|
 | `metadata_only` | false    | bool    | Indicates the Metadata file is intentionally distributed without the Dataset.|
-| `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system.  Using geolocation within captures is preferred |
+| `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system.  Using geolocation within Captures is preferred |
 | `extensions`    | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
 | `collection`    | false    | string  | The base filename of a `collection` with which this Recording is associated.|
 
