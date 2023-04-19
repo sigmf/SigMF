@@ -470,6 +470,7 @@ Segment Objects:
 | `header_bytes`  | false    | uint   | The number of bytes preceding a chunk of samples that are not sample data, used for NCDs.  |
 | `frequency`     | false    | double | The center frequency of the signal in Hz.                                                   |
 | `datetime`      | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.|
+| `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system. |
 
 **The `sample_start` Field**
 
