@@ -213,7 +213,7 @@ for simplicity because many applications only require azimuth, but the
 measurement error is needed. Only one of these SHOULD be used for an individual
 annotation; if both are provided the `signal_bearing` object has priority.
 
-`geolocation` uses the same GeoJSON `point` Object as in the `core` spec, but here it corresponds to an emission or signal, not the receiving platform's position.  
+`geolocation` uses the same GeoJSON `point` Object as in the `core` spec, but here it corresponds to an emission or signal, not the receiving platform's position.
 For example, this field could be used to store results of TDOA performed on an emission, or it could be used to label a known position of a transmitter.
 See `core` spec for more details on GeoJSON `point` Objects.
 
