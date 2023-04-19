@@ -203,7 +203,7 @@ object:
 |----|--------|----|-----|-----------|
 |`signal_azimuth`|false|double|degrees|Azimuth in degrees east of true north associated with the specific annotation.|
 |`signal_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing associated with the specific annotation.|
-| `geolocation`  | false    | GeoJSON `point` Object | N/A | The location (either known or estimated) of the emission corresponding to this annotation |
+| `geolocation`  | false    | GeoJSON `point` Object | N/A | The location (either known or estimated) of the transmitter corresponding to this annotation |
 
 These first two fields represent the direction to a specific signal relative to the
 `aperture_bearing` and can be utilized when the signals contained in a Recording
