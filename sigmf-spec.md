@@ -361,7 +361,7 @@ Object:
 | `dataset`       | false    | string  | The full filename of the Dataset file this Metadata file describes.|
 | `trailing_bytes`| false    | uint    | The number of bytes to ignore at the end of a Non-Conforming Dataset file.|
 | `metadata_only` | false    | bool    | Indicates the Metadata file is intentionally distributed without the Dataset.|
-| `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system.|
+| `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system.  Using geolocation within captures is preferred |
 | `extensions`    | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
 | `collection`    | false    | string  | The base filename of a `collection` with which this Recording is associated.|
 
@@ -402,35 +402,7 @@ conjunction with Non-Conforming Datasets or the `core:dataset` field.
 
 **The `geolocation` Field**
 
-The `core:geolocation` field in the Global Object is used to store the
-location of the recording system. The location is stored as a single
-[RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` Object
-using the convention defined by [RFC 5870](https://www.rfc-editor.org/rfc/rfc5870.txt).
-Per the GeoJSON specification, the point coordinates use the WGS84 coordinate
-reference system and are `longitude`, `latitude` (REQUIRED, in decimal degrees),
-and `altitude` (OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. An
-example including the altitude field is shown below:
-
-```JSON
-  "global": {
-    ...
-    "core:geolocation": {
-      "type": "Point",
-      "coordinates": [-107.6183682, 34.0787916, 2120.0]
-    }
-    ...
-  }
-```
-
-GeoJSON permits the use of *Foreign Members* in GeoJSON documents per RFC 7946
-Section 6.1. Because the SigMF requirement for the `geolocation` field is to be
-a valid GeoJSON `point` Object, users MAY include *Foreign Member* fields here
-for user-defined purposes (position valid indication, GNSS SV counts, dillution
-of precision, accuracy, etc). It is strongly RECOMMENDED that all fields be
-documented in a SigMF Extension document.
-
-*Note:* Objects named `geometry` or `properties` are prohibited Foreign Members
-as specified in RFC 7946 Section 7.1.
+See the `geolocation` field within `Captures`.  While it can also be provided within Global, Captures is preferred.
 
 **The `extensions` Field**
 
@@ -605,6 +577,37 @@ The ABNF description is:
 
 Thus, timestamps take the form of `YYYY-MM-DDTHH:MM:SS.SSSZ`, where any number
 of digits for fractional seconds is permitted.
+
+**The `geolocation` Field**
+
+The `core:geolocation` field in the Captures or Global Object (Captures is preferred) is used to store the
+location of the recording system. The location is stored as a single
+[RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` Object
+using the convention defined by [RFC 5870](https://www.rfc-editor.org/rfc/rfc5870.txt).
+Per the GeoJSON specification, the point coordinates use the WGS84 coordinate
+reference system and are `longitude`, `latitude` (REQUIRED, in decimal degrees),
+and `altitude` (OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. An
+example including the altitude field is shown below:
+
+```JSON
+    ...
+    "core:geolocation": {
+      "type": "Point",
+      "coordinates": [-107.6183682, 34.0787916, 2120.0]
+    }
+    ...
+  }
+```
+
+GeoJSON permits the use of *Foreign Members* in GeoJSON documents per RFC 7946
+Section 6.1. Because the SigMF requirement for the `geolocation` field is to be
+a valid GeoJSON `point` Object, users MAY include *Foreign Member* fields here
+for user-defined purposes (position valid indication, GNSS SV counts, dillution
+of precision, accuracy, etc). It is strongly RECOMMENDED that all fields be
+documented in a SigMF Extension document.
+
+*Note:* Objects named `geometry` or `properties` are prohibited Foreign Members
+as specified in RFC 7946 Section 7.1.
 
 #### Annotations Array
 
