@@ -203,14 +203,19 @@ object:
 |----|--------|----|-----|-----------|
 |`signal_azimuth`|false|double|degrees|Azimuth in degrees east of true north associated with the specific annotation.|
 |`signal_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing associated with the specific annotation.|
+| `geolocation`  | false    | GeoJSON `point` Object | The location (either known or estimated) of the emission corresponding to this annotation |
 
-These fields represent the direction to a specific signal relative to the
+These first two fields represent the direction to a specific signal relative to the
 `aperture_bearing` and can be utilized when the signals contained in a Recording
 need to be defined on a per-signal basis. The `signal_azimuth` field is provided
 for simplicity because many applications only require azimuth, but the
 `signal_bearing` field is also provided for when elevation, range, and/or
 measurement error is needed. Only one of these SHOULD be used for an individual
 annotation; if both are provided the `signal_bearing` object has priority.
+
+`geolocation` uses the same GeoJSON `point` Object as in the `core` spec, but here it corresponds to an emission or signal, not the receiving platform's position.  
+For example, this field could be used to store results of TDOA performed on an emission, or it could be used to label a known position of a transmitter.
+See `core` spec for more details on GeoJSON `point` Objects.
 
 ## 4 Collection
 
