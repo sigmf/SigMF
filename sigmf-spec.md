@@ -27,24 +27,19 @@ Copyright of contributions to SigMF are retained by their original authors. All 
   - [Introduction](#introduction)
   - [Conventions Used in this Document](#conventions-used-in-this-document)
   - [Specification](#specification)
-    - [Files](#files)
-    - [SigMF Archives](#sigmf-archives)
-    - [Dataset Format](#dataset-format)
-    - [Metadata Format](#metadata-format)
+    - [SigMF File Types](#sigmf-file-types)
+    - [SigMF Dataset Format](#sigmf-dataset-format)
+    - [SigMF Metadata Format](#sigmf-metadata-format)
       - [Datatypes](#datatypes)
       - [Namespaces](#namespaces)
         - [Extension Namespaces](#extension-namespaces)
       - [Global Object](#global-object)
-        - [The `geolocation` Field](#the-geolocation-field)
-        - [The `extensions` Field](#the-extensions-field)
-        - [The `collection` Field](#the-collection-field)
       - [Captures Array](#captures-array)
         - [Capture Segment Objects](#capture-segment-objects)
-          - [The `global_index` Pair](#the-global_index-pair)
-          - [The `datetime` Pair](#the-datetime-pair)
       - [Annotations Array](#annotations-array)
         - [Annotation Segment Objects](#annotation-segment-objects)
-    - [Collection Format](#collection-format)
+    - [SigMF Collection Format](#sigmf-collection-format)
+      - [SigMF Recording Objects](#sigmf-recording-objects)
   - [Licensing](#licensing)
   - [SigMF Compliance](#sigmf-compliance)
     - [SigMF Schema Compliance](#sigmf-schema-compliance)
@@ -114,7 +109,7 @@ is a reserved name and can only be defined by this specification. Other metadata
 MAY be described by extension namespaces. This specification also defines a 
 model and format for how SigMF data should be stored at-rest (on-disk) using JSON.
 
-### Files
+### SigMF File Types
 
 There are two fundamental filetypes defined by this specification: files with 
 metadata, and the files that contain the Datasets described by the metadata. There
@@ -145,7 +140,7 @@ distribution in a SigMF `Archive`.
                  ║                     ║ │
                  ║   SigMF Recording   ╟─┘
                  ║                     ║
-                 ║ (base SigMF object) ║
+                 ║ (base SigMF Object) ║
                  ╚══════════╤══════════╝
                             │
                             │ comprises
@@ -172,16 +167,16 @@ distribution in a SigMF `Archive`.
 
 Rules for all files:
 1. All filetypes MUST be stored in separate files on-disk.
-1. It is RECOMMENDED that filenames use hyphens to separate 
-   words rather than whitespace or underscores.
+1. It is RECOMMENDED that filenames use hyphens to separate words rather than
+   whitespace or underscores.
 
 Rules for SigMF Metadata files:
 1. A Metadata file MUST only describe one Dataset file.
 1. A Metadata file MUST be stored in UTF-8 encoding.
 1. A Metadata file MUST have a `.sigmf-meta` filename extension.
-1. A Metadata file MUST be in the same directory as the Dataset file
-   it describes.
-1. It is RECOMMENDED that the base filenames (not including file extension) of 
+1. A Metadata file MUST be in the same directory as the Dataset file it
+   describes.
+1. It is RECOMMENDED that the base filenames (not including file extension) of
    a Recording's Metadata and Dataset files be identical.
 
 Rules for SigMF Dataset files:
@@ -193,21 +188,19 @@ Rules for SigMF Non-Conforming Dataset files:
 Rules for SigMF Collection files:
 1. The Collection file MUST be stored in UTF-8 encoding.
 1. The Collection file MUST have a `.sigmf-collection` filename extension.
-1. The `sigmf-collection` file MUST be either in the same directory as the 
-   Recordings that it references, or in the top-level directory of an Archive 
+1. The `sigmf-collection` file MUST be either in the same directory as the
+   Recordings that it references, or in the top-level directory of an Archive
    (described in later section).
 
 Rules for SigMF Archive files:
 1. The Archive MUST use the `tar` archive format, as specified by POSIX.1-2001.
 1. The Archive file's filename extension MUST be `.sigmf`.
-1. The Archive MUST contain the following files: for each contained Recording
-   with some name given here meta-syntactically as `N`, files named `N` (a
-   directory), `N/N.sigmf-meta`, and `N/N.sigmf-data`.
-1. The Archive MAY contain a `.sigmf-collection` file in the top-level directory.
-1. It is RECOMMENDED that if Recordings in an archive represent continuous
-   data that has been split into separate Recordings, that their filenames
-   reflect the order of the series by appending a hyphenated zero-based index
-   (e.g., `N-0`, `N-1`, `N-2`, etc.,).
+1. The Archive MUST contain at least one SigMF Recording.
+1. The Archive MAY contain one `.sigmf-collection` file in the top-level
+   directory.
+1. SigMF Archives MAY contain additional files (not specified by SigMF), and
+   arbitrary directory structures, but the SigMF files within the Archive MUST
+   adhere to all rules above when the archive is extracted.
 
 ### SigMF Dataset Format
 
@@ -250,7 +243,7 @@ whitespace, line-endings, EOF characters).
 
 Complex samples MUST be interleaved, with the in-phase component first (i.e.,
 `I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`). When `core:num_channels` in the
-Global object (described below) indicates that the Recording contains more than one channel,
+Global Object (described below) indicates that the Recording contains more than one channel,
 samples from those channels MUST be interleaved in the same manner, with
 the same index from each channel's sample serially in the Recording. For
 example, a Recording with two channels of `ri16_le` representing real-valued
@@ -267,8 +260,8 @@ SigMF metadata fundamentally takes the form of key/value pairs:
 "namespace:name": value,
 ```
 
-Metadata field names in the top level `global` object, `captures` segment
-objects, or `annotations` objects MUST be of this form. All fields other than
+Metadata field names in the top level `global` Object, `captures` segment
+Objects, or `annotations` Objects MUST be of this form. All fields other than
 those at the top level which contain a `:` delimiter SHALL only use letters,
 numbers, and the `_` character; all other characters are forbidden. Field names
 MUST NOT start with a number and MUST NOT not be C++20 or Python 3.10 keywords.
@@ -278,7 +271,7 @@ When stored on-disk (at-rest), these rules apply:
    by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 1. The entire contents of the Metadata file MUST be contained within a single
    top-level JSON Object.
-2. The top-level Object MUST contain three JSON Objects named `global`, `captures`,
+1. The top-level Object MUST contain three JSON Objects named `global`, `captures`,
    and `annotations`.
 1. Metadata key/value pairs SHALL NOT be assumed to have carried over between
    capture or annotation segments. If a name/value pair applies to a particular
@@ -302,7 +295,7 @@ The values in each key/value pair MUST be one of the following datatypes.
 | null    | null                                   | `null`, as defined by the JSON standard.                      |
 | array   | JSON `array`                           | An `array` of other values, as defined by the JSON standard.  |
 | object  | JSON `object`                          | An `object` of other values, as defined by the JSON standard. |
-| GeoJSON | GeoJSON `point` object                 | A single GeoJSON `point` object as defined by RFC 7946.       |
+| GeoJSON | GeoJSON `point` Object                 | A single GeoJSON `point` Object as defined by RFC 7946.       |
 
 #### Namespaces
 
@@ -335,20 +328,20 @@ namespaces MAY be defined by the user as needed.
 1. An extension namespace MAY define new top-level SigMF Objects, key/value
    pairs, new files, new Dataset formats, or new datatypes.
 1. New key/value pairs defined by an extension namespace MUST be defined in
-   the context of a specific SigMF top-level object - i.e., `global`,
-   `captures`, `annotations`, or a new user-defined object.
+   the context of a specific SigMF top-level Object - i.e., `global`,
+   `captures`, `annotations`, or a new user-defined Object.
 1. It is RECOMMENDED that an extension namespace file follow the structure of
    the canonical extension namespaces.
 
 #### Global Object
 
-The `global` object consists of key/value pairs that provide information
+The `global` Object consists of key/value pairs that provide information
 applicable to the entire Dataset. It contains the information that is minimally
 necessary to open and parse the Dataset file, as well as general information
 about the Recording itself.
 
 The following names are specified in the Core namespace for use in the Global
-object:
+Object:
 
 | name            | required | type    | description      |
 | --------------- | -------- | --------| -----------------|
@@ -368,14 +361,14 @@ object:
 | `dataset`       | false    | string  | The full filename of the Dataset file this Metadata file describes.|
 | `trailing_bytes`| false    | uint    | The number of bytes to ignore at the end of a Non-Conforming Dataset file.|
 | `metadata_only` | false    | bool    | Indicates the Metadata file is intentionally distributed without the Dataset.|
-| `geolocation`   | false    | GeoJSON `point` object | The location of the Recording system.|
+| `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system.|
 | `extensions`    | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
 | `collection`    | false    | string  | The base filename of a `collection` with which this Recording is associated.|
 
-##### The `dataset` Field
+**The `dataset` Field**
 
-The `dataset` field in the Global object is used to specify the Dataset file that this
-Metadata describes. If provided, this string MUST be the complete filename of the
+The `core:dataset` field in the Global Object is used to specify the Dataset file that
+this Metadata describes. If provided, this string MUST be the complete filename of the
 Dataset file, including the extension. The Dataset file must be in the local directory,
 and this string MUST NOT include any aspects of filepath other than the filename.
 
@@ -389,13 +382,13 @@ This field SHOULD NOT be used in conjunction the `core:metadata_only` field. If 
 fields exist and the file specified by `core:dataset` exists, then `core:metadata_only`
 SHOULD be ignored by the application.
 
-##### The `trailing_bytes` Field
+**The `trailing_bytes` Field**
 
 This field is used with Non-Conforming Datasets to indicate some number of bytes that
 trail the sample data in the NCD file that should be ignored for processing. This can
 be used to ignore footer data in non-SigMF filetypes.
 
-##### The `metadata_only` Field
+ **The `metadata_only` Field**
 
 This field should be defined and set to `true` to indicate that the Metadata
 file is being distributed without a corresponding `.sigmf-data` file. This may
@@ -407,11 +400,11 @@ If a Compliant SigMF Recording uses this field, it MAY indicate that the Dataset
 was dynamically generated from the metadata. This field MAY NOT be used in
 conjunction with Non-Conforming Datasets or the `core:dataset` field.
 
-##### The `geolocation` Field
+**The `geolocation` Field**
 
-The `geolocation` field in the Global Object is used to store the location
-of the recording system. The location is stored as a single
-[RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` object
+The `core:geolocation` field in the Global Object is used to store the
+location of the recording system. The location is stored as a single
+[RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` Object
 using the convention defined by [RFC 5870](https://www.rfc-editor.org/rfc/rfc5870.txt).
 Per the GeoJSON specification, the point coordinates use the WGS84 coordinate
 reference system and are `longitude`, `latitude` (REQUIRED, in decimal degrees),
@@ -431,7 +424,7 @@ example including the altitude field is shown below:
 
 GeoJSON permits the use of *Foreign Members* in GeoJSON documents per RFC 7946
 Section 6.1. Because the SigMF requirement for the `geolocation` field is to be
-a valid GeoJSON `point` object, users MAY include *Foreign Member* fields here
+a valid GeoJSON `point` Object, users MAY include *Foreign Member* fields here
 for user-defined purposes (position valid indication, GNSS SV counts, dillution
 of precision, accuracy, etc). It is strongly RECOMMENDED that all fields be
 documented in a SigMF Extension document.
@@ -439,10 +432,10 @@ documented in a SigMF Extension document.
 *Note:* Objects named `geometry` or `properties` are prohibited Foreign Members
 as specified in RFC 7946 Section 7.1.
 
-##### The `extensions` Field
+**The `extensions` Field**
 
-The `extensions` field in the Global Object is an array of `extension objects`
-that describe SigMF extensions. Extension Objects MUST contain the three key/value
+The `core:extensions` field in the Global Object is an array of `extension` Objects
+that describe SigMF extensions. Extension Objects MUST contain the three key/value 
 pairs defined below, and MUST NOT contain any other fields.
 
 | name       | required | type    | description                                                                 |
@@ -473,7 +466,7 @@ In the example below, `extension-01` is used, but not necessary, and
   }
 ```
 
-##### The `collection` Field
+**The `collection` Field**
 
 This field is used to indicate that this Recording is part of a SigMF Collection 
 (described later in this document). It is strongly RECOMMENDED that if you are 
@@ -482,11 +475,11 @@ field to associate up to the relevant `sigmf-collection` file.
 
 #### Captures Array
 
-The `captures` value is an array of `capture segment objects` that describe the
+The `captures` value is an array of `capture segment` Objects that describe the
 parameters of the signal capture. It MUST be sorted by the value of each
 capture segment's `core:sample_start` key, ascending.
 
-#### Capture Segment Objects
+##### Capture Segment Objects
 
 Capture Segment Objects are composed of key/value pairs, and each Segment describes
 a chunk of samples that can be mapped into memory for processing. Each Segment
@@ -506,14 +499,14 @@ Segment Objects:
 | `frequency`     | false    | double | The center frequency of the signal in Hz.                                                   |
 | `datetime`      | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.|
 
-##### The `sample_start` Field
+**The `sample_start` Field**
 
 This field specifies the sample index where this Segment takes effect relative
 to the recorded Dataset file. If the Dataset is a SigMF Dataset file, this 
 field can be immediately mapped to physical disk location since conforming
 Datasets only contain sample data.
 
-##### The `global_index` Field
+**The `global_index` Field**
 
 This field describes the index of the sample referenced by the `sample_start`
 field relative to an original sample stream, the entirety of which may not
@@ -547,7 +540,7 @@ datastream, indicating that 500 samples were lost before they could be recorded.
    ...
 ```
 
-##### The `header_bytes` Field
+**The `header_bytes` Field**
 
 This field specifies a number of bytes that are not valid sample data that 
 are physically located at the start of where the chunk of samples referenced 
@@ -585,7 +578,7 @@ of the previous Segment of samples plus two headers).
 }
 ```
 
-##### The `datetime` Field
+**The `datetime` Field**
 
 This key/value pair MUST be an ISO-8601 string, as defined by [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt),
 where the only allowed `time-offset` is `Z`, indicating the UTC/Zulu timezone.
@@ -615,14 +608,14 @@ of digits for fractional seconds is permitted.
 
 #### Annotations Array
 
-The `annotations` value is an array of `annotation segment objects` that
-describe anything regarding the signal data not part of the Captures and
-Global objects. It MUST be sorted by the value of each Annotation Segment's
+The `annotations` value is an array of `annotation` Objects that describe
+anything regarding the signal data not part of the Captures and Global
+Objects. It MUST be sorted by the value of each Annotation Segment's
 `core:sample_start` key, ascending.
 
 ##### Annotation Segment Objects
 
-Annotation segment objects contain key/value pairs and MUST contain a 
+Annotation segment Objects contain key/value pairs and MUST contain a 
 `core:sample_start` key/value pair, which indicates the first index 
 at which the rest of the Segment's key/value pairs apply.
 
@@ -638,14 +631,19 @@ Segment Objects:
 | `comment`         | false    | string | A human-readable comment.                                                           |
 | `freq_lower_edge` | false    | double | The frequency (Hz) of the lower edge of the feature described by this annotation.   |
 | `freq_upper_edge` | false    | double | The frequency (Hz) of the upper edge of the feature described by this annotation.   |
+| `uuid`            | false    | string | A RFC-4122 compliant UUID string of the form `xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx`.|
 | `latitude`        | false    |        | The latitude corresponding to the annotation (DEPRECATED, use `core:geolocation`).  |
 | `longitude`       | false    |        | The longitude corresponding to the annotation (DEPRECATED, use `core:geolocation`). |
+
+**The Sample Index Fields**
 
 There is no limit to the number of annotations that can apply to the same group
 of samples. If two annotations have the same `sample_start`, there is no
 defined ordering between them. If `sample_count` is not provided, it SHOULD
 be assumed that the annotation applies from `sample_start` through the end of
 the Dataset, in all other cases `sample_count` MUST be provided.
+
+**The `freq_*_edge` Fields**
 
 The `freq_lower_edge` and `freq_upper_edge` fields SHOULD be at RF if the
 feature is at a known RF frequency. If there is no known center frequency (as
@@ -655,32 +653,35 @@ fields SHOULD be relative to baseband. It is REQUIRED that both `freq_lower_edge
 and `freq_upper_edge` be provided, or neither; the use of just one field is not
 allowed.
 
+**The `label` Field**
+
 The `label` field MAY be used for any purpose, but it is RECOMMENDED that it be
 limited to no more than 20 characters as a common use is a short form GUI
 indicator. Similarly, it is RECOMMENDED that any user interface making use of 
 this field be capable of displaying up to 20 characters.
 
-### Collection Format
+### SigMF Collection Format
 
-The `sigmf-collection` file contains metadata in a single top-level object 
+The `sigmf-collection` file contains metadata in a single top-level Object 
 called a `collection`. The Collection Object contains key/value pairs that 
 describe relationships between SigMF Recordings.
 
-The Collection object points to specific Recordings via a `SigMF Recording tuple`,
-which references the base-name of the Recording and the SHA512 hash of the 
-Metadata file. Tuples MAY be the singular value in a key/value pair, or provided
-in an ordered list via a JSON array.
+The Collection Object associates SigMF Recordings together by specifying
+`SigMF Recording Objects` in the `core:streams` JSON array. Each Object
+describes a specific associated SigMF Recording.
 
-1. The Collection Object MUST be the only top-level object in the file.
-1. The Collection Object MUST only contain SigMF key/value pairs.
-1. Keys in the Collection Object MUST use SigMF Recording Tuples to reference 
-   Recordings.
-1. SigMF Recording Tuples MUST take the form of `["N", "hash"]`, where `N` is the 
-   base-name of a SigMF Recording and `hash` is the SHA512 hash of the Recording's 
-   Metadata file `N.sigmf-meta`.
-1. If a value contains multiple SigMF Recording Tuples, they MUST appear in a JSON array.
+The following rules apply to SigMF Collections:
 
-The following names are specified in the `core` namespace for use in the `collection` object.
+1. The Collection Object MUST be the only top-level Object in the file.
+1. Keys in the Collection Object SHOULD use SigMF Recording Objects when
+   referencing SigMF Recordings.
+1. SigMF Recording Objects MUST contain both a `name` field, which is the
+   base-name of a SigMF Recording, and a `hash` which is the SHA512 hash of
+   the Recording Metadata file `[base-name].sigmf-meta`.
+1. SigMF Recording Objects MUST appear in a JSON array.
+
+The following names are specified in the `core` namespace for use in the `collection`
+Object.
 
 | name             | required | type                  | description |
 | -----------------| ---------| ----------------------| ------------|
@@ -689,34 +690,67 @@ The following names are specified in the `core` namespace for use in the `collec
 | `author`         | false    | string                | A text identifier for the author potentially including name, handle, email, and/or other ID like Amateur Call Sign. For example "Bruce Wayne <bruce@waynetech.com>" or "Bruce (K3X)".|
 | `collection_doi` | false    | string                | The registered DOI (ISO 26324) for a Collection.|
 | `license`        | false    | string                | A URL for the license document under which this Collection metadata is offered.|
-| `extensions`     | false    | array                 | A list of objects describing extensions used by this Collection.|
+| `extensions`     | false    | array                 | A list of Objects describing extensions used by this Collection.|
 | `streams`        | false    | array                 | An ordered array of SigMF Recording Tuples, indicating multiple recorded streams of data (e.g., channels from a phased array).|
 
 Example `top-level.sigmf-collection` file:
+
 ```JSON
 {
     "collection": {
-       "core:version": "v1.0.0",
-
+        "core:version": "v1.0.0",
         "core:extensions" : [
             {
-            "name": "antenna",
-            "version": "1.0.0",
-            "optional": false
+                "name": "antenna",
+                "version": "1.0.0",
+                "optional": false
             }
-         ],
-
-        "antenna:hagl": ["hagl-basename", "hash"],
-
-        "antenna:azimuth_angle": ["azimuth-angle-basename", "hash"],
-
+        ],
+        "antenna:hagl": {
+            "name": "hagl-basename",
+            "hash": "9c1ab7285c13644cef5d910dc774ca63d1921f91318417cfadc71c4d7f3acf85ec3c5b05e9335e9cc310b1557de517519c76da540b08886a0e440d71e1271fd0"
+        },
+        "antenna:azimuth_angle": {
+            "name": "azimuth-angle-basename",
+            "hash": "6eb7f16cf7afcabe9bdea88bdab0469a7937eb715ada9dfd8f428d9d38d86133945f5f2f2688ddd96062223a39b5d47f07afc3c48d9db1d5ee3f41c8d274dccf"
+        },
         "core:streams": [
-            ["example-channel-0-basename", "hash"],
-            ["example-channel-1-basename", "hash"]
+            {
+               "name": "example-channel-0-basename",
+               "hash": "b4071db26f5c7b0c70f5066eb9bc3a8b506df0f5af09991ba481f63f97f7f48e9396584bc1c296650cd3d47bc4ad2c5b72d2561078fb6eb16151d2898c9f84c4"
+            },
+            {
+               "name": "example-channel-1-basename",
+               "hash": "7132aa240e4d8505471cded716073141ae190f763bfca3c27edd8484348d6693d0e8d3427d0bf1990e687a6a40242d514e5d1995642bc39384e9a37a211655d7"
+            }
         ]
     }
 }
 ```
+
+#### SigMF Recording Objects
+
+`SigMF Recording Objects` reference the base-name of the SigMF Recording and the
+SHA512 hash of the Metadata file, and SHOULD BE specified as a JSON Object:
+
+```JSON
+  {
+    "name": "example-channel-0-basename",
+    "hash": "b4071db26f5c7b0c70f5066eb9bc3a8b506df0f5af09991ba481f63f97f7f48e9396584bc1c296650cd3d47bc4ad2c5b72d2561078fb6eb16151d2898c9f84c4"
+  }
+```
+
+Recording Tuples are also permitted and have a similar form. The order of
+the tuple: [`name`, `hash`] is REQUIRED when using tuples:
+
+```JSON
+  ["example-channel-0-basename", "b4071db26f5c7b0c70f5066eb9bc3a8b506df0f5af09991ba481f63f97f7f48e9396584bc1c296650cd3d47bc4ad2c5b72d2561078fb6eb16151d2898c9f84c4"]
+```
+
+Tuples will be removed in SigMF version 2.0, so JSON Objects are RECOMMENDED.
+Additional optional user fields MAY be added to `SigMF Recording Objects` if
+they are defined in a compliant SigMF extension. Additional fields are NOT
+permitted in tuples.
 
 ## Licensing
 
@@ -760,14 +794,20 @@ cannot be SigMF Compliant Recordings.
 
 ### SigMF Collection Compliance
 
-In order to be 'SigMF Compliant', a collection MUST contain only compliant
-Recordings.
+In order to be 'SigMF Compliant', a Collection must meet the following
+requirements:
+
+1. The collection MUST contain only compliant Recordings.
+1. The Collection Object MUST only contain SigMF key/value pairs provided by
+   the core specification or a compliant SigMF extension.
 
 ### SigMF Application Compliance
 
 In order to be 'SigMF Compliant', an application MUST meet the following
 requirements:
 
+1. Is capable of parsing and loading SigMF Compliant Recordings. Support for
+   SigMF Collections and Archives is RECOMMENDED but not REQUIRED.
 1. Adheres to and supports the file rules, Dataset formats, `objects`,
    `namespaces`, and `names` specified by this document.
 1. MUST be able to ignore any `object` or `namespace` not specified by this
@@ -783,14 +823,19 @@ requirements:
    listed extension namespaces, and defines which optional fields are used. This
    definition can be in user documentation or within the code itself, though
    explicit documentation is RECOMMENDED.
+1. Support for ALL SigMF Datatypes is NOT REQUIRED as certain datatypes may not
+   make sense for a particular application, but Compliant applications MUST
+   define which datatypes are supported, and be capable of loading Compliant
+   Recordings using supported datatypes.
 
 Compliant applications are NOT REQUIRED to support Non-Conforming Datasets or
 Metadata Only schema files, but it is RECOMMENDED that they parse the respective
-metadata fields in the `global` object to provide descriptive messages to users
-regarding why the files are not supported. Support for SigMF Collections is
-OPTIONAL for SigMF compliant applications, however it is RECOMMENDED that
-applications implementing SigMF make use of Collections when appropriate for
-interoperability and consistency.
+metadata fields in the `global` Object to provide descriptive messages to users
+regarding why the files are not supported.
+
+Support for SigMF Collections is OPTIONAL for SigMF Compliant applications,
+however it is RECOMMENDED that applications implementing SigMF make use of
+Collections when appropriate for interoperability and consistency.
 
 ## Citing SigMF
 
