@@ -361,7 +361,7 @@ Object:
 | `dataset`       | false    | string  | The full filename of the Dataset file this Metadata file describes.|
 | `trailing_bytes`| false    | uint    | The number of bytes to ignore at the end of a Non-Conforming Dataset file.|
 | `metadata_only` | false    | bool    | Indicates the Metadata file is intentionally distributed without the Dataset.|
-| `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system.  Using geolocation within Captures is preferred |
+| `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system, using the Captures scope `geolocation` field is preferred.|
 | `extensions`    | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
 | `collection`    | false    | string  | The base filename of a `collection` with which this Recording is associated.|
 
@@ -402,7 +402,9 @@ conjunction with Non-Conforming Datasets or the `core:dataset` field.
 
 **The `geolocation` Field**
 
-See the `geolocation` field within `Captures`.  While it can also be provided within Global, Captures is preferred.
+See the `geolocation` field within the Captures metadata.  While fixed recording
+systems may still provide position information within the Global object, using
+the Captures scope `geolocation` is preferred.
 
 **The `extensions` Field**
 
@@ -447,7 +449,7 @@ field to associate up to the relevant `sigmf-collection` file.
 
 #### Captures Array
 
-The `captures` value is an array of `capture segment` Objects that describe the
+The `captures` Object is an array of `capture segment` Objects that describe the
 parameters of the signal capture. It MUST be sorted by the value of each
 capture segment's `core:sample_start` key, ascending.
 
@@ -470,7 +472,7 @@ Segment Objects:
 | `header_bytes`  | false    | uint   | The number of bytes preceding a chunk of samples that are not sample data, used for NCDs.  |
 | `frequency`     | false    | double | The center frequency of the signal in Hz.                                                   |
 | `datetime`      | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.|
-| `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system. |
+| `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system.|
 
 **The `sample_start` Field**
 
@@ -581,14 +583,15 @@ of digits for fractional seconds is permitted.
 
 **The `geolocation` Field**
 
-The `core:geolocation` field in the Captures or Global Object (Captures is preferred) is used to store the
-location of the recording system. The location is stored as a single
-[RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` Object
-using the convention defined by [RFC 5870](https://www.rfc-editor.org/rfc/rfc5870.txt).
-Per the GeoJSON specification, the point coordinates use the WGS84 coordinate
-reference system and are `longitude`, `latitude` (REQUIRED, in decimal degrees),
-and `altitude` (OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. An
-example including the altitude field is shown below:
+The `core:geolocation` field in the Captures (preferred) or Global object is
+used to store the location of the recording system. The location is stored as a
+single [RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point`
+Object using the convention defined by [RFC
+5870](https://www.rfc-editor.org/rfc/rfc5870.txt). Per the GeoJSON
+specification, the point coordinates use the WGS84 coordinate reference system
+and are `longitude`, `latitude` (REQUIRED, in decimal degrees), and `altitude`
+(OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. An example
+including the altitude field is shown below:
 
 ```JSON
     ...
