@@ -11,16 +11,16 @@ The following fields are added to the `global` object:
 
 |name|required|type|description|
 |----|--------|----|-----------|
-|`traceability:last_modified`|false|[LastModified](#lastmodified-object)|Captures the author and timestamp of the most recent modification|
+|`traceability:last_modified`|false|[DataChange](#datachange-object)|Captures the author and timestamp of the most recent modification|
 |`traceability:revision`|false|integer|Specifies the revision number associated with the metadata|
 |`traceability:origin`|false|[Origin](#origin-object)|Provides information about the origin of the data|
 
-### LastModified Object
+### DataChange Object
 
 |name|required|type|description|
 |----|--------|----|-----------|
-|`author`|false|string|Email address of the author who last modified the metadata|
-|`time`|true|string (date-time)|Timestamp of the last modification in ISO 8601 format|
+|`author`|false|string|Email address of the author who changed the metadata|
+|`time`|true|string (date-time)|Timestamp of the modification in ISO 8601 format|
 
 ### Origin Object
 
@@ -42,7 +42,7 @@ The following fields are added to each annotation in the `annotations` array:
 
 |name|required|type|description|
 |----|--------|----|-----------|
-|`traceability:last_modified`|false|[LastModified](#lastmodified-object)|Captures the author and timestamp of the most recent modification|
+|`traceability:last_modified`|false|[DataChange](#datachange-object)|Captures the author and timestamp of the most recent modification|
 
 ## 4 Examples
 
@@ -74,9 +74,9 @@ Here are some examples of using the `traceability` extension:
     }
   ],
 }
+```
 
-
-2. Multiple annotations with traceability information:
+- Multiple annotations with traceability information:
 
 ```json
 {
