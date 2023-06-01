@@ -364,6 +364,7 @@ Object:
 | `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system.|
 | `extensions`    | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
 | `collection`    | false    | string  | The base filename of a `collection` with which this Recording is associated.|
+| `sample_length` | false    | uint    | The number of samples in the Dataset file.|
 
 **The `dataset` Field**
 
