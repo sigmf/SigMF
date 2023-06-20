@@ -213,7 +213,7 @@ the `signal_bearing` field is also provided for when elevation, range, and/or
 measurement error is needed. Only one of these SHOULD be used for an individual
 annotation; if both are provided the `signal_bearing` object has priority.
 
-The `geolocation` field uses the same GeoJSON `point` Object as in the `core`
+The `emitter_location` field uses the same GeoJSON `point` Object as in the `core`
 spec and allows for association of a location with the annotation; not the
 recorder's position. For example, this field could be used to store
 results of TDOA performed on an emission, or it could be used to label a known
