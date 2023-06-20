@@ -1,4 +1,4 @@
-# The `spatial` SigMF Extension Namespace v1.0.0
+# The `spatial` SigMF Extension Namespace v1.1.0
 
 This document defines the `spatial` extension namespace for the Signal Metadata
 Format (SigMF) specification. This extension namespace contains objects to help
