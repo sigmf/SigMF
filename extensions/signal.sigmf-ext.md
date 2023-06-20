@@ -1,4 +1,4 @@
-# The `signal` SigMF Extension Namespace v1.0.0
+# The `signal` SigMF Extension Namespace v1.1.0
 
 This document defines the `signal` extension namespace for the Signal Metadata
 Format (SigMF) specification. This extension namespace defines how to describe
