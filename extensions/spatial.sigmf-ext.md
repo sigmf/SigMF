@@ -1,4 +1,4 @@
-# The `spatial` SigMF Extension Namespace v1.0.0
+# The `spatial` SigMF Extension Namespace v1.1.0
 
 This document defines the `spatial` extension namespace for the Signal Metadata
 Format (SigMF) specification. This extension namespace contains objects to help
@@ -203,14 +203,22 @@ object:
 |----|--------|----|-----|-----------|
 |`signal_azimuth`|false|double|degrees|Azimuth in degrees east of true north associated with the specific annotation.|
 |`signal_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing associated with the specific annotation.|
+|`emitter_location`|false|GeoJSON `point` Object|N/A|The location of the emitter associated with this annotation.|
 
-These fields represent the direction to a specific signal relative to the
-`aperture_bearing` and can be utilized when the signals contained in a Recording
-need to be defined on a per-signal basis. The `signal_azimuth` field is provided
-for simplicity because many applications only require azimuth, but the
-`signal_bearing` field is also provided for when elevation, range, and/or
+These first two fields represent the direction to a specific signal relative to
+the `aperture_bearing` and can be utilized when the signals contained in a
+Recording need to be defined on a per-signal basis. The `signal_azimuth` field
+is provided for simplicity because many applications only require azimuth, but
+the `signal_bearing` field is also provided for when elevation, range, and/or
 measurement error is needed. Only one of these SHOULD be used for an individual
 annotation; if both are provided the `signal_bearing` object has priority.
+
+The `emitter_location` field uses the same GeoJSON `point` Object as in the `core`
+spec and allows for association of a location with the annotation; not the
+recorder's position. For example, this field could be used to store
+results of TDOA performed on an emission, or it could be used to label a known
+position of a transmitter. See `core` spec for more details on GeoJSON `point`
+Objects.
 
 ## 4 Collection
 
