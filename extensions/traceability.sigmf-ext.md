@@ -61,6 +61,10 @@ Here are some examples of using the `traceability` extension:
       "author": "john.doe@example.com",
       "time": "2023-05-31T12:00:00Z"
     },
+    "traceability:last_reviewed": {
+      "author": "ben.doe@example.com",
+      "time": "2023-05-31T12:30:00Z"
+    },
     "traceability:revision": 1,
     "traceability:origin": {
       "file_path": "/data/signal_data.bin"
@@ -89,6 +93,10 @@ Here are some examples of using the `traceability` extension:
       "author": "john.doe@example.com",
       "time": "2023-05-31T12:00:00Z"
     },
+    "traceability:last_reviewed": {
+      "author": "ben.doe@example.com",
+      "time": "2023-05-31T12:30:00Z"
+    },
     "traceability:revision": 1,
     "traceability:origin": {
       "file_path": "/data/signal_data.bin"
@@ -109,7 +117,11 @@ Here are some examples of using the `traceability` extension:
         "author": "james.smith@example.com",
         "time": "2023-05-30T15:45:00Z"
       },
-      "core:label": "Noise artifact",
+      "traceability:last_reviewed": {
+      "author": "ben.doe@example.com",
+      "time": "2023-05-31T12:30:00Z"
+    },
+    "core:label": "Noise artifact",
       "core:sample_start": 600,
       "core:sample_count": 200
     }
@@ -166,6 +178,10 @@ Here are some examples of using the `traceability` extension:
       "traceability:last_modified": {
         "author": "jane.doe@example.com",
         "time": "2023-05-30T10:30:00Z"
+      },
+      "traceability:last_reviewed": {
+      "author": "ben.doe@example.com",
+      "time": "2023-05-31T12:30:00Z"
       },
       "core:label": "Signal of interest",
       "core:sample_start": 100,
