@@ -180,8 +180,8 @@ Here are some examples of using the `traceability` extension:
         "time": "2023-05-30T10:30:00Z"
       },
       "traceability:last_reviewed": {
-      "author": "ben.doe@example.com",
-      "time": "2023-05-31T12:30:00Z"
+        "author": "ben.doe@example.com",
+        "time": "2023-05-31T12:30:00Z"
       },
       "core:label": "Signal of interest",
       "core:sample_start": 100,
