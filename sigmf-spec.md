@@ -348,7 +348,7 @@ Object:
 | `datatype`      | true     | string  | The SigMF Dataset format of the stored samples in the Dataset file.|
 | `sample_rate`   | false    | double  | The sample rate of the signal in samples per second.|
 | `version`       | true     | string  | The version of the SigMF specification used to create the Metadata file.|
-| `num_channels`  | false    | uint    | Total number of interleaved channels in the Dataset file. For multiple channels of IQ data, to get best support from most SDR software, use multiple recordings instead of `num_channels`.  If omitted, this defaults to one.|
+| `num_channels`  | false    | uint    | Total number of interleaved channels in the Dataset file; if omitted this is implied to be `1`. For multiple channels of IQ data, it is RECOMMENDED to use SigMF Collections instead of `num_channels` for widest application support.|
 | `sha512`        | false    | string  | The SHA512 hash of the Dataset file associated with the SigMF file.|
 | `offset`        | false    | uint    | The index number of the first sample in the Dataset. If not provided, this value defaults to zero. Typically used when a Recording is split over multiple files. All sample indices in SigMF are absolute, and so all other indices referenced in metadata for this recording SHOULD be greater than or equal to this value.|
 | `description`   | false    | string  | A text description of the SigMF Recording.|
