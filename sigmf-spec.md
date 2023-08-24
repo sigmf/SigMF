@@ -403,8 +403,10 @@ conjunction with Non-Conforming Datasets or the `core:dataset` field.
 **The `geolocation` Field**
 
 See the `geolocation` field within the Captures metadata.  While fixed recording
-systems may still provide position information within the Global object, using
-the Captures scope `geolocation` is preferred.
+systems may still provide position information within the Global object. While
+using the Captures scope `geolocation` is preferred, it is RECOMMENDED that
+applications check and use this field if the Captures `geolocation` field is not
+present.
 
 **The `extensions` Field**
 
@@ -586,7 +588,7 @@ of digits for fractional seconds is permitted.
 The `core:geolocation` field in the Captures (preferred) or Global object is
 used to store the location of the recording system at the first sample in the
 captures segment. For moving emitters, this provides a rudimentary means to
-manage location through different captures segments. 
+manage location through different captures segments.
 
 The geolocation field is a GeoJSON `point` Object defined by section 3.1.2 of
 [RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt). Per the GeoJSON
