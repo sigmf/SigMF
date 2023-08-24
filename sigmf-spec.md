@@ -472,7 +472,7 @@ Segment Objects:
 | `header_bytes`  | false    | uint   | The number of bytes preceding a chunk of samples that are not sample data, used for NCDs.  |
 | `frequency`     | false    | double | The center frequency of the signal in Hz.                                                   |
 | `datetime`      | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.|
-| `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system.|
+| `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system at the start of this Captures segment.|
 
 **The `sample_start` Field**
 
@@ -584,9 +584,11 @@ of digits for fractional seconds is permitted.
 **The `geolocation` Field**
 
 The `core:geolocation` field in the Captures (preferred) or Global object is
-used to store the location of the recording system. The location is stored as a
-single [RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point`
-Object using the convention defined by [RFC
+used to store the location of the recording system at the first sample in the
+captures segment. For emitters that are moving, this provides a means to manage
+location through different captures segments. The location is stored as a single
+[RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` Object
+using the convention defined by [RFC
 5870](https://www.rfc-editor.org/rfc/rfc5870.txt). Per the GeoJSON
 specification, the point coordinates use the WGS84 coordinate reference system
 and are `longitude`, `latitude` (REQUIRED, in decimal degrees), and `altitude`
