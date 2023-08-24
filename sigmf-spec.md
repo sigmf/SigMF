@@ -585,15 +585,16 @@ of digits for fractional seconds is permitted.
 
 The `core:geolocation` field in the Captures (preferred) or Global object is
 used to store the location of the recording system at the first sample in the
-captures segment. For emitters that are moving, this provides a means to manage
-location through different captures segments. The location is stored as a single
-[RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` Object
-using the convention defined by [RFC
-5870](https://www.rfc-editor.org/rfc/rfc5870.txt). Per the GeoJSON
+captures segment. For moving emitters, this provides a rudimentary means to
+manage location through different captures segments. 
+
+The geolocation field is a GeoJSON `point` Object defined by section 3.1.2 of
+[RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt). Per the GeoJSON
 specification, the point coordinates use the WGS84 coordinate reference system
 and are `longitude`, `latitude` (REQUIRED, in decimal degrees), and `altitude`
-(OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. An example
-including the altitude field is shown below:
+(OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. 
+
+An example including the altitude field is shown below:
 
 ```JSON
     ...
