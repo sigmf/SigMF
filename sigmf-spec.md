@@ -402,9 +402,9 @@ conjunction with Non-Conforming Datasets or the `core:dataset` field.
 
 **The `geolocation` Field**
 
-See the `geolocation` field within the Captures metadata.  While fixed recording
-systems may still provide position information within the Global object. While
-using the Captures scope `geolocation` is preferred, it is RECOMMENDED that
+See the `geolocation` field within the Captures metadata. While using the
+Captures scope `geolocation` is preferred, fixed recording systems may still
+provide position information within the Global object so it is RECOMMENDED that
 applications check and use this field if the Captures `geolocation` field is not
 present.
 
