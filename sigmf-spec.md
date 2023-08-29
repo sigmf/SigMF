@@ -479,10 +479,10 @@ The `captures` field is an array of `capture segment` Objects that describe the
 parameters of the signal capture. It MUST be sorted by the value of each
 capture segment's `core:sample_start` key, ascending.
 
-All samples in a dataset are contained in exactly one capture segment. While
-there SHOULD be at least one segment defined, there are no items in the captures
+All samples in a dataset are contained in exactly one capture segment. There
+SHOULD be at least one segment defined; if there are no items in the captures
 array it is implied that a single capture with the `core:sample_start` field
-equal to zero; no other metadata is implied.
+equal to zero. No other metadata is implied.
 
 ##### Capture Segment Objects
 
