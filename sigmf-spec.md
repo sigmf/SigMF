@@ -34,8 +34,10 @@ Copyright of contributions to SigMF are retained by their original authors. All 
       - [Namespaces](#namespaces)
         - [Extension Namespaces](#extension-namespaces)
       - [Global Object](#global-object)
+          - [Non-Conforming Dataset Global Metadata Fields](#non-conforming-dataset-global-metadata-fields)
       - [Captures Array](#captures-array)
         - [Capture Segment Objects](#capture-segment-objects)
+          - [Non-Conforming Dataset Captures Metadata Fields](#non-conforming-dataset-captures-metadata-fields)
       - [Annotations Array](#annotations-array)
         - [Annotation Segment Objects](#annotation-segment-objects)
     - [SigMF Collection Format](#sigmf-collection-format)
@@ -112,10 +114,12 @@ model and format for how SigMF data should be stored at-rest (on-disk) using JSO
 ### SigMF File Types
 
 There are two fundamental filetypes defined by this specification: files with 
-metadata, and the files that contain the Datasets described by the metadata. There
-are two types of files containing metadata, a SigMF `Metadata` file, and a SigMF
-`Collection` file. There are also two types of Datasets, a SigMF `Dataset` file, 
-and a `Non-Conforming Dataset` file, abbreviated as `NCD`.
+metadata, and the files that contain the Datasets described by the metadata.
+There are two types of files containing metadata, a SigMF `Metadata` file, and a
+SigMF `Collection` file. There are also two types of Datasets, a SigMF `Dataset`
+file, and a `Non-Conforming Dataset` file, abbreviated as `NCD`. NCDs are a
+mechanism to support using valid SigMF metadata to describe data that is not
+valid SigMF and formatted according to SigMF Dataset requirements.
 
 The primary unit of SigMF is a SigMF `Recording`, which comprises a Metadata file
 and the Dataset file it describes. Collections are an optional feature that are 
@@ -358,47 +362,12 @@ Object:
 | `recorder`      | false    | string  | The name of the software used to make this SigMF Recording.|
 | `license`       | false    | string  | A URL for the license document under which the Recording is offered.|
 | `hw`            | false    | string  | A text description of the hardware used to make the Recording.|
-| `dataset`       | false    | string  | The full filename of the Dataset file this Metadata file describes.|
-| `trailing_bytes`| false    | uint    | The number of bytes to ignore at the end of a Non-Conforming Dataset file.|
-| `metadata_only` | false    | bool    | Indicates the Metadata file is intentionally distributed without the Dataset.|
 | `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system.|
 | `extensions`    | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
 | `collection`    | false    | string  | The base filename of a `collection` with which this Recording is associated.|
-
-**The `dataset` Field**
-
-The `core:dataset` field in the Global Object is used to specify the Dataset file that
-this Metadata describes. If provided, this string MUST be the complete filename of the
-Dataset file, including the extension. The Dataset file must be in the local directory,
-and this string MUST NOT include any aspects of filepath other than the filename.
-
-If a Recording does not have this field, it MUST have a compliant SigMF Dataset (NOT
-a Non-Conforming Dataset) which MUST use the same base filename as the Metadata file
-and use the `.sigmf-data` extension. If a SigMF Recording or Archive is renamed this
-field MUST also be updated, because of this it is RECOMMENDED that Compliant SigMF
-Recordings avoid use of this field.
-
-This field SHOULD NOT be used in conjunction the `core:metadata_only` field. If both
-fields exist and the file specified by `core:dataset` exists, then `core:metadata_only`
-SHOULD be ignored by the application.
-
-**The `trailing_bytes` Field**
-
-This field is used with Non-Conforming Datasets to indicate some number of bytes that
-trail the sample data in the NCD file that should be ignored for processing. This can
-be used to ignore footer data in non-SigMF filetypes.
-
- **The `metadata_only` Field**
-
-This field should be defined and set to `true` to indicate that the Metadata
-file is being distributed without a corresponding `.sigmf-data` file. This may
-be done when the Dataset will be generated dynamically from information in the
-schema, or because just the schema is sufficient for the intended application. A
-metadata only distribution is not a SigMF Recording.
-
-If a Compliant SigMF Recording uses this field, it MAY indicate that the Dataset
-was dynamically generated from the metadata. This field MAY NOT be used in
-conjunction with Non-Conforming Datasets or the `core:dataset` field.
+| `dataset`       | false    | string  | The full filename of the Dataset file this Metadata file describes, used ONLY with Non-Conforming Datasets.|
+| `trailing_bytes`| false    | uint    | The number of bytes to ignore at the end of a Dataset, used ONLY with Non-Conforming Datasets.|
+| `metadata_only` | false    | bool    | Indicates the Metadata file is intentionally distributed without the Dataset, used ONLY with Non-Conforming Datasets.|
 
 **The `geolocation` Field**
 
@@ -473,6 +442,47 @@ This field is used to indicate that this Recording is part of a SigMF Collection
 building a Collection, that each Recording referenced by that Collection use this 
 field to associate up to the relevant `sigmf-collection` file.
 
+###### Non-Conforming Dataset Global Metadata Fields
+
+The following fields are associated only with Non-Conforming Datasets and do not
+need to be considered for Compliant SigMF.
+
+**The `dataset` Field**
+
+The `core:dataset` field in the Global Object is used to specify the Dataset file that
+this Metadata describes. If provided, this string MUST be the complete filename of the
+Dataset file, including the extension. The Dataset file must be in the local directory,
+and this string MUST NOT include any aspects of filepath other than the filename.
+
+If a Recording does not have this field, it MUST have a compliant SigMF Dataset (NOT
+a Non-Conforming Dataset) which MUST use the same base filename as the Metadata file
+and use the `.sigmf-data` extension. If a SigMF Recording or Archive is renamed this
+field MUST also be updated, because of this it is RECOMMENDED that Compliant SigMF
+Recordings avoid use of this field.
+
+This field SHOULD NOT be used in conjunction the `core:metadata_only` field. If both
+fields exist and the file specified by `core:dataset` exists, then `core:metadata_only`
+SHOULD be ignored by the application.
+
+**The `trailing_bytes` Field**
+
+This field is used only with Non-Conforming Datasets to indicate some number of
+bytes that trail the sample data in the NCD file that should be ignored for
+processing. This can be used to ignore footer data in non-SigMF filetypes (e.g.:
+BLUE file extended header).
+
+ **The `metadata_only` Field**
+
+This field should be defined and set to `true` to indicate that the Metadata
+file is being distributed without a corresponding `.sigmf-data` file. This may
+be done when the Dataset will be generated dynamically from information in the
+schema, or because just the schema is sufficient for the intended application. A
+metadata only distribution is not a SigMF Recording.
+
+If a Compliant SigMF Recording uses this field, it MAY indicate that the Dataset
+was dynamically generated from the metadata. This field MAY NOT be used in
+conjunction with Non-Conforming Datasets or the `core:dataset` field.
+
 #### Captures Array
 
 The `captures` field is an array of `capture segment` Objects that describe the
@@ -480,7 +490,7 @@ parameters of the signal capture. It MUST be sorted by the value of each
 capture segment's `core:sample_start` key, ascending.
 
 All samples in a dataset are contained in exactly one capture segment. There
-SHOULD be at least one segment defined; if there are no items in the captures
+SHOULD be at least one segment defined in the captures ; if there are no items in the captures
 array it is implied that a single capture with the `core:sample_start` field
 equal to zero. No other metadata is implied.
 
@@ -500,9 +510,9 @@ Segment Objects:
 | ----------------| -------- | ------ | --------------------------------------------------------------------------------------------|
 | `sample_start`  | true     | uint   | The sample index in the Dataset file at which this Segment takes effect.                    |
 | `global_index`  | false    | uint   | The index of the sample referenced by `sample_start` relative to an original sample stream. |
-| `header_bytes`  | false    | uint   | The number of bytes preceding a chunk of samples that are not sample data, used for NCDs.  |
 | `frequency`     | false    | double | The center frequency of the signal in Hz.                                                   |
 | `datetime`      | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.|
+| `header_bytes`  | false    | uint   | The number of bytes preceding a chunk of samples that are not sample data, used ONLY with Non-Conforming Datasets.|
 
 **The `sample_start` Field**
 
@@ -544,13 +554,48 @@ datastream, indicating that 500 samples were lost before they could be recorded.
    ],
    ...
 ```
+**The `datetime` Field**
+
+This key/value pair MUST be an ISO-8601 string, as defined by [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt),
+where the only allowed `time-offset` is `Z`, indicating the UTC/Zulu timezone.
+The ABNF description is:
+
+```abnf
+   date-fullyear   = 4DIGIT
+   date-month      = 2DIGIT  ; 01-12
+   date-mday       = 2DIGIT  ; 01-28, 01-29, 01-30, 01-31 based on month/year
+
+   time-hour       = 2DIGIT  ; 00-23
+   time-minute     = 2DIGIT  ; 00-59
+   time-second     = 2DIGIT  ; 00-58, 00-59, 00-60 based on leap second rules
+
+   time-secfrac    = "." 1*DIGIT
+   time-offset     = "Z"
+
+   partial-time    = time-hour ":" time-minute ":" time-second [time-secfrac]
+   full-date       = date-fullyear "-" date-month "-" date-mday
+   full-time       = partial-time time-offset
+
+   date-time       = full-date "T" full-time
+```
+
+Thus, timestamps take the form of `YYYY-MM-DDTHH:MM:SS.SSSZ`, where any number
+of digits for fractional seconds is permitted.
+
+###### Non-Conforming Dataset Captures Metadata Fields
+
+The following fields are associated only with Non-Conforming Datasets and do not
+need to be considered for Compliant SigMF.
 
 **The `header_bytes` Field**
 
-This field specifies a number of bytes that are not valid sample data that 
-are physically located at the start of where the chunk of samples referenced 
-by this Segment would otherwise begin. If omitted, this value SHOULD
-be treated as equal zero. If included, the Dataset is by definition a
+This field specifies the number of bytes located in the dataset at the start of
+where the chunk of samples referenced by this Captures Segment would otherwise
+begin, that are not valid sample data. This field is intended to identify either
+global (e.g.: header metadata from a MIDAS BLUE file, which would be included in
+the first Capture's metadata), or segment specific header data (e.g.: repeating
+frame information from a VRT raw data capture). If omitted, this value is
+considered to be zero. If this field is non-zero, the Dataset is by definition a
 Non-Conforming Dataset.
 
 For example, the below Metadata for a Non-Conforming Dataset contains
@@ -583,33 +628,6 @@ of the previous Segment of samples plus two headers).
 }
 ```
 
-**The `datetime` Field**
-
-This key/value pair MUST be an ISO-8601 string, as defined by [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt),
-where the only allowed `time-offset` is `Z`, indicating the UTC/Zulu timezone.
-The ABNF description is:
-
-```abnf
-   date-fullyear   = 4DIGIT
-   date-month      = 2DIGIT  ; 01-12
-   date-mday       = 2DIGIT  ; 01-28, 01-29, 01-30, 01-31 based on month/year
-                             
-   time-hour       = 2DIGIT  ; 00-23
-   time-minute     = 2DIGIT  ; 00-59
-   time-second     = 2DIGIT  ; 00-58, 00-59, 00-60 based on leap second rules
-                            
-   time-secfrac    = "." 1*DIGIT
-   time-offset     = "Z"
-
-   partial-time    = time-hour ":" time-minute ":" time-second [time-secfrac]
-   full-date       = date-fullyear "-" date-month "-" date-mday
-   full-time       = partial-time time-offset
-
-   date-time       = full-date "T" full-time
-```
-
-Thus, timestamps take the form of `YYYY-MM-DDTHH:MM:SS.SSSZ`, where any number
-of digits for fractional seconds is permitted.
 
 #### Annotations Array
 
