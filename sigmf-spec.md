@@ -365,20 +365,20 @@ Object:
 | `geolocation`   | false    | GeoJSON `point` Object | The location of the Recording system.|
 | `extensions`    | false    | array   | A list of JSON Objects describing extensions used by this Recording.|
 | `collection`    | false    | string  | The base filename of a `collection` with which this Recording is associated.|
+| `metadata_only` | false    | bool    | Indicates the Metadata file is intentionally distributed without the Dataset, used ONLY with Non-Conforming Datasets.|
 | `dataset`       | false    | string  | The full filename of the Dataset file this Metadata file describes, used ONLY with Non-Conforming Datasets.|
 | `trailing_bytes`| false    | uint    | The number of bytes to ignore at the end of a Dataset, used ONLY with Non-Conforming Datasets.|
-| `metadata_only` | false    | bool    | Indicates the Metadata file is intentionally distributed without the Dataset, used ONLY with Non-Conforming Datasets.|
 
 **The `geolocation` Field**
 
-The `core:geolocation` field in the Global Object is used to store the
-location of the recording system. The location is stored as a single
-[RFC 7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` Object
-using the convention defined by [RFC 5870](https://www.rfc-editor.org/rfc/rfc5870.txt).
-Per the GeoJSON specification, the point coordinates use the WGS84 coordinate
-reference system and are `longitude`, `latitude` (REQUIRED, in decimal degrees),
-and `altitude` (OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. An
-example including the altitude field is shown below:
+The location of the Recording system. The location is stored as a single [RFC
+7946](https://www.rfc-editor.org/rfc/rfc7946.txt) GeoJSON `point` Object using
+the convention defined by [RFC
+5870](https://www.rfc-editor.org/rfc/rfc5870.txt). Per the GeoJSON
+specification, the point coordinates use the WGS84 coordinate reference system
+and are `longitude`, `latitude` (REQUIRED, in decimal degrees), and `altitude`
+(OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. An example
+including the altitude field is shown below:
 
 ```JSON
   "global": {
@@ -403,9 +403,9 @@ as specified in RFC 7946 Section 7.1.
 
 **The `extensions` Field**
 
-The `core:extensions` field in the Global Object is an array of `extension` Objects
-that describe SigMF extensions. Extension Objects MUST contain the three key/value 
-pairs defined below, and MUST NOT contain any other fields.
+A list of JSON Objects describing extensions used by this Recording. Extension
+Objects MUST contain the three key/value pairs defined below, and MUST NOT
+contain any other fields.
 
 | name       | required | type    | description                                                                 |
 | ---------- | -------- | ------- | --------------------------------------------------------------------------- |
@@ -437,10 +437,24 @@ In the example below, `extension-01` is used, but not necessary, and
 
 **The `collection` Field**
 
-This field is used to indicate that this Recording is part of a SigMF Collection 
-(described later in this document). It is strongly RECOMMENDED that if you are 
-building a Collection, that each Recording referenced by that Collection use this 
-field to associate up to the relevant `sigmf-collection` file.
+The base filename of a `collection` with which this Recording is associated. If
+defined, this field indicates that this Recording is part of a SigMF Collection
+(described later in this document). It is strongly RECOMMENDED that if you are
+building a Collection, that each Recording referenced by that Collection use
+this field to associate up to the relevant `sigmf-collection` file.
+
+ **The `metadata_only` Field**
+
+Indicates the Metadata file is intentionally distributed without the Dataset.
+When defined, this field should be set to `true` indicating there is no
+corresponding `.sigmf-data` data file. This may be done when the Dataset will be
+generated dynamically from information in the schema, or because just the schema
+is sufficient for the intended application. A metadata only distribution is not
+a SigMF Recording.
+
+If a Compliant SigMF Recording uses this field, it MAY indicate that the Dataset
+was dynamically generated from the metadata. This field SHOULD NOT be used in
+conjunction the `core:dataset` field.
 
 ###### Non-Conforming Dataset Global Metadata Fields
 
@@ -449,10 +463,11 @@ need to be considered for Compliant SigMF.
 
 **The `dataset` Field**
 
-The `core:dataset` field in the Global Object is used to specify the Dataset file that
-this Metadata describes. If provided, this string MUST be the complete filename of the
-Dataset file, including the extension. The Dataset file must be in the local directory,
-and this string MUST NOT include any aspects of filepath other than the filename.
+The full filename of the Dataset file this Metadata file describes, used ONLY
+with Non-Conforming Datasets. If provided, this string MUST be the complete
+filename of the Dataset file, including the extension. The Dataset file must be
+in the local directory, and this string MUST NOT include any aspects of filepath
+other than the filename.
 
 If a Recording does not have this field, it MUST have a compliant SigMF Dataset (NOT
 a Non-Conforming Dataset) which MUST use the same base filename as the Metadata file
@@ -466,22 +481,11 @@ SHOULD be ignored by the application.
 
 **The `trailing_bytes` Field**
 
-This field is used only with Non-Conforming Datasets to indicate some number of
-bytes that trail the sample data in the NCD file that should be ignored for
+The number of bytes to ignore at the end of a Dataset, used ONLY with
+Non-Conforming Datasets. This field indicate that some number of bytes at the
+end of the data file do not contain sample data should be ignored for
 processing. This can be used to ignore footer data in non-SigMF filetypes (e.g.:
 BLUE file extended header).
-
- **The `metadata_only` Field**
-
-This field should be defined and set to `true` to indicate that the Metadata
-file is being distributed without a corresponding `.sigmf-data` file. This may
-be done when the Dataset will be generated dynamically from information in the
-schema, or because just the schema is sufficient for the intended application. A
-metadata only distribution is not a SigMF Recording.
-
-If a Compliant SigMF Recording uses this field, it MAY indicate that the Dataset
-was dynamically generated from the metadata. This field MAY NOT be used in
-conjunction with Non-Conforming Datasets or the `core:dataset` field.
 
 #### Captures Array
 
@@ -508,25 +512,25 @@ Segment Objects:
 
 | name            | required | type   | description                                                                                 |
 | ----------------| -------- | ------ | --------------------------------------------------------------------------------------------|
-| `sample_start`  | true     | uint   | The sample index in the Dataset file at which this Segment takes effect.                    |
-| `global_index`  | false    | uint   | The index of the sample referenced by `sample_start` relative to an original sample stream. |
-| `frequency`     | false    | double | The center frequency of the signal in Hz.                                                   |
+| `sample_start`  | true     | uint   | The sample index in the Dataset file at which this Segment takes effect.|
+| `global_index`  | false    | uint   | The index of the sample referenced by `sample_start` relative to an original sample stream.|
+| `frequency`     | false    | double | The center frequency of the signal specified in Hz.|
 | `datetime`      | false    | string | An ISO-8601 string indicating the timestamp of the sample index specified by `sample_start`.|
 | `header_bytes`  | false    | uint   | The number of bytes preceding a chunk of samples that are not sample data, used ONLY with Non-Conforming Datasets.|
 
 **The `sample_start` Field**
 
-This field specifies the sample index where this Segment takes effect relative
-to the recorded Dataset file. If the Dataset is a SigMF Dataset file, this 
-field can be immediately mapped to physical disk location since conforming
-Datasets only contain sample data.
+The sample index in the Dataset file at which this Segment takes effect. This
+field is specified relative to the first sample in the recorded Dataset file. If
+the Dataset is a SigMF Dataset file, this field can be immediately mapped to
+physical disk location since conforming Datasets only contain sample data.
 
 **The `global_index` Field**
 
-This field describes the index of the sample referenced by the `sample_start`
-field relative to an original sample stream, the entirety of which may not
-have been captured in a recorded Dataset. If omitted, this value SHOULD
-be treated as equal to `sample_start`.
+The index of the sample referenced by `sample_start`, relative to an original
+sample stream. This field describes an index relative to an original sample
+stream, the entirety of which may not have been captured in a recorded Dataset.
+If omitted, this value SHOULD be treated as equal to `sample_start`.
 
 For example, some hardware devices are capable of 'counting' samples at
 the point of data conversion. This sample count is commonly used to indicate 
@@ -556,9 +560,10 @@ datastream, indicating that 500 samples were lost before they could be recorded.
 ```
 **The `datetime` Field**
 
-This key/value pair MUST be an ISO-8601 string, as defined by [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt),
-where the only allowed `time-offset` is `Z`, indicating the UTC/Zulu timezone.
-The ABNF description is:
+An ISO-8601 string indicating the timestamp of the sample index specified by
+`sample_start`. The format is defined by [RFC
+3339](https://www.ietf.org/rfc/rfc3339.txt), where the only allowed
+`time-offset` is `Z`, indicating the UTC/Zulu timezone. The ABNF description is:
 
 ```abnf
    date-fullyear   = 4DIGIT
@@ -589,14 +594,15 @@ need to be considered for Compliant SigMF.
 
 **The `header_bytes` Field**
 
-This field specifies the number of bytes located in the dataset at the start of
-where the chunk of samples referenced by this Captures Segment would otherwise
-begin, that are not valid sample data. This field is intended to identify either
-global (e.g.: header metadata from a MIDAS BLUE file, which would be included in
-the first Capture's metadata), or segment specific header data (e.g.: repeating
-frame information from a VRT raw data capture). If omitted, this value is
-considered to be zero. If this field is non-zero, the Dataset is by definition a
-Non-Conforming Dataset.
+The number of bytes preceding a chunk of samples that are not sample data, used
+ONLY with Non-Conforming Datasets. The specified bytes are located in the
+dataset at the start of where the chunk of samples referenced by this Captures
+Segment would otherwise begin, and are not part of the time series sample data.
+This field is intended to identify either global (e.g.: header metadata from a
+MIDAS BLUE file, which would be included in the first Capture's metadata), or
+segment specific header data (e.g.: repeating frame information from a VRT raw
+data capture). If omitted, this value is considered to be zero. If this field is
+non-zero, the Dataset is by definition a Non-Conforming Dataset.
 
 For example, the below Metadata for a Non-Conforming Dataset contains
 two segments describing chunks of 8-bit complex samples (2 bytes per sample) 
@@ -647,41 +653,56 @@ Segment Objects:
 
 | name              | required | type   | description                                                                         |
 | ----------------- | -------- | ------ | ----------------------------------------------------------------------------------- |
-| `sample_start`    | true     | uint   | The sample index at which this Segment takes effect.                                |
-| `sample_count`    | false    | uint   | The number of samples that this Segment applies to.                                 |
-| `generator`       | false    | string | Human-readable name of the entity that created this annotation.                     |
-| `label`           | false    | string | A short form human/machine-readable label for the annotation.                       |
-| `comment`         | false    | string | A human-readable comment.                                                           |
+| `sample_start`    | true     | uint   | The sample index at which this Segment takes effect.|
+| `sample_count`    | false    | uint   | The number of samples that this Segment applies to.|
 | `freq_lower_edge` | false    | double | The frequency (Hz) of the lower edge of the feature described by this annotation.   |
 | `freq_upper_edge` | false    | double | The frequency (Hz) of the upper edge of the feature described by this annotation.   |
+| `label`           | false    | string | A short form human/machine-readable label for the annotation.|
+| `generator`       | false    | string | Human-readable name of the entity that created this annotation.|
+| `comment`         | false    | string | A human-readable comment.|
 | `uuid`            | false    | string | A RFC-4122 compliant UUID string of the form `xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx`.|
 | `latitude`        | false    |        | The latitude corresponding to the annotation (DEPRECATED, use `core:geolocation`).  |
 | `longitude`       | false    |        | The longitude corresponding to the annotation (DEPRECATED, use `core:geolocation`). |
 
-**The Sample Index Fields**
+**The `sample_start` Field**
 
-There is no limit to the number of annotations that can apply to the same group
-of samples. If two annotations have the same `sample_start`, there is no
-defined ordering between them. If `sample_count` is not provided, it SHOULD
-be assumed that the annotation applies from `sample_start` through the end of
-the Dataset, in all other cases `sample_count` MUST be provided.
+The sample index at which this Segment takes effect. There is no limit to the
+number of annotations that can apply to the same group of samples. If two
+annotations have the same `sample_start`, there is no defined ordering between
+them.
 
-**The `freq_*_edge` Fields**
+**The `sample_count` Field**
 
-The `freq_lower_edge` and `freq_upper_edge` fields SHOULD be at RF if the
-feature is at a known RF frequency. If there is no known center frequency (as
-defined by the `frequency` field in the relevant Capture Segment Object), or
-the center frequency is at baseband, the `freq_lower_edge` and `freq_upper_edge`
-fields SHOULD be relative to baseband. It is REQUIRED that both `freq_lower_edge`
-and `freq_upper_edge` be provided, or neither; the use of just one field is not
-allowed.
+The number of samples that this Segment applies to. If `sample_count` is not
+provided, it SHOULD be assumed that the annotation applies from `sample_start`
+through the end of the Dataset, in all other cases `sample_count` MUST be
+provided.
+
+**The `freq_lower_edge` Field**
+
+The frequency (Hz) of the lower edge of the feature described by this
+annotation. This value SHOULD be at RF if the feature is at a known RF
+frequency. If there is no known center frequency (as defined by the
+`core:frequency` field in the relevant Capture Segment Object), this field is
+relative to baseband (0 Hz). If specified, the `freq_upper_edge` field MUST also
+be defined.
+
+**The `freq_upper_edge` Field**
+
+The frequency (Hz) of the upper edge of the feature described by this
+annotation. This value SHOULD be at RF if the feature is at a known RF
+frequency. If there is no known center frequency (as defined by the
+`core:frequency` field in the relevant Capture Segment Object), this field is
+relative to baseband (0 Hz). If specified, the `freq_lower_edge` field MUST also
+be defined.
 
 **The `label` Field**
 
-The `label` field MAY be used for any purpose, but it is RECOMMENDED that it be
-limited to no more than 20 characters as a common use is a short form GUI
-indicator. Similarly, it is RECOMMENDED that any user interface making use of 
-this field be capable of displaying up to 20 characters.
+A short form human/machine-readable label for the annotation. The `label` field
+MAY be used for any purpose, but it is RECOMMENDED that it be limited to no more
+than 20 characters as a common use is a short form GUI indicator. Similarly, it
+is RECOMMENDED that any user interface making use of this field be capable of
+displaying up to 20 characters.
 
 ### SigMF Collection Format
 
