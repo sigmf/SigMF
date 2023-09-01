@@ -28,7 +28,6 @@ The following fields are added to the `global` object:
 
 |name|required|type|description|
 |----|--------|----|-----------|
-|`type`|true|string|Type of origin information. Ex.: `blob`,`local`,`memmory`|
 |`account`|false|string|Account name or identifier|
 |`container`|false|string|Container or repository name|
 |`file_path`|true|string|Path to the file within the container|
