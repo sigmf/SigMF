@@ -15,7 +15,6 @@ The following fields are added to the `global` object:
 |`traceability:last_reviewed`|false|[DataChange](#datachange-object)|Captures the author and timestamp of the most recent review|
 |`traceability:revision`|false|integer|Specifies the revision number associated with the metadata|
 |`traceability:origin`|false|[Origin](#origin-object)|Provides information about the origin of the data|
-|`traceability:sample_length`|false|integer|Specifies the total number of samples of the Dataset|
 
 ### DataChange Object
 
