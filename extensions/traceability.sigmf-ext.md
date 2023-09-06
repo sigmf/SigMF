@@ -21,7 +21,7 @@ The following fields are added to the `global` object:
 |name|required|type|description|
 |----|--------|----|-----------|
 |`author`|false|string|Email address of the author who changed the metadata|
-|`time`|true|string (date-time)|Timestamp of the modification in ISO 8601 format|
+|`datetime`|true|string (date-time)|Timestamp of the modification in ISO 8601 format|
 
 ### Origin Object
 
@@ -57,11 +57,11 @@ Here are some examples of using the `traceability` extension:
   "global": {
     "traceability:last_modified": {
       "author": "john.doe@example.com",
-      "time": "2023-05-31T12:00:00Z"
+      "datetime": "2023-05-31T12:00:00Z"
     },
     "traceability:last_reviewed": {
       "author": "ben.doe@example.com",
-      "time": "2023-05-31T12:30:00Z"
+      "datetime": "2023-05-31T12:30:00Z"
     },
     "traceability:revision": 1,
     "traceability:origin": {
@@ -72,7 +72,7 @@ Here are some examples of using the `traceability` extension:
     {
       "traceability:last_modified": {
         "author": "jane.doe@example.com",
-        "time": "2023-05-30T10:30:00Z"
+        "datetime": "2023-05-30T10:30:00Z"
       },
       "core:label": "Signal of interest",
       "core:sample_start": 100,
@@ -89,11 +89,11 @@ Here are some examples of using the `traceability` extension:
   "global": {
     "traceability:last_modified": {
       "author": "john.doe@example.com",
-      "time": "2023-05-31T12:00:00Z"
+      "datetime": "2023-05-31T12:00:00Z"
     },
     "traceability:last_reviewed": {
       "author": "ben.doe@example.com",
-      "time": "2023-05-31T12:30:00Z"
+      "datetime": "2023-05-31T12:30:00Z"
     },
     "traceability:revision": 1,
     "traceability:origin": {
@@ -104,7 +104,7 @@ Here are some examples of using the `traceability` extension:
     {
       "traceability:last_modified": {
         "author": "jane.doe@example.com",
-        "time": "2023-05-30T10:30:00Z"
+        "datetime": "2023-05-30T10:30:00Z"
       },
       "core:label": "Signal of interest",
       "core:sample_start": 100,
@@ -113,11 +113,11 @@ Here are some examples of using the `traceability` extension:
     {
       "traceability:last_modified": {
         "author": "james.smith@example.com",
-        "time": "2023-05-30T15:45:00Z"
+        "datetime": "2023-05-30T15:45:00Z"
       },
       "traceability:last_reviewed": {
       "author": "ben.doe@example.com",
-      "time": "2023-05-31T12:30:00Z"
+      "datetime": "2023-05-31T12:30:00Z"
     },
     "core:label": "Noise artifact",
       "core:sample_start": 600,
@@ -134,7 +134,7 @@ Here are some examples of using the `traceability` extension:
   "global": {
     "traceability:last_modified": {
       "author": "john.doe@example.com",
-      "time": "2023-05-31T12:00:00Z"
+      "datetime": "2023-05-31T12:00:00Z"
     },
     "traceability:revision": 1,
     "traceability:origin": {
@@ -147,7 +147,7 @@ Here are some examples of using the `traceability` extension:
     {
       "traceability:last_modified": {
         "author": "jane.doe@example.com",
-        "time": "2023-05-30T10:30:00Z"
+        "datetime": "2023-05-30T10:30:00Z"
       },
       "core:label": "Signal of interest",
       "core:sample_start": 100,
@@ -164,7 +164,7 @@ Here are some examples of using the `traceability` extension:
   "global": {
     "traceability:last_modified": {
       "author": "john.doe@example.com",
-      "time": "2023-05-31T12:00:00Z"
+      "datetime": "2023-05-31T12:00:00Z"
     },
     "traceability:revision": 2,
     "traceability:origin": {
@@ -175,11 +175,11 @@ Here are some examples of using the `traceability` extension:
     {
       "traceability:last_modified": {
         "author": "jane.doe@example.com",
-        "time": "2023-05-30T10:30:00Z"
+        "datetime": "2023-05-30T10:30:00Z"
       },
       "traceability:last_reviewed": {
         "author": "ben.doe@example.com",
-        "time": "2023-05-31T12:30:00Z"
+        "datetime": "2023-05-31T12:30:00Z"
       },
       "core:label": "Signal of interest",
       "core:sample_start": 100,
@@ -188,7 +188,7 @@ Here are some examples of using the `traceability` extension:
     {
       "traceability:last_modified": {
         "author": "jane.doe@example.com",
-        "time": "2023-05-31T09:15:00Z"
+        "datetime": "2023-05-31T09:15:00Z"
       },
       "core:label": "Updated signal of interest",
       "core:sample_start": 50,
