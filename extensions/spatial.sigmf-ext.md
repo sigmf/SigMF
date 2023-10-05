@@ -434,7 +434,7 @@ element recording:
 ```JSON
 {
     "collection": {
-        "core:version": "v1.0.0",
+        "core:version": "1.0.0",
         "core:extensions" : [
             {
             "name": "spatial",
