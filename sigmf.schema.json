@@ -238,14 +238,14 @@
               "core:freq_lower_edge": {
                 "description": "The frequency (Hz) of the lower edge of the feature described by this annotation. The `freq_lower_edge` and `freq_upper_edge` fields SHOULD be at RF if the feature is at a known RF frequency. If there is no known center frequency (as defined by the `frequency` field in the relevant Capture Segment Object), or the center frequency is at baseband, the `freq_lower_edge` and `freq_upper_edge` fields SHOULD be relative to baseband. It is REQUIRED that both `freq_lower_edge` and `freq_upper_edge` be provided, or neither; the use of just one field is not allowed. ",
                 "type": "number",
-                "minimum": -1.7976931348623157e308,
-                "maximum": 1.7976931348623157e308
+                "minimum": -1e12,
+                "maximum": 1e12
               },
               "core:freq_upper_edge": {
                 "description": "The frequency (Hz) of the upper edge of the feature described by this annotation.",
                 "type": "number",
-                "minimum": -1.7976931348623157e308,
-                "maximum": 1.7976931348623157e308
+                "minimum": -1e12,
+                "maximum": 1e12
               },
               "core:label": {
                 "description": "A short form human/machine-readable label for the annotation. The `label` field MAY be used for any purpose, but it is RECOMMENDED that it be limited to no more than 20 characters as a common use is a short form GUI indicator. Similarly, it is RECOMMENDED that any user interface making use of this field be capable of displaying up to 20 characters. ",
