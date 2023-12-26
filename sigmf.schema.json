@@ -21,7 +21,7 @@
         "core:sample_rate": {
           "description": "The sample rate of the signal in samples per second.",
           "minimum": 1,
-          "maximum": 100e9,
+          "maximum": 1e12,
           "type": "number"
         },
         "core:author": {
