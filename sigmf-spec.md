@@ -253,7 +253,7 @@ the same index from each channel's sample serially in the Recording. For
 example, a Recording with two channels of `ri16_le` representing real-valued
 audio data from a stereo Recording and here labeled `L` for left and `R` for
 right, the data MUST appear as `L[0]` `R[0]` `L[1]` `R[1]` ... `L[n]` `R[n]`.
-The data type specified by `core:data_type` applies to all channels of data
+The data type specified by `core:datatype` applies to all channels of data
 both real and imaginary parts.
 
 ### SigMF Metadata Format
