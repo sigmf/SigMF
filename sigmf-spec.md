@@ -411,10 +411,9 @@ contain any other fields.
 | ---------- | -------- | ------- | --------------------------------------------------------------------------- |
 | `name`     | true     | string  | The name of the SigMF extension namespace.                                  |
 | `version`  | true     | string  | The version of the extension namespace specification used.                  |
-| `optional` | true     | boolean | If this field is `true`, the extension is REQUIRED to parse this Recording. |
+| `optional` | true     | boolean | If this field is `false`, then the application MUST support this extension in order to parse the Recording; if the application does not support this extension, it SHOULD report an error. |
 
-In the example below, `extension-01` is used, but not necessary, and
-`version 1.2.3` of `extension-02` *is* necessary.
+In the example below, `extension-01` is optional, so the application may ignore it if it does not support `extension-01`. But `extension-02` is not optional, so the application must support `extension-02` in order to parse the Recording.
 
 ```JSON
   "global": {
@@ -747,17 +746,11 @@ Example `top-level.sigmf-collection` file:
             {
                 "name": "antenna",
                 "version": "1.0.0",
-                "optional": false
+                "optional": true
             }
         ],
-        "antenna:hagl": {
-            "name": "hagl-basename",
-            "hash": "9c1ab7285c13644cef5d910dc774ca63d1921f91318417cfadc71c4d7f3acf85ec3c5b05e9335e9cc310b1557de517519c76da540b08886a0e440d71e1271fd0"
-        },
-        "antenna:azimuth_angle": {
-            "name": "azimuth-angle-basename",
-            "hash": "6eb7f16cf7afcabe9bdea88bdab0469a7937eb715ada9dfd8f428d9d38d86133945f5f2f2688ddd96062223a39b5d47f07afc3c48d9db1d5ee3f41c8d274dccf"
-        },
+        "antenna:hagl": 120,
+        "antenna:azimuth_angle": 98,
         "core:streams": [
             {
                "name": "example-channel-0-basename",

@@ -439,7 +439,7 @@ element recording:
             {
             "name": "spatial",
             "version": "1.0.0",
-            "optional": false
+            "optional": true
             }
         ],
         "core:streams": [
