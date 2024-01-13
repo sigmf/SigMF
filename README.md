@@ -1,6 +1,4 @@
-<p align="center">
-<img src="https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/logo/sigmf_logo.png" width="30%" />
-</p>
+<p align="center"><img src="https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/logo/sigmf_logo.svg" alt="Rendered SigMF Logo"/></p>
 
 # Signal Metadata Format (SigMF)
 

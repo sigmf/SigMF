@@ -1,10 +1,10 @@
-![Rendered version of the Official SigMF Logo](sigmf_logo.png)
+<p align="center"><img src="sigmf_logo.svg" alt="Rendered SigMF Logo"/></p>
 
 # The Official SigMF Logo
 
 The provided SigMF pair [sigmf_logo.sigmf-meta](sigmf_logo.sigmf-meta) and [sigmf_logo.sigmf-data](sigmf_logo.sigmf-data) represent the stereo audio that is the official SigMF logo.
 
-The intent of these files is to both serve as a nice visual and an exemplar metadata to be used as a reference. The `png` is just a simplified view of the logo as rendered on an XY-oscilloscope per the below gist.
+The intent of these files is to both serve as a nice visual and an exemplar metadata to be used as a reference. The image above is just a simplified view of the logo as rendered on an XY-oscilloscope per the below gist.
 
 ## Additional Versions
 
