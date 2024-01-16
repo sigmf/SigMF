@@ -82,6 +82,8 @@ The "Core" SigMF standard is intentionally kept limited in scope, additional met
 
 * [NTIA's series of extensions](https://github.com/NTIA/sigmf-ns-ntia)
 
+Software that seeks to perform validation on metadata can open a metafile, parse which extensions are used (if any), then pull the core JSON schema plus the JSON schemas for each extension being used (and optionally, an application-specific schema), then merge the global/captures/annotations objects between all schemas, and disable `additionalProperties` for all three so that typos can be detected.
+
 ## Frequently Asked Questions
 
 ### Is this a GNU Radio effort?
