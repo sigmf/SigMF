@@ -77,7 +77,7 @@ distribution in a SigMF `Archive`.
 
 % Will eventually replace with a nicer one made in drawio
 \begin{figure}[t]
-\includegraphics[width=0.5\textwidth]{SigMF Objects.png}
+\includegraphics[width=0.5\textwidth]{images/SigMF_Objects.png}
 \centering
 \end{figure}
 
