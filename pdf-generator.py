@@ -21,9 +21,9 @@ def add_code_tags(text): # swaps every pair of ` ` for \code{}
     return text
 
 def gen_table(table, d):
-    table.add_hline()
+    table.append(NoEscape('\\toprule'))
     table.add_row((bold('Field'), bold('Required'), bold('Type'), bold('Short Description')))
-    table.add_hline()
+    table.append(NoEscape('\\midrule'))
     for key, value in d["properties"].items():
         field = key.replace('core:','')
         required = "Required" if key in d.get("required", {}) else ""
@@ -32,7 +32,7 @@ def gen_table(table, d):
         longdescription = value.get("description", "")
         shortdescription = longdescription[:longdescription.find('.')].replace('\n','') # short description, which is up to the first period
         table.add_row((field, required, dtype, shortdescription))
-        table.add_hline()
+    table.append(NoEscape('\\bottomrule'))
 
 def gen_fields(doc, d):
     for key, value in d["properties"].items():
@@ -48,15 +48,20 @@ def gen_fields(doc, d):
 geometry_options = {"tmargin": "1in", "lmargin": "1in", "rmargin": "1in", "bmargin": "1in"}
 doc = Document(geometry_options=geometry_options)
 doc.packages.append(Package('underscore')) # makes it so _ never means math mode!
-doc.packages.append(Package('xcolor'))
+doc.packages.append(Package('xcolor', options=['table'])) # allows for \rowcolors
 doc.packages.append(Package('listings'))
 doc.packages.append(Package('microtype'))
 doc.packages.append(Package('fancyhdr'))
+doc.packages.append(Package('booktabs'))
 doc.packages.append(Package('hyperref', options=['hidelinks','colorlinks=true','urlcolor=blue','linkcolor=black'])) #\usepackage[, urlcolor=blue, linkcolor=red]{hyperref}
 
-doc.append(NoEscape('\\newcommand{\\code}[1]{\\texttt{\colorbox{lightgray}{#1}}}'))
-doc.append(NoEscape('\\definecolor{lightgray}{RGB}{240,240,240}'))
-doc.append(NoEscape('\\newcommand{\\nn}[0]{\\vspace{4mm}\\\\\\noindent}'))
+# Colors
+doc.append(NoEscape('\\definecolor{lightgray}{RGB}{240,240,240}')) # for `short code`
+doc.append(NoEscape('\\definecolor{lightblue}{RGB}{240,240,255}')) # for table rows
+
+# Custom commands
+doc.append(NoEscape('\\newcommand{\\code}[1]{\\texttt{\colorbox{lightgray}{#1}}}')) # \\code{} displays using monospace font and light gray background
+doc.append(NoEscape('\\newcommand{\\nn}[0]{\\vspace{4mm}\\\\\\noindent}')) # \\nn gives a new line with space and no indent
 
 # Footer
 doc.append(NoEscape('\\pagestyle{fancy}'))
@@ -85,28 +90,32 @@ with doc.create(Section('Signal Metadata Format (SigMF) Specification ' + sigmf_
     with doc.create(Subsection('Global Object')):
         doc.append(NoEscape(add_code_tags(data["properties"]["global"]["description"])))
         doc.append('\n\n')
-        with doc.create(Tabular('|l|l|l|p{3.8in}|')) as table:
+        doc.append(NoEscape('\\rowcolors{1}{}{lightblue}'))
+        with doc.create(Tabular('lllp{3.8in}')) as table:
             gen_table(table, data["properties"]["global"])
         gen_fields(doc, data["properties"]["global"])
 
     with doc.create(Subsection('Captures Array')):
         doc.append(NoEscape(add_code_tags(data["properties"]["captures"]["description"])))
         doc.append('\n\n')
-        with doc.create(Tabular('|l|l|l|p{3.8in}|')) as table:
+        doc.append(NoEscape('\\rowcolors{1}{}{lightblue}'))
+        with doc.create(Tabular('lllp{3.8in}')) as table:
             gen_table(table, data["properties"]["captures"]["items"]["anyOf"][0])
         gen_fields(doc, data["properties"]["captures"]["items"]["anyOf"][0])
 
     with doc.create(Subsection('Annotations Array')):
         doc.append(NoEscape(add_code_tags(data["properties"]["annotations"]["description"])))
         doc.append('\n\n')
-        with doc.create(Tabular('|l|l|l|p{3.8in}|')) as table:
+        doc.append(NoEscape('\\rowcolors{1}{}{lightblue}'))
+        with doc.create(Tabular('lllp{3.8in}')) as table:
             gen_table(table, data["properties"]["annotations"]["items"]["anyOf"][0])
         gen_fields(doc, data["properties"]["annotations"]["items"]["anyOf"][0])
 
     with doc.create(Subsection('SigMF Collection Format')):
         doc.append(NoEscape(add_code_tags(data_collection["properties"]["collection"]["description"])))
         doc.append('\n\n')
-        with doc.create(Tabular('|l|l|l|p{3.8in}|')) as table:
+        doc.append(NoEscape('\\rowcolors{1}{}{lightblue}'))
+        with doc.create(Tabular('lllp{3.8in}')) as table:
             gen_table(table, data_collection["properties"]["collection"])
         gen_fields(doc, data_collection["properties"]["collection"])
     
@@ -116,21 +125,24 @@ with doc.create(Section('Extensions')):
     with doc.create(Subsection('Antenna')):
         doc.append(NoEscape(add_code_tags(data_antenna["properties"]["global"]["description"])))
         doc.append('\n\n')
-        with doc.create(Tabular('|l|l|l|p{2.8in}|')) as table:
+        doc.append(NoEscape('\\rowcolors{1}{}{lightblue}'))
+        with doc.create(Tabular('lllp{2.8in}')) as table:
             gen_table(table, data_antenna["properties"]["global"])
         gen_fields(doc, data_antenna["properties"]["global"])
 
         doc.append(NoEscape('\\nn'))
         doc.append(NoEscape(add_code_tags(data_antenna["properties"]["annotations"]["description"])))
         doc.append('\n\n')
-        with doc.create(Tabular('|l|l|l|p{3.8in}|')) as table:
+        doc.append(NoEscape('\\rowcolors{1}{}{lightblue}'))
+        with doc.create(Tabular('lllp{3.8in}')) as table:
             gen_table(table, data_antenna["properties"]["annotations"]["items"]["anyOf"][0])
         gen_fields(doc, data_antenna["properties"]["annotations"]["items"]["anyOf"][0])
 
         doc.append(NoEscape('\\nn'))
         doc.append(NoEscape(add_code_tags(data_antenna["properties"]["collection"]["description"])))
         doc.append('\n\n')
-        with doc.create(Tabular('|l|l|l|p{3.8in}|')) as table:
+        doc.append(NoEscape('\\rowcolors{1}{}{lightblue}'))
+        with doc.create(Tabular('lllp{3.8in}')) as table:
             gen_table(table, data_antenna["properties"]["collection"])
         gen_fields(doc, data_antenna["properties"]["collection"])
 

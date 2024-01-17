@@ -197,20 +197,23 @@ stored on-disk, metadata MUST be proper JSON to be SigMF compliant.
 
 The values in each key/value pair MUST be one of the following datatypes.
 
+\rowcolors{1}{}{lightblue}
 \begin{table}[!ht]
     \centering
-    \begin{tabular}{|l|l|l|}
-    \hline
-        \textbf{Type} & \textbf{Long-form Name} & \textbf{Description} \\ \hline
-        int & integer & Signed 64-bit integer. \\ \hline
-        uint & unsigned long & Unsigned 64-bit integer. \\ \hline
-        double & double-precision floating-point & A 64-bit float as defined by IEEE 754. \\ \hline
-        string & string & A string of characters, as defined by the JSON standard. \\ \hline
-        boolean & boolean & Either `true` or `false`, as defined by the JSON standard. \\ \hline
-        null & null & `null`, as defined by the JSON standard. \\ \hline
-        array & JSON array & An `array` of other values, as defined by the JSON standard. \\ \hline
-        object & JSON object & An `object` of other values, as defined by the JSON standard. \\ \hline
-        GeoJSON & GeoJSON point Object & A single GeoJSON `point` Object as defined by RFC 7946. \\ \hline
+    \begin{tabular}{lll}
+    \toprule
+        \textbf{Type} & \textbf{Long-form Name} & \textbf{Description} \\ 
+    \midrule
+        int & integer & Signed 64-bit integer. \\
+        uint & unsigned long & Unsigned 64-bit integer. \\
+        double & double-precision floating-point & A 64-bit float as defined by IEEE 754. \\
+        string & string & A string of characters, as defined by the JSON standard. \\
+        boolean & boolean & Either `true` or `false`, as defined by the JSON standard. \\
+        null & null & `null`, as defined by the JSON standard. \\
+        array & JSON array & An `array` of other values, as defined by the JSON standard. \\
+        object & JSON object & An `object` of other values, as defined by the JSON standard. \\
+        GeoJSON & GeoJSON point Object & A single GeoJSON `point` Object as defined by RFC 7946. \\
+    \bottomrule
     \end{tabular}
 \end{table}
 
