@@ -71,7 +71,7 @@ with doc.create(Section('Signal Metadata Format (SigMF) Specification ' + sigmf_
     with doc.create(Subsection('Table of Contents')): # NOTE- YOU NEED TO COMPILE LATEX TWICE FOR THIS TO SHOW!
         doc.append(NoEscape('\\vspace{-0.4in}\\def\\contentsname{\\empty}\\setcounter{tocdepth}{2}\\tableofcontents'))
 
-    doc.append(NoEscape(add_code_tags(open('pretables.md', 'r').read())))
+    doc.append(NoEscape(add_code_tags(open('additional_content.md', 'r').read().split('<<<<<<<<<<content from JSON schema>>>>>>>>>>>>')[0])))
 
     with doc.create(Subsection('Global Object')):
         doc.append(NoEscape(add_code_tags(data["properties"]["global"]["description"])))
@@ -101,6 +101,6 @@ with doc.create(Section('Signal Metadata Format (SigMF) Specification ' + sigmf_
             gen_table(table, data_collection["properties"]["collection"])
         gen_fields(doc, data_collection["properties"]["collection"])
     
-    doc.append(NoEscape(add_code_tags(open('posttables.md', 'r').read())))
+    doc.append(NoEscape(add_code_tags(open('additional_content.md', 'r').read().split('<<<<<<<<<<content from JSON schema>>>>>>>>>>>>')[1])))
 
 doc.generate_pdf('sigmf-spec', clean_tex=False) # clean_tex will remove the generated tex file
