@@ -11,6 +11,8 @@ with open('sigmf-schema.json', 'r') as f:
     data = json.load(f)
 with open('collection-schema.json', 'r') as f:
     data_collection = json.load(f)
+with open('extensions/antenna-schema.json', 'r') as f:
+    data_antenna = json.load(f)
 
 def add_code_tags(text): # swaps every pair of ` ` for \code{}
     while text.find('`') != -1:
@@ -24,7 +26,7 @@ def gen_table(table, d):
     table.add_hline()
     for key, value in d["properties"].items():
         field = key.replace('core:','')
-        required = "Required" if key in d["required"] else ""
+        required = "Required" if key in d.get("required", {}) else ""
         dtype = value.get("type", "MISSING")
         #default = str(value.get("default", ""))
         longdescription = value.get("description", "")
@@ -49,13 +51,20 @@ doc.packages.append(Package('underscore')) # makes it so _ never means math mode
 doc.packages.append(Package('xcolor'))
 doc.packages.append(Package('listings'))
 doc.packages.append(Package('microtype'))
+doc.packages.append(Package('fancyhdr'))
 doc.packages.append(Package('hyperref', options=['hidelinks','colorlinks=true','urlcolor=blue','linkcolor=black'])) #\usepackage[, urlcolor=blue, linkcolor=red]{hyperref}
 
 doc.append(NoEscape('\\newcommand{\\code}[1]{\\texttt{\colorbox{lightgray}{#1}}}'))
 doc.append(NoEscape('\\definecolor{lightgray}{RGB}{240,240,240}'))
 doc.append(NoEscape('\\newcommand{\\nn}[0]{\\vspace{4mm}\\\\\\noindent}'))
 
-
+# Footer
+doc.append(NoEscape('\\pagestyle{fancy}'))
+doc.append(NoEscape('\\fancyhf{}')) # clear all header/footer fields
+doc.append(NoEscape('\\renewcommand{\headrulewidth}{0pt}'))
+doc.append(NoEscape('\\fancyfoot[LE,RO]{\\thepage}'))
+doc.append(NoEscape('\\fancyfoot[LO,CE]{Signal Metadata Format (SigMF) Specification ' + sigmf_version + '}'))
+#doc.append(NoEscape('\\fancyfoot[CO,RE]{To: Dean A. Smith}')) # center
 
 with doc.create(Figure(position='h!')) as logo:
     doc.append(NoEscape('\\vspace{-0.8in})'))
@@ -69,7 +78,7 @@ with doc.create(Section('Signal Metadata Format (SigMF) Specification ' + sigmf_
         doc.append(NoEscape('This document is available under the \href{http://creativecommons.org/licenses/by-sa/4.0/}{CC-BY-SA License}. Copyright of contributions to SigMF are retained by their original authors. All contributions under these terms are welcome.'))
 
     with doc.create(Subsection('Table of Contents')): # NOTE- YOU NEED TO COMPILE LATEX TWICE FOR THIS TO SHOW!
-        doc.append(NoEscape('\\vspace{-0.4in}\\def\\contentsname{\\empty}\\setcounter{tocdepth}{2}\\tableofcontents'))
+        doc.append(NoEscape('\\vspace{-0.4in}\\def\\contentsname{\\empty}\\setcounter{tocdepth}{3}\\tableofcontents'))
 
     doc.append(NoEscape(add_code_tags(open('additional_content.md', 'r').read().split('<<<<<<<<<<content from JSON schema>>>>>>>>>>>>')[0])))
 
@@ -102,5 +111,27 @@ with doc.create(Section('Signal Metadata Format (SigMF) Specification ' + sigmf_
         gen_fields(doc, data_collection["properties"]["collection"])
     
     doc.append(NoEscape(add_code_tags(open('additional_content.md', 'r').read().split('<<<<<<<<<<content from JSON schema>>>>>>>>>>>>')[1])))
+
+with doc.create(Section('Extensions')):
+    with doc.create(Subsection('Antenna')):
+        doc.append(NoEscape(add_code_tags(data_antenna["properties"]["global"]["description"])))
+        doc.append('\n\n')
+        with doc.create(Tabular('|l|l|l|p{2.8in}|')) as table:
+            gen_table(table, data_antenna["properties"]["global"])
+        gen_fields(doc, data_antenna["properties"]["global"])
+
+        doc.append(NoEscape('\\nn'))
+        doc.append(NoEscape(add_code_tags(data_antenna["properties"]["annotations"]["description"])))
+        doc.append('\n\n')
+        with doc.create(Tabular('|l|l|l|p{3.8in}|')) as table:
+            gen_table(table, data_antenna["properties"]["annotations"]["items"]["anyOf"][0])
+        gen_fields(doc, data_antenna["properties"]["annotations"]["items"]["anyOf"][0])
+
+        doc.append(NoEscape('\\nn'))
+        doc.append(NoEscape(add_code_tags(data_antenna["properties"]["collection"]["description"])))
+        doc.append('\n\n')
+        with doc.create(Tabular('|l|l|l|p{3.8in}|')) as table:
+            gen_table(table, data_antenna["properties"]["collection"])
+        gen_fields(doc, data_antenna["properties"]["collection"])
 
 doc.generate_pdf('sigmf-spec', clean_tex=False) # clean_tex will remove the generated tex file

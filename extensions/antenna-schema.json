@@ -6,7 +6,7 @@
   "type": "object",
   "properties": {
     "global": {
-      "description": "The following names are specified in the `antenna` namespace and should be used in the `global` object",
+      "description": "The following names are specified in the `antenna` namespace and should be used in the `global` object:",
       "type": "object",
       "required": ["antenna:model"],
       "properties": {
@@ -79,7 +79,7 @@
       }
     },
     "annotations": {
-      "description": "The following names are specified in the `antenna` namespace and should be used in the `annotations` object",
+      "description": "The following names are specified in the `antenna` namespace and should be used in the `annotations` object:",
       "type": "array",
       "items": {
         "type": "object",
@@ -106,7 +106,7 @@
       }
     },
     "collection": {
-      "description": "The following fields are specificed in SigMF Collections",
+      "description": "The following fields are specificed in SigMF Collections:",
       "type": "object",
       "properties": {
         "antenna:azimuth_angle": {
