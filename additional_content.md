@@ -21,7 +21,7 @@ The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL 
 “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be
 interpreted as described in \href{https://tools.ietf.org/html/rfc2119}{RFC 2119}.
 
-JSON keywords are used as defined in \href{http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf}{ECMA-404}.
+JSON keywords are used as defined in \href{https://ecma-international.org/publications-and-standards/standards/ecma-404/}{ECMA-404}.
 
 Augmented Backus-Naur form (ABNF) is used as defined by \href{https://tools.ietf.org/html/rfc5234}{RFC 5234}
 and updated by \href{https://tools.ietf.org/html/rfc7405}{RFC 7405}.
@@ -184,7 +184,7 @@ MUST NOT start with a number and MUST NOT not be C++20 or Python 3.10 keywords.
 
 When stored on-disk (at-rest), these rules apply:
 \begin{enumerate}
-\item The Metadata file MUST be written in JSON, as specified by \href{http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf}{ECMA-404}.
+\item The Metadata file MUST be written in JSON, as specified by \href{https://ecma-international.org/publications-and-standards/standards/ecma-404/}{ECMA-404}.
 \item The entire contents of the Metadata file MUST be contained within a single top-level JSON Object.
 \item The top-level Object MUST contain three JSON Objects named `global`, `captures`, and `annotations`.
 \item Metadata key/value pairs SHALL NOT be assumed to have carried over between capture or annotation segments. If a name/value pair applies to a particular segment, then it MUST appear in that segment, even if the value is unchanged relative to the previous segment.
