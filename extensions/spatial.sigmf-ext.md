@@ -119,6 +119,7 @@ The `spatial` extension adds the following fields to `captures` segment objects:
 |----|--------|----|-----|-----------|
 |`aperture_azimuth`|false|double|degrees|Azimuth of the aperture boresight in degrees east of true north.|
 |`aperture_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing of aperture boresight in this segment.|
+|`aperture_rotation`|false|double|degrees|Right-handed rotation of the aperture in degrees (other rotational degrees of freedom are captured in `aperture_bearing`).|
 |`emitter_bearing`|false|[bearing](spatial.sigmf-ext.md#01-the-bearing-object)|N/A|Bearing of signals in this segment.|
 |`element_geometry`|false|array|N/A|An array containing `cartesian_point` objects that specify the relative physical geometry of the antenna elements.|
 |`phase_offset`|false|double|degrees|Phase offset of the data in this capture relative to a common phase reference plane.|
@@ -132,6 +133,11 @@ antenna mechanical or electrical geometry and will be specific to the design.
 The azimuth is specified in degrees east of true north and elevation (if
 provided) is in degrees above the horizon. The `aperture_azimuth` field is also
 available for simpler specification when this is more appropriate.
+
+If the antenna is rotated boresight axis, this can also be specified wit
+with the `aperture_rotation` field. This rotation does not affect the antenna
+boresight but can be used to indicate the antenna is not perpindicular (e.g.:
+mounted upside down if this value is 180 degrees).
 
 The `emitter_bearing` field within a `captures` segment is used to specify the
 ground truth bearing of all signals contained within a multichannel dataset,
