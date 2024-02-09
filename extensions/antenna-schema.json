@@ -1,0 +1,127 @@
+{
+  "$id": "https://github.com/sigmf/SigMF/spec/1.0.0/extensions/antenna-schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Anntenna Schema extension for SigMF-meta file.",
+  "description": "The `antenna` namespace extension defines static antenna parameters extending the `global` and `annotations` objects in SigMF Recordings, and the `collection` object in a SigMF Collection.",
+  "type": "object",
+  "properties": {
+    "global": {
+      "description": "The following names are specified in the `antenna` namespace and should be used in the `global` object:",
+      "type": "object",
+      "required": ["antenna:model"],
+      "properties": {
+        "antenna:model": {
+          "description": "Antenna make and model number. E.g. ARA CSB-16, L-com HG3512UP-NF.",
+          "type": "string"
+        },
+        "antenna:type": {
+          "type": "string",
+          "description": "Antenna type. E.g. dipole, biconical, monopole, conical monopole"
+        },
+        "antenna:low_frequency": {
+          "type": "number",
+          "description": "Low frequency of operational range, in Hz."
+        },
+        "antenna:high_frequency": {
+          "type": "number",
+          "description": "High frequency of operational range, in Hz."
+        },
+        "antenna:gain": {
+          "type": "number",
+          "description": "Antenna gain in direction of maximum radiation or reception, in units of dBi."
+        },
+        "antenna:horizontal_gain_pattern": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "description": "Antenna gain pattern in horizontal plane from 0 to 359 degrees in 1 degree steps, in units of dBi."
+        },
+        "antenna:vertical_gain_pattern": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "description": "Antenna gain pattern in vertical plane from -90 to +90 degrees in 1 degree steps, in units of dBi."
+        },
+        "antenna:horizontal_beam_width": {
+          "type": "number",
+          "description": "Horizontal 3-dB beamwidth, in degrees."
+        },
+        "antenna:vertical_beam_width": {
+          "type": "number",
+          "description": "Vertical 3-dB beamwidth, in degrees."
+        },
+        "antenna:cross_polar_discrimination": {
+          "type": "number",
+          "description": "Cross-polarization discrimination."
+        },
+        "antenna:voltage_standing_wave_ratio": {
+          "type": "number",
+          "description": "Voltage standing wave ratio, in units of volts."
+        },
+        "antenna:cable_loss": {
+          "type": "number",
+          "description": "Cable loss for cable connecting antenna and preselector, in dB."
+        },
+        "antenna:steerable": {
+          "type": "boolean",
+          "description": "Defines if the antenna is steerable or not."
+        },
+        "antenna:mobile": {
+          "type": "boolean",
+          "description": "Defines if the antenna is mobile or not."
+        },
+        "antenna:hagl": {
+          "type": "number",
+          "description": "Antenna phase center height above ground level, in meters."
+        }
+      }
+    },
+    "annotations": {
+      "description": "The following names are specified in the `antenna` namespace and should be used in the `annotations` object:",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "anyOf": [
+          {
+            "description": "The annotations value is an array of annotation segment objects that describe anything regarding the signal data not part of the Captures and Global objects. It MUST be sorted by the value of each Annotation Segment's `core:sample_start` key, ascending.",
+            "type": "object",
+            "properties": {
+              "antenna:azimuth_angle": {
+                "description": "Angle of main beam in azimuthal plane from North, in degrees.",
+                "type": "number"
+              },
+              "antenna:elevation_angle": {
+                "description": "Angle of main beam in elevation plane from horizontal, in degrees.",
+                "type": "number"
+              },
+              "antenna:polarization": {
+                "description": "E.g. \"vertical\", \"horizontal\", \"slant-45\", \"left-hand circular\", \"right-hand circular\".",
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "collection": {
+      "description": "The following fields are specificed in SigMF Collections:",
+      "type": "object",
+      "properties": {
+        "antenna:azimuth_angle": {
+          "description": "Angle of main beam in azimuthal plane from North, in degrees.",
+          "type": "number"
+        },
+        "antenna:elevation_angle": {
+          "description": "Angle of main beam in elevation plane from horizontal, in degrees.",
+          "type": "number"
+        },
+        "antenna:hagl": {
+          "description": "Nominal antenna phase center height above ground level, in meters.",
+          "type": "number"
+        }
+      }
+    }
+  }
+}
