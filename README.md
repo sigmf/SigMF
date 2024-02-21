@@ -89,7 +89,7 @@ In general, extension publication pull requests should go into the Community Ext
 ### Is this a GNU Radio effort?
 
 *No*, this is not a GNU Radio specific effort. This effort first emerged from
-a group of GNU Radio core developers, but the goal of the project to provide
+a group of GNU Radio core developers, but the goal of the project is to provide
 a standard that will be useful to anyone and everyone, regardless of tool or
 workflow.
 
