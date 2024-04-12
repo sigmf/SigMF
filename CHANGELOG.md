@@ -102,8 +102,8 @@ Initial release.
 
 
 [unreleased]: https://github.com/sigmf/SigMF/compare/v1.2.0...HEAD
-[1.2.0]: https://github.com/sigmf/SigMF/compare/v1.2.0...v1.1.0
-[1.1.0]: https://github.com/sigmf/SigMF/compare/v1.1.0...v1.0.1
-[1.1.0]: https://github.com/sigmf/SigMF/compare/v1.1.0...v1.0.1
-[1.0.1]: https://github.com/sigmf/SigMF/compare/v1.0.1...v0.0.1
+[1.2.0]: https://github.com/sigmf/SigMF/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/sigmf/SigMF/compare/v1.0.1...v1.1.0
+[1.1.0]: https://github.com/sigmf/SigMF/compare/v1.0.1...v1.1.0
+[1.0.1]: https://github.com/sigmf/SigMF/compare/v0.0.1...v1.0.1
 [0.0.1]: https://github.com/sigmf/SigMF/tree/v0.0.1

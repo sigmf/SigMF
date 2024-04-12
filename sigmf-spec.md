@@ -1,4 +1,4 @@
-# Signal Metadata Format Specification v1.0.0
+# Signal Metadata Format Specification v1.2.0
 
 ## Abstract
 
@@ -20,7 +20,7 @@ Copyright of contributions to SigMF are retained by their original authors. All 
 
 **Table of Contents**
 
-- [Signal Metadata Format Specification v1.0.0](#signal-metadata-format-specification-v100)
+- [Signal Metadata Format Specification v1.2.0](#signal-metadata-format-specification-v100)
   - [Abstract](#abstract)
   - [Copyright Notice](#copyright-notice)
   - [Table of Contents](#table-of-contents)
@@ -85,7 +85,7 @@ specified. Fields defined "human/machine-readable" SHOULD be short, simple
 text strings without whitespace that are easily understood by a human and
 readily parsed by software.
 
-Specific keywords with semantic meaning in the context of this specification 
+Specific keywords with semantic meaning in the context of this specification
 are capitalized after being introduced (e.g., Recording).
 
 ## Specification
@@ -106,14 +106,14 @@ includes information meant for the human users of the Dataset, such as a title
 and description, and information meant for computer applications (tools) that
 operate on the Dataset.
 
-This specification defines a schema for metadata using a `core` namespace that 
+This specification defines a schema for metadata using a `core` namespace that
 is a reserved name and can only be defined by this specification. Other metadata
-MAY be described by extension namespaces. This specification also defines a 
+MAY be described by extension namespaces. This specification also defines a
 model and format for how SigMF data should be stored at-rest (on-disk) using JSON.
 
 ### SigMF File Types
 
-There are two fundamental filetypes defined by this specification: files with 
+There are two fundamental filetypes defined by this specification: files with
 metadata, and the files that contain the Datasets described by the metadata.
 There are two types of files containing metadata, a SigMF `Metadata` file, and a
 SigMF `Collection` file. There are also two types of Datasets, a SigMF `Dataset`
@@ -122,10 +122,10 @@ mechanism to support using valid SigMF metadata to describe data that is not
 valid SigMF and formatted according to SigMF Dataset requirements.
 
 The primary unit of SigMF is a SigMF `Recording`, which comprises a Metadata file
-and the Dataset file it describes. Collections are an optional feature that are 
-used to describe the relationships between multiple Recordings. 
+and the Dataset file it describes. Collections are an optional feature that are
+used to describe the relationships between multiple Recordings.
 
-Collections and multiple Recordings can be packaged for easy storage and 
+Collections and multiple Recordings can be packaged for easy storage and
 distribution in a SigMF `Archive`.
 
 ```
@@ -208,8 +208,8 @@ Rules for SigMF Archive files:
 
 ### SigMF Dataset Format
 
-There are four orthogonal characteristics of sample data: complex or real, 
-floating-point or integer, bit-width, and endianness. The following ABNF 
+There are four orthogonal characteristics of sample data: complex or real,
+floating-point or integer, bit-width, and endianness. The following ABNF
 rules specify the Dataset formats defined in the Core namespace. Additional
 Dataset formats MAY be added through extensions.
 
@@ -282,7 +282,7 @@ When stored on-disk (at-rest), these rules apply:
    segment, then it MUST appear in that segment, even if the value is unchanged
    relative to the previous segment.
 
-All SigMF metadata is defined using the structural concepts of JSON, and when 
+All SigMF metadata is defined using the structural concepts of JSON, and when
 stored on-disk, metadata MUST be proper JSON to be SigMF compliant.
 
 #### Datatypes
@@ -307,7 +307,7 @@ Namespaces provide a way to further classify key/value pairs in metadata.
 This specification defines the `core` namespace. Only this specification
 can add fields to the Core namespace.
 
-The goal of the Core namespace is to capture the foundational metadata 
+The goal of the Core namespace is to capture the foundational metadata
 necessary to work with SigMF data. Some keys within the Core namespace are
 OPTIONAL, and others are REQUIRED. The REQUIRED fields are those that are
 minimally necessary to parse and process the Dataset, or that have obvious
@@ -532,14 +532,14 @@ stream, the entirety of which may not have been captured in a recorded Dataset.
 If omitted, this value SHOULD be treated as equal to `sample_start`.
 
 For example, some hardware devices are capable of 'counting' samples at
-the point of data conversion. This sample count is commonly used to indicate 
+the point of data conversion. This sample count is commonly used to indicate
 a discontinuity in the datastream between the hardware device and processing.
 
 For example, in the below Captures array, there are two Segments describing
-samples in a SigMF Dataset file. The first Segment begins at the start of the 
+samples in a SigMF Dataset file. The first Segment begins at the start of the
 Dataset file. The second segment begins at sample index 500 relative to the
 recorded samples (and since this is a conforming SigMF Dataset, is physically
-located on-disk at location `sample_start * sizeof(sample)`), but the 
+located on-disk at location `sample_start * sizeof(sample)`), but the
 `global_index` reports this was actually sample number 1000 in the original
 datastream, indicating that 500 samples were lost before they could be recorded.
 
@@ -604,19 +604,19 @@ data capture). If omitted, this value is considered to be zero. If this field is
 non-zero, the Dataset is by definition a Non-Conforming Dataset.
 
 For example, the below Metadata for a Non-Conforming Dataset contains
-two segments describing chunks of 8-bit complex samples (2 bytes per sample) 
-recorded to disk with 4-byte headers that are not valid for 
+two segments describing chunks of 8-bit complex samples (2 bytes per sample)
+recorded to disk with 4-byte headers that are not valid for
 processing. Thus, to map these two chunks of samples into memory, a reader
-application would map the `500 samples` (equal to `1000 bytes`) in the first 
-Segment, starting at a file offset of `4 bytes`, and then the remainder of the 
-file through EOF starting at a file offset of `1008 bytes` (equal to the size 
+application would map the `500 samples` (equal to `1000 bytes`) in the first
+Segment, starting at a file offset of `4 bytes`, and then the remainder of the
+file through EOF starting at a file offset of `1008 bytes` (equal to the size
 of the previous Segment of samples plus two headers).
 
 ```json
 {
    "global": {
       "core:datatype": "cu8",
-      "core:version": "1.0.0",
+      "core:version": "1.2.0",
       "core:dataset": "non-conforming-dataset-01.dat"
    },
    "captures": [
@@ -643,8 +643,8 @@ Objects. It MUST be sorted by the value of each Annotation Segment's
 
 ##### Annotation Segment Objects
 
-Annotation segment Objects contain key/value pairs and MUST contain a 
-`core:sample_start` key/value pair, which indicates the first index 
+Annotation segment Objects contain key/value pairs and MUST contain a
+`core:sample_start` key/value pair, which indicates the first index
 at which the rest of the Segment's key/value pairs apply.
 
 The following names are specified in the Core namespace for use in Annotation
@@ -705,8 +705,8 @@ displaying up to 20 characters.
 
 ### SigMF Collection Format
 
-The `sigmf-collection` file contains metadata in a single top-level Object 
-called a `collection`. The Collection Object contains key/value pairs that 
+The `sigmf-collection` file contains metadata in a single top-level Object
+called a `collection`. The Collection Object contains key/value pairs that
 describe relationships between SigMF Recordings.
 
 The Collection Object associates SigMF Recordings together by specifying
@@ -741,7 +741,7 @@ Example `top-level.sigmf-collection` file:
 ```JSON
 {
     "collection": {
-        "core:version": "1.0.0",
+        "core:version": "1.2.0",
         "core:extensions" : [
             {
                 "name": "antenna",
@@ -791,10 +791,10 @@ permitted in tuples.
 
 ## Licensing
 
-Open licenses are RECOMMENDED but you can specify any license. You can refer to 
-resources provided by the [Open Data Commons](https://opendatacommons.org/) when 
-deciding which open license fits your needs best. Cornell University has also 
-created [a guide](https://data.research.cornell.edu/content/intellectual-property#data-licensing) 
+Open licenses are RECOMMENDED but you can specify any license. You can refer to
+resources provided by the [Open Data Commons](https://opendatacommons.org/) when
+deciding which open license fits your needs best. Cornell University has also
+created [a guide](https://data.research.cornell.edu/content/intellectual-property#data-licensing)
 to help you make these choices.
 
 ## SigMF Compliance

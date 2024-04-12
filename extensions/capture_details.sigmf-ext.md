@@ -5,7 +5,7 @@ extending `captures` and dynamic IQ capture parameters extending `annotations`.
 
 ## 1 Global
 
-`capture_details` does not extend [Global](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#global-object).
+`capture_details` does not extend [Global](https://github.com/sigmf/SigMF/blob/main/sigmf-spec.md#global-object).
 
 ## 2 Captures
 

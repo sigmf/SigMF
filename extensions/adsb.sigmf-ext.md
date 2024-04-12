@@ -5,11 +5,11 @@ defines dynamic properties of ADS-B signals extending `annotations`.
 
 ## 1 Global
 
-`adsb` does not extend [Global](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#global-object).
+`adsb` does not extend [Global](https://github.com/sigmf/SigMF/blob/main/sigmf-spec.md#global-object).
 
 ## 2 Captures
 
-`signal` does not extend [Captures](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#captures-array).
+`signal` does not extend [Captures](https://github.com/sigmf/SigMF/blob/main/sigmf-spec.md#captures-array).
 
 ## 3 Annotations
 
