@@ -76,24 +76,27 @@ discussions, the more useful the standard is likely to be!
 
 ## Extensions
 
-The "Core" SigMF standard is intentionally kept limited in scope, additional metadata fields can be added through [SigMF Extensions](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/sigmf-spec.md#extension-namespaces). For example, the [signal extension](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/extensions/signal.sigmf-ext.md) provides a standard way to specify modulation schemes and other attributes of wireless comms signals. Several general purpose canonical extensions live within this repository directly in the [extensions directory](https://github.com/gnuradio/SigMF/tree/sigmf-v1.x/extensions), while others are maintained by third parties. Below we include a listing of some popular, compliant SigMF extensions. To have your extension reviewed for inclusion on this list, please open a PR adding the repository to the list below:
+The "Core" SigMF standard is intentionally kept limited in scope, additional metadata fields can be added through [SigMF Extensions](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/sigmf-spec.md#extension-namespaces). For example, the [signal extension](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/extensions/signal.sigmf-ext.md) provides a standard way to specify modulation schemes and other attributes of wireless comms signals. Several general purpose canonical extensions live within this repository directly in the [extensions directory](https://github.com/gnuradio/SigMF/tree/sigmf-v1.x/extensions), while others are maintained by third parties. Below are some popular sources for SigMF extensions. To have your extension reviewed for inclusion on this list, please open a PR adding the repository to the list below:
 
+* [SigMF's Community Extension Repository](https://github.com/sigmf/community-extensions)
 * [NTIA's series of extensions](https://github.com/NTIA/sigmf-ns-ntia)
+
+In general, extension publication pull requests should go into the Community Extension repository. Occasionally there is an extension that is so general purpose that it may be warranted to include in the core SigMF Repository `extensions` directory. Opening an issue in this repository for discussion (or noting this in a pull request in the Community Extension repository), or discussing on the SigMF Matrix Chat room is the best way to make that happen.
 
 ## Frequently Asked Questions
 
 ### Is this a GNU Radio effort?
 
-*No*, this is not a GNU Radio-specific effort. It is hosted under the GNU Radio
-Github account because this effort first emerged from a group of GNU Radio core
-developers, but the goal of the project to provide a standard that will be
-useful to anyone and everyone, regardless of tool or workflow.
+*No*, this is not a GNU Radio specific effort. This effort first emerged from
+a group of GNU Radio core developers, but the goal of the project is to provide
+a standard that will be useful to anyone and everyone, regardless of tool or
+workflow.
 
 ### Is this specific to wireless communications?
 
 *No*, similar to the response, above, the goal is to create something that is
 generally applicable to _signal processing_, regardless of whether or not the
-application is communications related.
+application is RF or communications related.
 
 ### It seems like some issues take a long time to resolve?
 
