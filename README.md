@@ -79,7 +79,6 @@ discussions, the more useful the standard is likely to be!
 The "Core" SigMF standard is intentionally kept limited in scope, additional metadata fields can be added through [SigMF Extensions](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/sigmf-spec.md#extension-namespaces). For example, the [signal extension](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/extensions/signal.sigmf-ext.md) provides a standard way to specify modulation schemes and other attributes of wireless comms signals. Several general purpose canonical extensions live within this repository directly in the [extensions directory](https://github.com/gnuradio/SigMF/tree/sigmf-v1.x/extensions), while others are maintained by third parties. Below are some popular sources for SigMF extensions. To have your extension reviewed for inclusion on this list, please open a PR adding the repository to the list below:
 
 * [SigMF's Community Extension Repository](https://github.com/sigmf/community-extensions)
-
 * [NTIA's series of extensions](https://github.com/NTIA/sigmf-ns-ntia)
 
 In general, extension publication pull requests should go into the Community Extension repository. Occasionally there is an extension that is so general purpose that it may be warranted to include in the core SigMF Repository `extensions` directory. Opening an issue in this repository for discussion (or noting this in a pull request in the Community Extension repository), or discussing on the SigMF Matrix Chat room is the best way to make that happen.
