@@ -1,7 +1,6 @@
 # Contributor Covenant Code of Conduct
 
-This Code of Conduct is also available [here on the GNU Radio
-wiki](https://wiki.gnuradio.org/index.php/Code_of_Conduct).
+This Code of Conduct is a mirror of [the GNU Radio governance Code of Conduct](https://github.com/gnuradio/gr-governance/blob/main/CODE_OF_CONDUCT.md).
 
 ## Our Pledge
 
@@ -77,4 +76,3 @@ available at https://www.contributor-covenant.org/version/1/4/code-of-conduct.ht
 
 For answers to common questions about this code of conduct, see
 https://www.contributor-covenant.org/faq
-
