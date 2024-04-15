@@ -6,13 +6,15 @@ from pylatex.utils import italic, bold, NoEscape
 import os
 import json
 
-sigmf_version = 'v1.0.0' # TODO PULL FROM SCHEMA
 with open('sigmf-schema.json', 'r') as f:
     data = json.load(f)
 with open('collection-schema.json', 'r') as f:
     data_collection = json.load(f)
 with open('extensions/antenna-schema.json', 'r') as f:
     data_antenna = json.load(f)
+
+sigmf_version = data['$id'].split('/')[-2]
+print("SigMF Version: " + sigmf_version)
 
 def add_code_tags(text): # swaps every pair of ` ` for \code{}
     while text.find('`') != -1:
@@ -69,13 +71,13 @@ doc.append(NoEscape('\\pagestyle{fancy}'))
 doc.append(NoEscape('\\fancyhf{}')) # clear all header/footer fields
 doc.append(NoEscape('\\renewcommand{\headrulewidth}{0pt}'))
 doc.append(NoEscape('\\fancyfoot[LE,RO]{\\thepage}'))
-doc.append(NoEscape('\\fancyfoot[LO,CE]{Signal Metadata Format (SigMF) Specification ' + sigmf_version + '}'))
+doc.append(NoEscape('\\fancyfoot[LO,CE]{Signal Metadata Format (SigMF) Specification Version ' + sigmf_version + '}'))
 
 with doc.create(Figure(position='h!')) as logo:
     doc.append(NoEscape('\\vspace{-0.8in})'))
     logo.add_image('logo/sigmf_logo.png', width='120px')
     
-with doc.create(Section('Signal Metadata Format (SigMF) Specification ' + sigmf_version)):
+with doc.create(Section('Signal Metadata Format (SigMF) Specification Version ' + sigmf_version)):
     with doc.create(Subsection('Abstract')): # Abstract lives in the JSON Schema
         doc.append(data["description"])
 

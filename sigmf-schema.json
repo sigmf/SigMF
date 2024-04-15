@@ -1,5 +1,5 @@
 {
-  "$id": "https://github.com/sigmf/SigMF/spec/1.0.0/sigmf-schema",
+  "$id": "https://github.com/sigmf/SigMF/spec/1.2.0/sigmf-schema",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Schema for SigMF Meta Files",
   "description": "The Signal Metadata Format (SigMF) specifies a way to describe sets of recorded digital signal samples with metadata written in JSON. SigMF can be used to describe general information about a collection of samples, the characteristics of the system that generated the samples, features of signals themselves, and the relationship between different recordings.",
@@ -95,10 +95,8 @@
         },
         "core:version": {
           "description": "The version of the SigMF specification used to create the Metadata file, in the format X.Y.Z",
-          "default": "1.0.0",
           "pattern": "^\\d+\\.\\d+\\.\\d",
-          "type": "string",
-          "enum": ["1.0.0"]
+          "type": "string"
         },
         "core:geolocation": {
           "description": "The location of the recording system, as a single RFC 7946 GeoJSON `point` Object using the convention defined by RFC 5870. Per the GeoJSON specification, the point coordinates use the WGS84 coordinate reference system and are `longitude`, `latitude` (REQUIRED, in decimal degrees), and `altitude` (OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. An example including the altitude field is shown below:  \\begin{verbatim} \"global\": {\n   ...\n   \"core:geolocation\": {\n     \"type\": \"Point\",\n     \"coordinates\": [-107.6183682, 34.0787916, 2120.0]\n   }\n   ...\n } \\end{verbatim}  GeoJSON permits the use of *Foreign Members* in GeoJSON documents per RFC 7946 Section 6.1. Because the SigMF requirement for the `geolocation` field is to be a valid GeoJSON `point` Object, users MAY include *Foreign Member* fields here for user-defined purposes (position valid indication, GNSS SV counts, dillution of precision, accuracy, etc). It is strongly RECOMMENDED that all fields be documented in a SigMF Extension document.  *Note:* Objects named `geometry` or `properties` are prohibited Foreign Members as specified in RFC 7946 Section 7.1. ",
