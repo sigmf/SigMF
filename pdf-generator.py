@@ -74,7 +74,7 @@ doc.append(NoEscape('\\fancyfoot[LO,CE]{\\footnotesize Signal Metadata Format (S
 with doc.create(Figure(position='h!')) as logo:
     doc.append(NoEscape('\\vspace{-0.8in}\\centering'))
     #doc.append(NoEscape('\\includesvg[width=200pt]{logo/sigmf\string_logo.svg}')) # Using SVG made PDF take a couple extra seconds to open...
-    logo.add_image('logo/sigmf_logo.png', width='200px')
+    logo.add_image('logo/sigmf_logo.png', width='120px')
     doc.append(NoEscape('\\vspace{-0.3in}'))
     
 with doc.create(Section('Signal Metadata Format (SigMF) Specification Version ' + sigmf_version)):
