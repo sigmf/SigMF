@@ -1,10 +1,8 @@
-import yaml
-from py_markdown_table.markdown_table import markdown_table
-import numpy as np
-from pylatex import Document, Section, Subsection, Subsubsection, Package, Tabular, Math, TikZ, Axis, Plot, Figure, Matrix, Alignat
-from pylatex.utils import italic, bold, NoEscape
-import os
+from pylatex import Document, Section, Subsection, Subsubsection, Package, Tabular, Figure
+from pylatex.utils import bold, NoEscape
 import json
+import time
+import subprocess
 
 with open('sigmf-schema.json', 'r') as f:
     data = json.load(f)
@@ -71,7 +69,7 @@ doc.append(NoEscape('\\pagestyle{fancy}'))
 doc.append(NoEscape('\\fancyhf{}')) # clear all header/footer fields
 doc.append(NoEscape('\\renewcommand{\headrulewidth}{0pt}'))
 doc.append(NoEscape('\\fancyfoot[LE,RO]{\\thepage}'))
-doc.append(NoEscape('\\fancyfoot[LO,CE]{Signal Metadata Format (SigMF) Specification Version ' + sigmf_version + '}'))
+doc.append(NoEscape('\\fancyfoot[LO,CE]{\\footnotesize Signal Metadata Format (SigMF) Specification Version ' + sigmf_version + '}'))
 
 with doc.create(Figure(position='h!')) as logo:
     doc.append(NoEscape('\\vspace{-0.8in})'))
@@ -84,7 +82,7 @@ with doc.create(Section('Signal Metadata Format (SigMF) Specification Version ' 
     with doc.create(Subsection('Copyright Notice')):
         doc.append(NoEscape('This document is available under the \href{http://creativecommons.org/licenses/by-sa/4.0/}{CC-BY-SA License}. Copyright of contributions to SigMF are retained by their original authors. All contributions under these terms are welcome.'))
 
-    with doc.create(Subsection('Table of Contents')): # NOTE- YOU NEED TO COMPILE LATEX TWICE FOR THIS TO SHOW!
+    with doc.create(Subsection('Table of Contents')):
         doc.append(NoEscape('\\vspace{-0.4in}\\def\\contentsname{\\empty}\\setcounter{tocdepth}{3}\\tableofcontents'))
 
     doc.append(NoEscape(add_code_tags(open('additional_content.md', 'r').read().split('<<<<<<<<<<content from JSON schema>>>>>>>>>>>>')[0])))
@@ -148,4 +146,14 @@ with doc.create(Section('Extensions')):
             gen_table(table, data_antenna["properties"]["collection"])
         gen_fields(doc, data_antenna["properties"]["collection"])
 
-doc.generate_pdf('sigmf-spec', clean_tex=False, compiler_args=['--shell-escape']) # clean_tex will remove the generated tex file
+print("Generating...")
+try:
+    doc.generate_pdf('sigmf-spec', clean_tex=False, compiler_args=['--shell-escape']) # clean_tex will remove the generated tex file
+except subprocess.CalledProcessError as e:
+    print(e) # this seems normal to occur
+
+# 2nd time, so table of contents loads
+try:
+    doc.generate_pdf('sigmf-spec', clean_tex=False, compiler_args=['--shell-escape']) # clean_tex will remove the generated tex file
+except subprocess.CalledProcessError as e:
+    print(e) # this seems normal to occur
