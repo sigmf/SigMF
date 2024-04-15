@@ -15,6 +15,7 @@ sigmf_version = data['$id'].split('/')[-2]
 print("SigMF Version: " + sigmf_version)
 
 def add_code_tags(text): # swaps every pair of ` ` for \code{}
+    text = text.replace('_', '\\_') # need to escape underscores when inside a command
     while text.find('`') != -1:
         text = text.replace('`', '\\code{', 1)
         text = text.replace('`', '}', 1)
@@ -159,3 +160,7 @@ try:
     doc.generate_pdf('sigmf-spec', clean_tex=False, compiler_args=['--shell-escape']) # clean_tex will remove the generated tex file
 except subprocess.CalledProcessError as e:
     print(e) # this seems normal to occur
+
+# Generate HTML
+css_url = "https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+subprocess.run(f"pandoc sigmf-spec.tex -f latex -t html -s -o sigmf-spec.html --toc --toc-depth=3 -c {css_url}".split()) 

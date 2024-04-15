@@ -93,7 +93,7 @@ The main pdf is generated using the following content:
 1. `collection-schema.json` - Collection object documentation
 1. `additional_content.md` - mix of plaintext/markdown/latex for the remaining sections of the document
 
-The script `pdf-generator.py` uses Python, PyLaTeX, and Inkscape to create the specifications document in pdf and html formats.
+The script `docs-generator.py` uses Python, PyLaTeX, Pandoc, and Inkscape to create the specifications document in PDF and HTML formats.
 
 ## Frequently Asked Questions
 
