@@ -91,7 +91,7 @@ The main pdf is generated using the following content:
 1. `sigmf-schema.json` - global/captures/annotations tables and descriptions, as well as the Abstract
 1. `pretables.md` and `posttables.md` - mix of plaintext/markdown/latex for the remaining sections of the document
 
-The script `pdf-generator.py` uses Python and PyLaTeX to create the .tex and .pdf of the final specifications document.
+The script `pdf-generator.py` uses Python, PyLaTeX, and Inkscape to create the .tex and .pdf of the final specifications document.
 
 ## Frequently Asked Questions
 

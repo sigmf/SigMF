@@ -53,6 +53,7 @@ doc.packages.append(Package('listings'))
 doc.packages.append(Package('microtype'))
 doc.packages.append(Package('fancyhdr'))
 doc.packages.append(Package('booktabs'))
+doc.packages.append(Package('svg'))
 doc.packages.append(Package('hyperref', options=['hidelinks','colorlinks=true','urlcolor=blue','linkcolor=black'])) #\usepackage[, urlcolor=blue, linkcolor=red]{hyperref}
 
 # Colors
@@ -69,7 +70,6 @@ doc.append(NoEscape('\\fancyhf{}')) # clear all header/footer fields
 doc.append(NoEscape('\\renewcommand{\headrulewidth}{0pt}'))
 doc.append(NoEscape('\\fancyfoot[LE,RO]{\\thepage}'))
 doc.append(NoEscape('\\fancyfoot[LO,CE]{Signal Metadata Format (SigMF) Specification ' + sigmf_version + '}'))
-#doc.append(NoEscape('\\fancyfoot[CO,RE]{To: Dean A. Smith}')) # center
 
 with doc.create(Figure(position='h!')) as logo:
     doc.append(NoEscape('\\vspace{-0.8in})'))
@@ -146,4 +146,4 @@ with doc.create(Section('Extensions')):
             gen_table(table, data_antenna["properties"]["collection"])
         gen_fields(doc, data_antenna["properties"]["collection"])
 
-doc.generate_pdf('sigmf-spec', clean_tex=False) # clean_tex will remove the generated tex file
+doc.generate_pdf('sigmf-spec', clean_tex=False, compiler_args=['--shell-escape']) # clean_tex will remove the generated tex file
