@@ -1,6 +1,4 @@
-<p align="center">
-<img src="https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/logo/sigmf_logo.png" width="30%" />
-</p>
+<p align="center"><img src="https://github.com/sigmf/SigMF/blob/v1.2.0/logo/sigmf_logo.svg" alt="Rendered SigMF Logo"/></p>
 
 # Signal Metadata Format (SigMF)
 
@@ -37,7 +35,7 @@ Together these files represent one recording, such as `example.sigmf-data` and
         "core:sample_rate": 1000000,
         "core:hw": "PlutoSDR with 915 MHz whip antenna",
         "core:author": "Art Vandelay",
-        "core:version": "1.0.0"
+        "core:version": "1.2.0"
     },
     "captures": [
         {
@@ -53,19 +51,19 @@ Together these files represent one recording, such as `example.sigmf-data` and
 
 There are at least four ways you can use SigMF today, thanks to the community-supported projects:
 
-1. Within **Python**, using the [official SigMF Python package **sigmf**](https://github.com/sigmf/sigmf-python) available from pip: `pip install sigmf`
-2. Within **C++** using the [header-only C++ library **libsigmf**](https://github.com/deepsig/libsigmf) maintained by DeepSig
-3. Within **GNU Radio** using the [out-of-tree module **gr-sigmf**](https://github.com/skysafe/gr-sigmf) maintained by SkySafe
-4. Manually, using our examples and the [spec itself](sigmf-spec.md), even if it's simply editing a text file
+1. Within **Python**, using the [official SigMF Python package **sigmf**](https://github.com/sigmf/sigmf-python) available from pip: `pip install sigmf`.
+2. Within **C++** using the [header-only C++ library **libsigmf**](https://github.com/sigmf/libsigmf).
+3. Within **GNU Radio** using the built-in SigMF [source](https://github.com/gnuradio/gnuradio/blob/main/gr-blocks/grc/blocks_sigmf_source_minimal.block.yml) & [sink](https://github.com/gnuradio/gnuradio/blob/main/gr-blocks/grc/blocks_sigmf_sink_minimal.block.yml) blocks.
+4. Manually, using our examples and the [spec itself](sigmf-spec.md), even if it's simply editing a text file.
 
 
 ## Contributing
 
 The SigMF standards effort is organized entirely within this Github repository.
 Questions, suggestions, bug reports, etc., are discussed in [the issue
-tracker](https://github.com/gnuradio/SigMF/issues), feel free to create
+tracker](https://github.com/sigmf/SigMF/issues), feel free to create
 a new issue and provide your input, even if it's not a traditional issue.
-Changes to the specification only occur through [Pull Requests](https://github.com/gnuradio/SigMF/pulls).
+Changes to the specification only occur through [Pull Requests](https://github.com/sigmf/SigMF/pulls).
 This ensures that the history and background of all discussions and changes are maintained for posterity.
 
 There is also a SigMF chat room on [GNU Radio's Matrix chat server](https://wiki.gnuradio.org/index.php/Chat)
@@ -78,9 +76,12 @@ discussions, the more useful the standard is likely to be!
 
 ## Extensions
 
-The "Core" SigMF standard is intentionally kept limited in scope, additional metadata fields can be added through [SigMF Extensions](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/sigmf-spec.md#extension-namespaces). For example, the [signal extension](https://github.com/gnuradio/SigMF/blob/sigmf-v1.x/extensions/signal.sigmf-ext.md) provides a standard way to specify modulation schemes and other attributes of wireless comms signals. Several general purpose canonical extensions live within this repository directly in the [extensions directory](https://github.com/gnuradio/SigMF/tree/sigmf-v1.x/extensions), while others are maintained by third parties. Below we include a listing of some popular, compliant SigMF extensions. To have your extension reviewed for inclusion on this list, please open a PR adding the repository to the list below:
+The "Core" SigMF standard is intentionally kept limited in scope, additional metadata fields can be added through [SigMF Extensions](https://github.com/sigmf/SigMF/blob/main/sigmf-spec.md#extension-namespaces). For example, the [signal extension](https://github.com/sigmf/SigMF/blob/main/extensions/signal.sigmf-ext.md) provides a standard way to specify modulation schemes and other attributes of wireless comms signals. Several general purpose canonical extensions live within this repository directly in the [extensions directory](https://github.com/sigmf/SigMF/tree/main/extensions), while others are maintained by third parties. Below are some popular sources for SigMF extensions. To have your extension reviewed for inclusion on this list, please open a PR adding the repository to the list below:
 
+* [SigMF's Community Extension Repository](https://github.com/sigmf/community-extensions)
 * [NTIA's series of extensions](https://github.com/NTIA/sigmf-ns-ntia)
+
+In general, extension publication pull requests should go into the Community Extension repository. Occasionally there is an extension that is so general purpose that it may be warranted to include in the core SigMF Repository `extensions` directory. Opening an issue in this repository for discussion (or noting this in a pull request in the Community Extension repository), or discussing on the SigMF Matrix Chat room is the best way to make that happen.
 
 Software that seeks to perform validation on metadata can open a metafile, parse which extensions are used (if any), then pull the core JSON schema plus the JSON schemas for each extension being used (and optionally, an application-specific schema), then merge the global/captures/annotations objects between all schemas, and disable `additionalProperties` for all three so that typos can be detected.
 
@@ -97,16 +98,16 @@ The script `pdf-generator.py` uses Python, PyLaTeX, and Inkscape to create the .
 
 ### Is this a GNU Radio effort?
 
-*No*, this is not a GNU Radio-specific effort. It is hosted under the GNU Radio
-Github account because this effort first emerged from a group of GNU Radio core
-developers, but the goal of the project to provide a standard that will be
-useful to anyone and everyone, regardless of tool or workflow.
+*No*, this is not a GNU Radio specific effort. This effort first emerged from
+a group of GNU Radio core developers, but the goal of the project is to provide
+a standard that will be useful to anyone and everyone, regardless of tool or
+workflow.
 
 ### Is this specific to wireless communications?
 
 *No*, similar to the response, above, the goal is to create something that is
 generally applicable to _signal processing_, regardless of whether or not the
-application is communications related.
+application is RF or communications related.
 
 ### It seems like some issues take a long time to resolve?
 

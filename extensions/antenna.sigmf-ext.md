@@ -30,7 +30,7 @@ The following names are specified in the `antenna` namespace and should be used 
 
 ## 2 Captures
 
-`antenna` does not extend [Captures](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#captures-array).
+`antenna` does not extend [Captures](https://github.com/sigmf/SigMF/blob/main/sigmf-spec.md#captures-array).
 
 ## 3 Annotations
 
@@ -40,7 +40,7 @@ The following names are specified in the `antenna` namespace and should be used 
 |----|--------|----|----|-----------|
 |`azimuth_angle`|false|double|degrees|Angle of main beam in azimuthal plane from North.|
 |`elevation_angle`|false|double|degrees|Angle of main beam in elevation plane from horizontal.|
-|`polarization`|false|double|string|E.g. `"vertical"`, `"horizontal"`, `"slant-45"`, `"left-hand circular"`, `"right-hand circular"`.|
+|`polarization`|false|string|N/A|E.g. `"vertical"`, `"horizontal"`, `"slant-45"`, `"left-hand circular"`, `"right-hand circular"`.|
 
 ## 4 Collection
 
@@ -55,4 +55,3 @@ The following fields are specificed in SigMF Collections.
 ## 5 Examples
 
 No `antenna` examples.
-

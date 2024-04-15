@@ -5,7 +5,7 @@ Format (SigMF) specification. This extension provides traceability information f
 
 ## 1 Global
 
-`traceability` extends the [Global](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#global-object) object.
+`traceability` extends the [Global](https://github.com/sigmf/SigMF/blob/main/sigmf-spec.md#global-object) object.
 
 The following fields are added to the `global` object:
 
@@ -33,11 +33,11 @@ The following fields are added to the `global` object:
 
 ## 2 Captures
 
-`traceability` does not extend the [Captures](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#captures-array) object.
+`traceability` does not extend the [Captures](https://github.com/sigmf/SigMF/blob/main/sigmf-spec.md#captures-array) object.
 
 ## 3 Annotations
 
-`traceability` extends the [Annotations](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#annotations-object) object.
+`traceability` extends the [Annotations](https://github.com/sigmf/SigMF/blob/main/sigmf-spec.md#annotations-object) object.
 
 The following fields are added to each annotation in the `annotations` array:
 

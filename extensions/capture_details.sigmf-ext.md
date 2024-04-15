@@ -5,7 +5,7 @@ extending `captures` and dynamic IQ capture parameters extending `annotations`.
 
 ## 1 Global
 
-`capture_details` does not extend [Global](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#global-object).
+`capture_details` does not extend [Global](https://github.com/sigmf/SigMF/blob/main/sigmf-spec.md#global-object).
 
 ## 2 Captures
 
@@ -15,7 +15,7 @@ be used in the `captures` object:
 |name|required|type|unit|description|
 |----|--------|----|----|-----------|
 |`acq_scale_factor`|true|double|N/A|Scale factor of IQ collection from the spectrum analyzer used to convert back to real power.|
-|`attentuation`|true|double|dB|Attenuation applied to the input of the sensor.|
+|`attenuation`|true|double|dB|Attenuation applied to the input of the sensor.|
 |`acquisition_bandwidth`|true|double|Hz|Bandwidth of the recording (if lower than the `samp_rate`.|
 |`start_capture`|true|string|N/A|Time of the first sample of IQ recording. The time is UTC with the format of `yyyy-mm-ddTHH:MM:SSZ`.|
 |`stop_capture`|true|string|N/A|Time of the last sample of IQ recording. The time is UTC with the format of `yyyy-mm-ddTHH:MM:SSZ`.|

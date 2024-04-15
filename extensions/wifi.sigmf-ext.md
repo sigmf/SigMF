@@ -5,11 +5,11 @@ The `wifi`namespace extension defines dynamic Wi-Fi burst parameters extending
 
 ## 1 Global
 
-`wifi` does not extend [Global](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#global-object).
+`wifi` does not extend [Global](https://github.com/sigmf/SigMF/blob/main/sigmf-spec.md#global-object).
 
 ## 2 Captures
 
-`wifi` does not extend [Captures](https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md#captures-array).
+`wifi` does not extend [Captures](https://github.com/sigmf/SigMF/blob/main/sigmf-spec.md#captures-array).
 
 ## 3 Annotations
 

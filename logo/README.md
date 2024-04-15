@@ -1,14 +1,14 @@
-![Rendered version of the Official SigMF Logo](sigmf_logo.png)
+<p align="center"><img src="sigmf_logo.svg" alt="Rendered SigMF Logo"/></p>
 
 # The Official SigMF Logo
 
 The provided SigMF pair [sigmf_logo.sigmf-meta](sigmf_logo.sigmf-meta) and [sigmf_logo.sigmf-data](sigmf_logo.sigmf-data) represent the stereo audio that is the official SigMF logo.
 
-The intent of these files is to both serve as a nice visual and an exemplar metadata to be used as a reference. The `png` is just a simplified view of the logo as rendered on an XY-oscilloscope per the below gist.
+The intent of these files is to both serve as a nice visual and an exemplar metadata to be used as a reference. The image above is just a simplified view of the logo as rendered on an XY-oscilloscope per the below gist.
 
 ## Additional Versions
 
-[The full logo archive](https://github.com/gnuradio/SigMF/wiki/logo/sigmf_logo_files.zip) contains a variety of versions of the logo for multiple use-cases.
+[The full logo archive](https://github.com/sigmf/SigMFwiki/logo/sigmf_logo_files.zip) contains a variety of versions of the logo for multiple use-cases.
 
 * `sigmf_logo_fullband` is the unfiltered logo at 192 KHz sample rate.
 * `logo_*.wav` are audio files for playback without converstion from SigMF.
@@ -25,4 +25,4 @@ The SigMF logo was created with the following steps:
 0) Initial render in [Blender](https://www.blender.org/) with as simple geometry as possible. The `stl` is a very simplified and tweaked version of the [Eurostile](https://en.wikipedia.org/wiki/Eurostile) font.
 1) A timeline was created with [OsciStudio](https://oscilloscopemusic.com/oscistudio.php) with various modulated artifacts over a 6 second period.
 2) The lower 48KHz version was then lowpass filtered and adjusted for -14 LUFS in [Audacity](https://www.audacityteam.org/) per the [EBU R 128](https://en.wikipedia.org/wiki/EBU_R_128) loudness spec.
-3) Original metadata was added with the [SigMF Python module](https://github.com/gnuradio/SigMF).
+3) Original metadata was added with the [SigMF Python module](https://github.com/sigmf/SigMF).
