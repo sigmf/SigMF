@@ -9,7 +9,7 @@ on:
 
 permissions:
   contents: read
-  pages: write
+  #pages: write
   id-token: write # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
@@ -33,12 +33,12 @@ jobs:
         run: pip install pylatex
       - name: Build docs
         run: python3 docs-generator.py
-      #- name: Setup Pages
-      #  uses: actions/configure-pages@v5
-      #- name: Upload artifact
-      #  uses: actions/upload-pages-artifact@v3
-      #  with:
-      #    path: '.' # Upload entire repository, TODO ONLY UPLOAD THE HTML AND PDF
-      #- name: Deploy to GitHub Pages
-      #  id: deployment
-      #  uses: actions/deploy-pages@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.' # Upload entire repository, TODO ONLY UPLOAD THE HTML AND PDF
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
