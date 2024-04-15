@@ -28,9 +28,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install prereqs
-        run: apt install python3-pip pandoc inkscape -y
+        run: sudo apt install python3-pip pandoc inkscape -y
       - name: Pip installs
-        run: pip install pylatex
+        run: sudo pip install pylatex
       - name: Build docs
         run: python3 docs-generator.py
       #- name: Setup Pages
