@@ -2,9 +2,7 @@
 
 # Signal Metadata Format (SigMF)
 
-Welcome to the SigMF project! The [SigMF specification document](sigmf-spec.md)
-is the `sigmf-spec.md` file in this repository. Below we discuss why and how
-you might use SigMF in your projects.
+Welcome to the SigMF project! The [SigMF specifications can be viewed here](https://sigmf.github.io/SigMF/index.html) or [downloaded as a PDF](https://sigmf.github.io/SigMF/sigmf-spec.pdf). Below we discuss why and how you might use SigMF in your projects.
 
 ## Introduction
 
@@ -82,6 +80,18 @@ The "Core" SigMF standard is intentionally kept limited in scope, additional met
 * [NTIA's series of extensions](https://github.com/NTIA/sigmf-ns-ntia)
 
 In general, extension publication pull requests should go into the Community Extension repository. Occasionally there is an extension that is so general purpose that it may be warranted to include in the core SigMF Repository `extensions` directory. Opening an issue in this repository for discussion (or noting this in a pull request in the Community Extension repository), or discussing on the SigMF Matrix Chat room is the best way to make that happen.
+
+Software that seeks to perform validation on metadata can open a metafile, parse which extensions are used (if any), then pull the core JSON schema plus the JSON schemas for each extension being used (and optionally, an application-specific schema), then merge the global/captures/annotations objects between all schemas, and disable `additionalProperties` for all three so that typos can be detected.
+
+## PDF Generation of Specifications Document
+
+The main pdf is generated using the following content:
+
+1. `sigmf-schema.json` - global/captures/annotations tables and descriptions, as well as the Abstract
+1. `collection-schema.json` - Collection object documentation
+1. `additional_content.md` - mix of plaintext/markdown/latex for the remaining sections of the document
+
+The script `docs-generator.py` uses Python, PyLaTeX, Pandoc, and Inkscape to create the specifications document in PDF and HTML formats.
 
 ## Frequently Asked Questions
 

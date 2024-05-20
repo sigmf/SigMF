@@ -1,0 +1,126 @@
+{
+  "$id": "https://github.com/sigmf/SigMF/spec/1.2.0/collection-schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "default": {},
+  "required": ["collection"],
+  "type": "object",
+  "properties": {
+    "collection": {
+      "default": {},
+      "description": "The `sigmf-collection` file contains metadata in a single top-level Object called a `collection`. The Collection Object contains key/value pairs that describe relationships between SigMF Recordings.\\nn  The Collection Object associates SigMF Recordings together by specifying `SigMF Recording Objects` in the `core:streams` JSON array. Each Object describes a specific associated SigMF Recording.\\nn The following rules apply to SigMF Collections:\n\n 1. The Collection Object MUST be the only top-level Object in the file.\n\n 2. Keys in the Collection Object SHOULD use SigMF Recording Objects when referencing SigMF Recordings.\n\n 3. SigMF Recording Objects MUST contain both a `name` field, which is the base-name of a SigMF Recording, and a `hash` which is the SHA512 hash of the Recording Metadata file `[base-name].sigmf-meta`.\n\n 4. SigMF Recording Objects MUST appear in a JSON array.\\nn Example `top-level.sigmf-collection` file:\\begin{verbatim}{\n\"collection\": {\n      \"core:version\": \"1.2.0\",\n      \"core:extensions\" : [\n          {\n              \"name\": \"antenna\",\n              \"version\": \"1.0.0\",\n              \"optional\": true\n          }\n      ],\n      \"antenna:hagl\": 120,\n      \"antenna:azimuth_angle\": 98,\n      \"core:streams\": [\n          {\n             \"name\": \"example-channel-0-basename\",\n             \"hash\": \"b4071db26f5c7b0c70f5066eb9bc3a8b506df0f5af09991ba481f63f97f7f48e9396584bc1c296650cd3d47bc4ad2c5b72d2561078fb6eb16151d2898c9f84c4\"\n                  },\n          {\n             \"name\": \"example-channel-1-basename\",\n             \"hash\": \"7132aa240e4d8505471cded716073141ae190f763bfca3c27edd8484348d6693d0e8d3427d0bf1990e687a6a40242d514e5d1995642bc39384e9a37a211655d7\"\n                  }\n              ]\n  }\n}\\end{verbatim}",
+      "required": ["core:version"],
+      "type": "object",
+      "properties": {
+        "core:version": {
+          "description": "The version of the SigMF specification used to create the Collection file.",
+          "examples": ["1.2.0"],
+          "type": "string"
+        },
+        "core:description": {
+          "default": "",
+          "description": "A text description of the SigMF Collection.",
+          "type": "string"
+        },
+        "core:author": {
+          "default": "",
+          "description": "A text identifier for the author potentially including name, handle, email, and/or other ID like Amateur Call Sign.",
+          "examples": ["Bruce Wayne bruce@waynetech.com", "Bruce (K3X)"],
+          "type": "string"
+        },
+        "core:collection_doi": {
+          "default": "",
+          "description": "The registered DOI (ISO 26324) for a Collection.",
+          "type": "string"
+        },
+        "core:license": {
+          "default": "",
+          "description": "A URL for the license document under which this Collection metadata is offered.",
+          "examples": ["https://creativecommons.org/licenses/by-sa/4.0/"],
+          "type": "string"
+        },
+        "core:extensions": {
+          "default": [],
+          "description": "The `core:extensions` field in the Global Object is an array of extension objects that describe SigMF extensions. Extension Objects MUST contain the three key/value pairs defined in Table (FIX REF), and MUST NOT contain any other fields.",
+          "type": "array",
+          "additionalItems": true,
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "title": "The first anyOf schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": {},
+                "examples": [
+                  {
+                    "name": "capture_details",
+                    "version": "1.0.0",
+                    "optional": false
+                  }
+                ],
+                "required": ["name", "version", "optional"],
+                "properties": {
+                  "name": {
+                    "default": "",
+                    "description": "The name of the SigMF extension namespace.",
+                    "type": "string"
+                  },
+                  "version": {
+                    "default": "",
+                    "description": "The version of the extension namespace specification used.",
+                    "type": "string"
+                  },
+                  "optional": {
+                    "default": false,
+                    "description": "If this field is `true`, the extension is REQUIRED to parse this Recording.",
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": true
+              }
+            ]
+          }
+        },
+        "core:streams": {
+          "default": [],
+          "description": "An ordered array of SigMF Recording Tuples, indicating multiple recorded streams of data (e.g., channels from a phased array).",
+          "type": "array",
+          "additionalItems": true,
+          "items": {
+            "anyOf": [
+              {
+                "default": [],
+                "examples": [["example-channel-0-basename", "hash"]],
+                "type": "array",
+                "additionalItems": true,
+                "items": {
+                  "anyOf": [
+                    {
+                      "default": "",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              {
+                "default": [],
+                "examples": [["example-channel-1-basename", "hash"]],
+                "type": "array",
+                "additionalItems": true,
+                "items": {
+                  "anyOf": [
+                    {
+                      "default": "",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
