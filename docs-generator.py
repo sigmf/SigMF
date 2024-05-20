@@ -70,12 +70,12 @@ doc.packages.append(
 )  # \usepackage[, urlcolor=blue, linkcolor=red]{hyperref}
 
 # Colors
-doc.append(NoEscape("\\definecolor{lightgray}{RGB}{240,240,240}"))  # for `short code`
+doc.append(NoEscape("\\definecolor{mylightgray}{RGB}{240,240,240}"))  # for `short code`
 doc.append(NoEscape("\\definecolor{lightblue}{RGB}{240,240,255}"))  # for table rows
 
 # Custom commands
 doc.append(
-    NoEscape("\\newcommand{\\code}[1]{\\texttt{\colorbox{lightgray}{#1}}}")
+    NoEscape("\\newcommand{\\code}[1]{\\texttt{\colorbox{mylightgray}{#1}}}")
 )  # \\code{} displays using monospace font and light gray background
 doc.append(NoEscape("\\newcommand{\\nn}[0]{\\vspace{4mm}\\\\\\noindent}"))  # \\nn gives a new line with space and no indent
 
@@ -179,6 +179,36 @@ try:
 except subprocess.CalledProcessError as e:
     print(e)  # this seems normal to occur
 
+# Create CSS file
+css_string = """
+#TOC {
+    position: fixed;
+    width: 20em;
+    left: -1em;
+    top: 0;
+    height: 100%;
+    background-color: white;
+    overflow-y: scroll;
+    padding: 0;
+}
+#subsec\:TableofContents {
+    display: none;
+}
+body {
+    padding-left: 20em;
+}
+code {
+    color: #000;
+    font-family: monospace;
+    background: #f4f4f4;
+}
+tr:nth-of-type(odd) {
+    background-color:#f0f0ff;
+}
+"""
+with open("main.css", "w") as f:
+    f.write(css_string)
+
 # Generate HTML
 css_url = "https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-subprocess.run(f"pandoc sigmf-spec.tex -f latex -t html -s -o sigmf-spec.html --toc --toc-depth=3 -c {css_url}".split())
+subprocess.run(f"pandoc sigmf-spec.tex -f latex -t html -s -o sigmf-spec.html --toc --toc-depth=3 -c {css_url} -c main.css".split())

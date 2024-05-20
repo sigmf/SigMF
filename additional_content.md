@@ -75,9 +75,8 @@ used to describe the relationships between multiple Recordings.
 Collections and multiple Recordings can be packaged for easy storage and 
 distribution in a SigMF `Archive`.
 
-% Will eventually replace with a nicer one made in drawio
 \begin{figure}[t]
-\includesvg{images/SigMFobjects.drawio.svg}
+\includesvg[width=400px]{images/SigMFobjects.drawio.svg}
 \centering
 \end{figure}
 
