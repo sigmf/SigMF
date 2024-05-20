@@ -2,9 +2,7 @@
 
 # Signal Metadata Format (SigMF)
 
-Welcome to the SigMF project! The [SigMF specification document](sigmf-spec.md)
-is the `sigmf-spec.md` file in this repository. Below we discuss why and how
-you might use SigMF in your projects.
+Welcome to the SigMF project! The [SigMF specifications can be viewed here](https://sigmf.github.io/SigMF/sigmf-spec.html) or [downloaded as a PDF](https://sigmf.github.io/SigMF/sigmf-spec.pdf). Below we discuss why and how you might use SigMF in your projects.
 
 ## Introduction
 
