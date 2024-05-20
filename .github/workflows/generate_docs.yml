@@ -28,13 +28,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install prereqs
-        run: sudo apt install python3-pip pandoc inkscape texlive-latex-extra -y
+        run: sudo apt install python3-pip inkscape texlive-latex-extra -y
       - name: Pip installs
         run: sudo pip install pylatex
+      - name: Install a more recent version of Pandoc than available from apt or pip (to get svg support)
+        run: |
+          wget "https://github.com/jgm/pandoc/releases/download/3.2/pandoc-3.2-linux-amd64.tar.gz"
+          tar -xvf pandoc-3.2-linux-amd64.tar.gz
+          sudo cp pandoc-3.2/bin/pandoc /usr/local/bin
       - name: Build docs
         run: python3 docs-generator.py
       - name: Check if docs are generated
         run: ls -la
+      - name: Check pandoc version
+        run: pandoc -v
       - name: Rename to index.html
         run: mv sigmf-spec.html index.html
       - name: Setup Pages
