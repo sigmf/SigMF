@@ -197,6 +197,10 @@ css_string = """
 body {
     padding-left: 20em;
 }
+@media (max-width:800px){
+    #TOC {display:none; width: 0em;}
+    body {padding-left: 0em;}
+}
 code {
     color: #000;
     font-family: monospace;
