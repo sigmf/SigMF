@@ -216,6 +216,6 @@ with open("main.css", "w") as f:
 
 # Generate HTML from tex with Pandoc
 css_url = "https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-pandoc_out = subprocess.run(f"pandoc sigmf-spec.tex asd -f latex -t html -s -o sigmf-spec.html --toc --toc-depth=3 -c {css_url} -c main.css".split(), capture_output = True, text = True)
+pandoc_out = subprocess.run(f"pandoc sigmf-spec.tex -f latex -t html -s -o sigmf-spec.html --toc --toc-depth=3 -c {css_url} -c main.css".split(), capture_output = True, text = True)
 if len(pandoc_out.stderr):
     raise Exception("Pandoc error: " + pandoc_out.stderr)
