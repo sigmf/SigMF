@@ -2,7 +2,7 @@
   "$id": "https://github.com/sigmf/SigMF/spec/1.2.0/sigmf-schema",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Schema for SigMF Meta Files",
-  "description": "The Signal Metadata Format (SigMF) specifies a way to describe sets of recorded digital signal samples with metadata written in JSON. SigMF can be used to describe general information about a collection of samples, the characteristics of the system that generated the samples, features of signals themselves, and the relationship between different recordings.",
+  "description": "SigMF specifies a way to describe sets of recorded digital signal samples with metadata written in JSON. SigMF can be used to describe general information about a collection of samples, the characteristics of the system that generated the samples, features of signals themselves, and the relationship between different recordings.",
   "type": "object",
   "required": ["global", "captures", "annotations"],
   "properties": {
