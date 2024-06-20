@@ -1,4 +1,4 @@
-from pylatex import Document, Section, Subsection, Subsubsection, Package, Tabular, Figure
+from pylatex import Document, Section, Subsection, Subsubsection, Package, Tabular, Figure, Command
 from pylatex.utils import bold, NoEscape
 import json
 import time
@@ -58,6 +58,7 @@ def gen_fields(doc, d):
 
 geometry_options = {"tmargin": "1in", "lmargin": "1in", "rmargin": "1in", "bmargin": "1in"}
 doc = Document(geometry_options=geometry_options)
+doc.preamble.append(Command('title', 'SigMF')) # doesn't actually show up anywhere, but was causing a warning when not included
 doc.packages.append(Package("underscore"))  # makes it so _ never means math mode!
 doc.packages.append(Package("xcolor", options=["table"]))  # allows for \rowcolors
 doc.packages.append(Package("listings"))
@@ -215,4 +216,6 @@ with open("main.css", "w") as f:
 
 # Generate HTML
 css_url = "https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-subprocess.run(f"pandoc sigmf-spec.tex -f latex -t html -s -o sigmf-spec.html --toc --toc-depth=3 -c {css_url} -c main.css".split())
+pandoc_out = subprocess.run(f"pandoc sigmf-spec.tex -f latex -t html -s -o sigmf-spec.html --toc --toc-depth=3 -c {css_url} -c main.css".split(), capture_output = True, text = True)
+if len(pandoc_out.stderr):
+    raise Exception("Pandoc error: " + pandoc_out.stderr)
