@@ -27,6 +27,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Apt update
+        run: sudo apt update
       - name: Install prereqs
         run: sudo apt install python3-pip inkscape texlive-latex-extra -y
       - name: Pip installs
