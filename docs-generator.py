@@ -1,8 +1,10 @@
-from pylatex import Document, Section, Subsection, Subsubsection, Package, Tabular, Figure, Command
-from pylatex.utils import bold, NoEscape
 import json
-import time
 import subprocess
+import time
+
+from pylatex import (Command, Document, Figure, Package, Section, Subsection,
+                     Subsubsection, Tabular)
+from pylatex.utils import NoEscape, bold
 
 with open("sigmf-schema.json", "r") as f:
     data = json.load(f)
