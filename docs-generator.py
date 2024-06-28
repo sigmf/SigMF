@@ -84,7 +84,7 @@ doc.append(NoEscape("\\pagestyle{fancy}"))
 doc.append(NoEscape("\\fancyhf{}"))  # clear all header/footer fields
 doc.append(NoEscape("\\renewcommand{\headrulewidth}{0pt}"))
 doc.append(NoEscape("\\fancyfoot[LE,RO]{\\thepage}"))
-doc.append(NoEscape("\\fancyfoot[LO,CE]{\\footnotesize Signal Metadata Format (SigMF) Specification Version " + sigmf_version + "}"))
+doc.append(NoEscape("\\fancyfoot[LO,CE]{\\footnotesize SigMF Specification Version " + sigmf_version + "}"))
 
 with doc.create(Figure(position="h!")) as logo:
     doc.append(NoEscape("\\vspace{-0.8in}\\centering"))
@@ -92,7 +92,7 @@ with doc.create(Figure(position="h!")) as logo:
     logo.add_image("logo/sigmf_logo.png", width="120px")
     doc.append(NoEscape("\\vspace{-0.3in}"))
 
-with doc.create(Section("Signal Metadata Format (SigMF) Specification Version " + sigmf_version)):
+with doc.create(Section("SigMF Specification Version " + sigmf_version)):
     with doc.create(Subsection("Abstract")):  # Abstract lives in the JSON Schema
         doc.append(data["description"])
 

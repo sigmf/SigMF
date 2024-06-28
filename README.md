@@ -1,6 +1,6 @@
 <p align="center"><img src="https://github.com/sigmf/SigMF/blob/v1.2.0/logo/sigmf_logo.svg" alt="Rendered SigMF Logo"/></p>
 
-# Signal Metadata Format (SigMF)
+# SigMF: The Signal Metadata Format
 
 Welcome to the SigMF project! The [SigMF specifications can be viewed here](https://sigmf.github.io/SigMF/index.html) or [downloaded as a PDF](https://sigmf.github.io/SigMF/sigmf-spec.pdf). Below we discuss why and how you might use SigMF in your projects.
 
