@@ -1,8 +1,10 @@
-from pylatex import Document, Section, Subsection, Subsubsection, Package, Tabular, Figure
-from pylatex.utils import bold, NoEscape
 import json
-import time
 import subprocess
+import time
+
+from pylatex import (Command, Document, Figure, Package, Section, Subsection,
+                     Subsubsection, Tabular)
+from pylatex.utils import NoEscape, bold
 
 with open("sigmf-schema.json", "r") as f:
     data = json.load(f)
@@ -58,6 +60,7 @@ def gen_fields(doc, d):
 
 geometry_options = {"tmargin": "1in", "lmargin": "1in", "rmargin": "1in", "bmargin": "1in"}
 doc = Document(geometry_options=geometry_options)
+doc.preamble.append(Command("title", "SigMF"))  # doesn't actually show up anywhere, but was causing a warning when not included
 doc.packages.append(Package("underscore"))  # makes it so _ never means math mode!
 doc.packages.append(Package("xcolor", options=["table"]))  # allows for \rowcolors
 doc.packages.append(Package("listings"))
@@ -213,6 +216,12 @@ tr:nth-of-type(odd) {
 with open("main.css", "w") as f:
     f.write(css_string)
 
-# Generate HTML
+# Generate HTML from tex with Pandoc
 css_url = "https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-subprocess.run(f"pandoc sigmf-spec.tex -f latex -t html -s -o sigmf-spec.html --toc --toc-depth=3 -c {css_url} -c main.css".split())
+pandoc_out = subprocess.run(
+    f"pandoc sigmf-spec.tex -f latex -t html -s -o sigmf-spec.html --toc --toc-depth=3 -c {css_url} -c main.css".split(),
+    capture_output=True,
+    text=True,
+)
+if len(pandoc_out.stderr):
+    raise Exception("Pandoc error: " + pandoc_out.stderr)

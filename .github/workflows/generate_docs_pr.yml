@@ -1,0 +1,31 @@
+name: Build docs to check for errors
+
+on:
+  pull_request:
+    # only runs on PRs that target main
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Apt update
+        run: sudo apt update
+      - name: Install prereqs
+        run: sudo apt install python3-pip inkscape texlive-latex-extra -y
+      - name: Pip installs
+        run: sudo pip install pylatex
+      - name: Install a more recent version of Pandoc than available from apt or pip (to get svg support)
+        run: |
+          wget "https://github.com/jgm/pandoc/releases/download/3.2/pandoc-3.2-linux-amd64.tar.gz"
+          tar -xvf pandoc-3.2-linux-amd64.tar.gz
+          sudo cp pandoc-3.2/bin/pandoc /usr/local/bin
+      - name: Build docs
+        run: python3 docs-generator.py
+      - name: Check if docs are generated
+        run: ls -la
+      - name: Check pandoc version
+        run: pandoc -v
