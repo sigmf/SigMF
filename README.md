@@ -52,7 +52,7 @@ There are at least four ways you can use SigMF today, thanks to the community-su
 1. Within **Python**, using the [official SigMF Python package **sigmf**](https://github.com/sigmf/sigmf-python) available from pip: `pip install sigmf`.
 2. Within **C++** using the [header-only C++ library **libsigmf**](https://github.com/sigmf/libsigmf).
 3. Within **GNU Radio** using the built-in SigMF [source](https://github.com/gnuradio/gnuradio/blob/main/gr-blocks/grc/blocks_sigmf_source_minimal.block.yml) & [sink](https://github.com/gnuradio/gnuradio/blob/main/gr-blocks/grc/blocks_sigmf_sink_minimal.block.yml) blocks.
-4. Manually, using our examples and the [spec itself](sigmf-spec.md), even if it's simply editing a text file.
+4. Manually, using our examples and the [spec itself](https://sigmf.github.io/SigMF/sigmf-spec.pdf), even if it's simply editing a text file.
 
 
 ## Contributing
