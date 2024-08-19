@@ -29,13 +29,8 @@ jobs:
         run: ls -la
       - name: Check pandoc version
         run: pandoc -v
-      - name: Upload html as an artifact
+      - name: Upload output as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: sigmf-spec.html
-          path: sigmf-spec.html
-      - name: Upload pdf as an artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: sigmf-spec.pdf
-          path: sigmf-spec.pdf
+          name: out
+          path: '.'
