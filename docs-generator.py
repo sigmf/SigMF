@@ -1,6 +1,5 @@
 import json
 import subprocess
-import time
 
 from pylatex import (Command, Document, Figure, Package, Section, Subsection,
                      Subsubsection, Tabular)

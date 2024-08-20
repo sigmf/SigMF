@@ -4,6 +4,8 @@ sigmf-spec.pdf
 sigmf-spec.out
 sigmf-spec.log
 sigmf-spec.aux
+sigmf-spec.fls
+sigmf-spec.fdb_latexmk
 svg-inkscape/
 sigmf-spec.html
 main.css
