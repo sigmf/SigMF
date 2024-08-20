@@ -162,7 +162,7 @@ whitespace, line-endings, EOF characters).
 
 Complex samples MUST be interleaved, with the in-phase component first (i.e., `I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`). 
 
-When `core:num_channels` in the Global Object (described below) indicates that the Recording contains more than one channel, samples from those channels MUST be interleaved in the same manner with the same index from each channel's sample serially in the Recording. This is intended for use in situations where the native SigMF datatypes are not appropriate, such as audio or oscilloscope channels. For best compatibility, is RECOMMENDED that native complex type datatypes be used whenever possible (e.g.: RF data).  For multiple channels of IQ data (e.g., array processing), it is RECOMMENDED to use SigMF Collections.
+When `core:num_channels` in the Global Object (described below) indicates that the Recording contains more than one channel, samples from those channels MUST be interleaved in the same manner with the same index from each channel's sample serially in the Recording. This is intended for use in situations where the native SigMF datatypes are not appropriate, such as audio or oscilloscope channels. For best compatibility, is RECOMMENDED that native complex type datatypes be used whenever possible (e.g.: RF data).  The data type specified by core:data_type applies to all channels of data.  For multiple channels of IQ data (e.g., array processing), it is RECOMMENDED to use SigMF Collections.
 
 \subsection{SigMF Metadata Format}
 
