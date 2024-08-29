@@ -46,6 +46,8 @@ jobs:
         run: pandoc -v
       - name: Rename to index.html
         run: mv sigmf-spec.html index.html
+      - name: Remove pandoc lib
+        run: rm -r pandoc* && rm pandoc*
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
