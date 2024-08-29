@@ -32,5 +32,5 @@ jobs:
       - name: Upload output as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: out
+          name: compiled_docs
           path: '.'
