@@ -93,7 +93,7 @@ The main pdf is generated using the following content:
 
 The script `docs-generator.py` uses Python, PyLaTeX, Pandoc, and Inkscape to create the specifications document in PDF and HTML formats.
 
-Instead of generating the docs locally, you can make your change (e.g., using GitHub's web interface), open up a PR, and then under GitHub's "Actions" menu at the top, click the run that corresponds to your PR, scroll down to "Artifacts", download the artifact named "out", unzip it, and you should be able to see the html and pdf.
+Instead of generating the docs locally, you can make your change (e.g., using GitHub's web interface), open up a PR, and then under GitHub's "Actions" menu at the top, click the run that corresponds to your PR, scroll down to "Artifacts", download the artifact named "compiled_docs", unzip it, and you should be able to see the html and pdf.
 
 ## Frequently Asked Questions
 
