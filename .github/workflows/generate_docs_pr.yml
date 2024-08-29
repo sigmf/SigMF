@@ -1,4 +1,4 @@
-name: Build docs to check for errors
+name: Build docs [PR]
 
 on:
   pull_request:
@@ -29,3 +29,10 @@ jobs:
         run: ls -la
       - name: Check pandoc version
         run: pandoc -v
+      - name: Remove pandoc lib
+        run: rm -r pandoc*
+      - name: Upload output as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled_docs
+          path: '.'

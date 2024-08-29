@@ -160,16 +160,9 @@ The samples SHOULD be written to the Dataset file without separation, and the
 Dataset file MUST NOT contain any other characters (e.g., delimiters,
 whitespace, line-endings, EOF characters).
 
-Complex samples MUST be interleaved, with the in-phase component first (i.e.,
-`I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`). When `core:num_channels` in the
-Global Object (described below) indicates that the Recording contains more than one channel,
-samples from those channels MUST be interleaved in the same manner, with
-the same index from each channel's sample serially in the Recording. For
-example, a Recording with two channels of `ri16_le` representing real-valued
-audio data from a stereo Recording and here labeled `L` for left and `R` for
-right, the data MUST appear as `L[0]` `R[0]` `L[1]` `R[1]` ... `L[n]` `R[n]`.
-The data type specified by `core:data_type` applies to all channels of data
-both real and imaginary parts.
+Complex samples MUST be interleaved, with the in-phase component first (i.e., `I[0]` `Q[0]` `I[1]` `Q[1]` ... `I[n]` `Q[n]`). 
+
+When `core:num_channels` in the Global Object (described below) indicates that the Recording contains more than one channel, samples from those channels MUST be interleaved in the same manner with the same index from each channel's sample serially in the Recording. This is intended for use in situations where the native SigMF datatypes are not appropriate, such as audio or oscilloscope channels. For best compatibility, is RECOMMENDED that native complex type datatypes be used whenever possible (e.g.: RF data).  The data type specified by core:data_type applies to all channels of data.  For multiple channels of IQ data (e.g., array processing), it is RECOMMENDED to use SigMF Collections.
 
 \subsection{SigMF Metadata Format}
 

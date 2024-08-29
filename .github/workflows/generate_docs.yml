@@ -46,10 +46,12 @@ jobs:
         run: pandoc -v
       - name: Rename to index.html
         run: mv sigmf-spec.html index.html
+      - name: Remove pandoc lib
+        run: rm -r pandoc*
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v3.0.1
         with:
           path: '.' # Upload entire repository for now, TODO ONLY UPLOAD THE HTML AND PDF IN THE LONG TERM
       - name: Deploy to GitHub Pages
