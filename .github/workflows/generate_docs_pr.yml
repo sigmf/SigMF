@@ -32,7 +32,7 @@ jobs:
       - name: Remove pandoc lib
         run: rm -r pandoc*
       - name: Upload output as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: compiled_docs
           path: '.'
