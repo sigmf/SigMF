@@ -29,6 +29,8 @@ jobs:
         run: ls -la
       - name: Check pandoc version
         run: pandoc -v
+      - name: Remove pandoc lib
+        run: rm -r pandoc* && rm pandoc*
       - name: Upload output as artifact
         uses: actions/upload-artifact@v3
         with:
