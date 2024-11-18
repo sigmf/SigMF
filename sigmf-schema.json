@@ -99,7 +99,7 @@
           "type": "string"
         },
         "core:geolocation": {
-          "description": "The location of the recording system, as a single RFC 7946 GeoJSON `point` Object using the convention defined by RFC 5870. Per the GeoJSON specification, the point coordinates use the WGS84 coordinate reference system and are `longitude`, `latitude` (REQUIRED, in decimal degrees), and `altitude` (OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. An example including the altitude field is shown below:  \\begin{verbatim} \"global\": {\n   ...\n   \"core:geolocation\": {\n     \"type\": \"Point\",\n     \"coordinates\": [-107.6183682, 34.0787916, 2120.0]\n   }\n   ...\n } \\end{verbatim}  GeoJSON permits the use of *Foreign Members* in GeoJSON documents per RFC 7946 Section 6.1. Because the SigMF requirement for the `geolocation` field is to be a valid GeoJSON `point` Object, users MAY include *Foreign Member* fields here for user-defined purposes (position valid indication, GNSS SV counts, dillution of precision, accuracy, etc). It is strongly RECOMMENDED that all fields be documented in a SigMF Extension document.  *Note:* Objects named `geometry` or `properties` are prohibited Foreign Members as specified in RFC 7946 Section 7.1. ",
+          "description": "The location of the Recording system (note, using the Captures scope `geolocation` field is preferred). See the `geolocation` field within the Captures metadata for details. While using the Captures scope `geolocation` is preferred, fixed recording systems may still provide position information within the Global object so it is RECOMMENDED that applications check and use this field if the Captures `geolocation` field is not present.",
           "type": "object",
           "required": ["type", "coordinates"],
           "properties": {
@@ -158,7 +158,7 @@
       "additionalProperties": true
     },
     "captures": {
-      "description": "The `captures` value is an array of capture segment objects that describe the parameters of the signal capture. It MUST be sorted by the value of each capture segment's `core:sample_start` key, ascending.  Capture Segment Objects are composed of key/value pairs, and each Segment describes a chunk of samples that can be mapped into memory for processing. Each Segment MUST contain a `core:sample_start` key/value pair, which indicates the sample index relative to the Dataset where this Segment's metadata applies. The fields that are described within a Capture Segment are scoped to that Segment only and need to be explicitly declared again if they are valid in subsequent Segments. ",
+      "description": "The `captures` Object is an array of capture segment objects that describe the parameters of the signal capture. It MUST be sorted by the value of each capture segment's `core:sample_start` key, ascending.  Capture Segment Objects are composed of key/value pairs, and each Segment describes a chunk of samples that can be mapped into memory for processing. Each Segment MUST contain a `core:sample_start` key/value pair, which indicates the sample index relative to the Dataset where this Segment's metadata applies. The fields that are described within a Capture Segment are scoped to that Segment only and need to be explicitly declared again if they are valid in subsequent Segments. ",
       "default": [],
       "type": "array",
       "additionalItems": false,
@@ -200,6 +200,31 @@
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 18446744073709552000
+              },
+              "core:geolocation": {
+                "description": "The location of the recording system at the start of this Captures segment, as a single RFC 7946 GeoJSON `point` Object. For moving emitters, this provides a rudimentary means to manage location through different captures segments. While `core:geolocation` is also allowed in the Global object for backwards compatibility reasons, adding it to Captures is preferred.  Per the GeoJSON specification, the point coordinates use the WGS84 coordinate reference system and are `longitude`, `latitude` (REQUIRED, in decimal degrees), and `altitude` (OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. An example including the altitude field is shown below:  \\begin{verbatim} \"captures\": {\n   ...\n   \"core:geolocation\": {\n     \"type\": \"Point\",\n     \"coordinates\": [-107.6183682, 34.0787916, 2120.0]\n   }\n   ...\n } \\end{verbatim}  GeoJSON permits the use of *Foreign Members* in GeoJSON documents per RFC 7946 Section 6.1. Because the SigMF requirement for the `geolocation` field is to be a valid GeoJSON `point` Object, users MAY include *Foreign Member* fields here for user-defined purposes (position valid indication, GNSS SV counts, dillution of precision, accuracy, etc). It is strongly RECOMMENDED that all fields be documented in a SigMF Extension document.  *Note:* Objects named `geometry` or `properties` are prohibited Foreign Members as specified in RFC 7946 Section 7.1.",
+                "type": "object",
+                "required": ["type", "coordinates"],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["Point"]
+                  },
+                  "coordinates": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  "bbox": {
+                    "type": "array",
+                    "minItems": 4,
+                    "items": {
+                      "type": "number"
+                    }
+                  }
+                }
               }
             },
             "additionalProperties": true
@@ -209,7 +234,7 @@
     },
     "annotations": {
       "default": [],
-      "description": "The `annotations` value is an array of annotation segment objects that describe anything regarding the signal data not part of the Captures and Global objects. It MUST be sorted by the value of each Annotation Segment's `core:sample_start` key, ascending.  Annotation segment Objects contain key/value pairs and MUST contain a `core:sample_start` key/value pair, which indicates the first index  at which the rest of the Segment's key/value pairs apply.  There is no limit to the number of annotations that can apply to the same group of samples. If two annotations have the same `sample_start`, there is no defined ordering between them. If two annotations have the same `sample_start`, there is no defined ordering between them. If `sample_count` is not provided, it SHOULD be assumed that the annotation applies from `sample_start` through the end of the corresponding capture, in all other cases `sample_count` MUST be provided. ",
+      "description": "The `annotations` Object is an array of annotation segment objects that describe anything regarding the signal data not part of the Captures and Global objects. It MUST be sorted by the value of each Annotation Segment's `core:sample_start` key, ascending.  Annotation segment Objects contain key/value pairs and MUST contain a `core:sample_start` key/value pair, which indicates the first index  at which the rest of the Segment's key/value pairs apply.  There is no limit to the number of annotations that can apply to the same group of samples. If two annotations have the same `sample_start`, there is no defined ordering between them. If two annotations have the same `sample_start`, there is no defined ordering between them. If `sample_count` is not provided, it SHOULD be assumed that the annotation applies from `sample_start` through the end of the corresponding capture, in all other cases `sample_count` MUST be provided. ",
       "type": "array",
       "additionalItems": true,
       "items": {
