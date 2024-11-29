@@ -1,0 +1,112 @@
+
+{
+  "$id": "https://github.com/sigmf/SigMF/spec/1.0.0/extensions/signal-schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Signal Schema extension for SigMF-meta file",
+  "description": "The signal extension namespace defines how to describe the attributes of wireless communications signals and their emitters",
+  "type": "object",
+  "properties": {
+    "annotations": {
+      "description": "The following names are specified in the `signal` namespace and should be used in the `annotations` object:",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "signal:detail": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["analog", "digital"],
+                "description": "Type of modulation scheme"
+              },
+              "mod_class": {
+                "type": "string",
+                "enum": ["am", "fm", "pm", "ssb", "dsb", "vsb", "ask", "fsk", "psk", "qam", "ook", "cpm", "msk"],
+                "description": "Modulation class"
+              },
+              "standard": {
+                "type": "string",
+                "description": "Communication standard (e.g., 802.11ac)"
+              },
+              "carrier_variant": {
+                "type": "string",
+                "enum": ["with_carrier", "suppressed_carrier", "reduced_carrier", "single_carrier", "multi_carrier"],
+                "description": "Carrier variant type"
+              },
+              "symbol_variant": {
+                "type": "string",
+                "enum": ["differential", "offset"],
+                "description": "Symbol variant type" 
+              },
+              "order": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Modulation order"
+              },
+              "duplexing": {
+                "type": "string",
+                "enum": ["tdd", "fdd"],
+                "description": "Duplexing type"
+              },
+              "multiplexing": {
+                "type": "string", 
+                "enum": ["tdm", "fdm", "cdm", "ofdm", "sdm", "pdm"],
+                "description": "Multiplexing type"
+              },
+              "multiple_access": {
+                "type": "string",
+                "enum": ["fdma", "ofdma", "tdma", "cdma", "sdma", "pdma"],
+                "description": "Multiple access type"
+              },
+              "spreading": {
+                "type": "string",
+                "enum": ["fhss", "thss", "dsss", "css"],
+                "description": "Spreading type"
+              },
+              "channel_bw": {
+                "type": "number",
+                "description": "Channel bandwidth"
+              },
+              "channel": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Channel number"
+              },
+              "class_variant": {
+                "type": "string",
+                "description": "Modifier to modulation class"
+              }
+            }
+          },
+          "signal:emitter": {
+            "type": "object",
+            "properties": {
+              "seid": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Unique ID of the emitter"
+              },
+              "manufacturer": {
+                "type": "string",
+                "description": "Manufacturer of the hardware"
+              },
+              "power_tx": {
+                "type": "number",
+                "description": "Total transmitted power (dBm)"
+              },
+              "power_eirp": {
+                "type": "number",
+                "description": "Effective Isotropic Radiated Power (dBm)"
+              },
+              "geolocation": {
+                "type": "object",
+                "description": "GeoJSON location of emitter"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "$id": "https://github.com/sigmf/SigMF/spec/1.0.0/extensions/traceability-schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Traceability Schema extension for SigMF-meta file",
+  "description": "Extension providing traceability information for SigMF metadata",
+  "$defs": {
+    "DataChange": {
+      "type": "object",
+      "required": ["datetime"],
+      "properties": {
+        "author": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address of the author who changed the metadata"
+        },
+        "datetime": {
+          "type": "string",
+          "format": "date-time", 
+          "description": "Timestamp of the modification in ISO 8601 format"
+        }
+      }
+    },
+    "Origin": {
+      "type": "object",
+      "required": ["file_path"],
+      "properties": {
+        "account": {
+          "type": "string",
+          "description": "Account name or identifier"
+        },
+        "container": {
+          "type": "string",
+          "description": "Container or repository name"
+        },
+        "file_path": {
+          "type": "string", 
+          "description": "Path to the file within the container"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "global": {
+      "type": "object",
+      "properties": {
+        "traceability:last_modified": {
+          "$ref": "#/$defs/DataChange"
+        },
+        "traceability:last_reviewed": {
+          "$ref": "#/$defs/DataChange"
+        },
+        "traceability:revision": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Revision number associated with the metadata"
+        },
+        "traceability:origin": {
+          "$ref": "#/$defs/Origin"
+        }
+      }
+    },
+    "annotations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "traceability:last_modified": {
+            "$ref": "#/$defs/DataChange"
+          },
+          "traceability:last_reviewed": {
+            "$ref": "#/$defs/DataChange"
+          }
+        }
+      }
+    }
+  }
+}

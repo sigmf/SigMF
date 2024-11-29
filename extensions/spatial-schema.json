@@ -1,0 +1,168 @@
+{
+  "$id": "https://github.com/sigmf/SigMF/spec/1.0.0/extensions/spatial-schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Spatial Schema extension for SigMF-meta file", 
+  "description": "Extension for storing information about spatially diverse data, specifically for directional antennas and multichannel phase-coherent datasets",
+   "$defs": {
+    "bearing": {
+      "type": "object",
+      "properties": {
+        "azimuth": {
+          "type": "number",
+          "description": "Azimuth component of the direction in degrees increasing clockwise"
+        },
+        "elevation": {
+          "type": "number", 
+          "description": "Elevation component of the direction in degrees above horizon"
+        },
+        "range": {
+          "type": "number",
+          "description": "Line-of-sight slant range to emitter, if known, in meters"
+        },
+        "range_rate": {
+          "type": "number",
+          "description": "Time derivative of line-of-sight slant range to emitter, if known, in meters"
+        },
+        "az_error": {
+          "type": "number",
+          "description": "Error or uncertainty in the azimuth component"
+        },
+        "el_error": {
+          "type": "number",
+          "description": "Error or uncertainty in the elevation component"
+        },
+        "range_error": {
+          "type": "number",
+          "description": "Error or uncertainty in the range component"
+        },
+        "range_rate_error": {
+          "type": "number",
+          "description": "Error or uncertainty in the range-rate component"
+        }
+      }
+    },
+    "cartesian_point": {
+      "type": "object",
+      "properties": {
+        "point": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "A point defined by three elements [x,y,z] referenced to the spatial CRS"
+        },
+        "unknown": {
+          "type": "boolean",
+          "description": "Always set to true - indicates that this point is not known"
+        }
+      },
+      "oneOf": [
+        {"required": ["point"]},
+        {"required": ["unknown"]}
+      ]
+    },
+    "calibration": {
+      "type": "object",
+      "required": ["caltype"],
+      "properties": {
+        "caltype": {
+          "type": "string",
+          "enum": ["tone", "xcorr", "ref", "other"],
+          "description": "Type of calibration signal"
+        },
+        "bearing": {
+          "$ref": "#/$defs/bearing"
+        },
+        "cal_geometry": {
+          "$ref": "#/$defs/cartesian_point"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "global": {
+      "type": "object", 
+      "description":  "The following names are specified in the `spatial` namespace and should be used in the `global` object:",
+      "required": ["spatial:num_elements", "spatial:channel_index"],
+      "properties": {
+        "spatial:num_elements": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "spatial:channel_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "captures": {
+      "type": "array",
+      "description": "The following names are specified in the `spatial` namespace and should be used in the `captures` object:",
+      "items": {
+        "type": "object",
+        "properties": {
+          "spatial:aperture_azimuth": {
+            "type": "number",
+            "description": "Azimuth of aperture boresight in degrees east of true north"
+          },
+          "spatial:aperture_bearing": {
+            "$ref": "#/$defs/bearing"
+          },
+          "spatial:aperture_rotation": {
+            "type": "number",
+            "description": "Right-handed rotation of aperture in degrees"
+          },
+          "spatial:emitter_bearing": {
+            "$ref": "#/$defs/bearing"
+          },
+          "spatial:element_geometry": {
+            "type": "array",
+            "items": {"$ref": "#/$defs/cartesian_point"}
+          },
+          "spatial:phase_offset": {
+            "type": "number",
+            "description": "Phase offset relative to common phase reference plane"
+          },
+          "spatial:calibration": {
+            "$ref": "#/$defs/calibration"
+          }
+        }
+      }
+    },
+    "annotations": {
+      "type": "array",
+      "description": "The following names are specified in the `spatial` namespace and should be used in the `annotations` object:",
+      "items": {
+        "type": "object",
+        "properties": {
+          "spatial:signal_azimuth": {
+            "type": "number",
+            "description": "Azimuth in degrees east of true north"
+          },
+          "spatial:signal_bearing": {
+            "$ref": "#/$defs/bearing"
+          },
+          "spatial:emitter_location": {
+            "type": "object",
+            "description": "GeoJSON point object for emitter location"
+          }
+        }
+      }
+    },
+    "collection": {
+      "description": "The following fields are specificed in SigMF Collections:",
+      "type": "object",
+      "required": ["spatial:element_geometry"],
+      "properties": {
+        "spatial:element_geometry": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/cartesian_point"},
+          "description": "Array of phase center geometries"
+        }
+      }
+    }
+  }
+}
