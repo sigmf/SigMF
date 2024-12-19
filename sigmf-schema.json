@@ -94,7 +94,7 @@
           "maximum": 18446744073709552000
         },
         "core:version": {
-          "description": "The version of the SigMF specification used to create the Metadata file, in the format X.Y.Z",
+          "description": "The version of the SigMF specification used to create the Metadata file, in the format X.Y.Z.",
           "pattern": "^\\d+\\.\\d+\\.\\d",
           "type": "string"
         },

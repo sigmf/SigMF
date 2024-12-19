@@ -34,7 +34,7 @@ def gen_table(table, d):
         dtype = value.get("type", "MISSING")
         # default = str(value.get("default", ""))
         longdescription = value.get("description", "")
-        shortdescription = longdescription[: longdescription.find(".")].replace("\n", "")  # short description, which is up to the first period
+        shortdescription = longdescription[: longdescription.find(". ")].replace("\n", "")  # short description, which is up to the first period followed by space
         table.add_row((field, required, dtype, shortdescription))
     table.append(NoEscape("\\bottomrule"))
 
