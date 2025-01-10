@@ -15,7 +15,7 @@
           "description": "The SigMF Dataset format of the stored samples in the Dataset file.",
           "examples": ["cf32_le", "ri16_le"],
           "default": "cf32_le",
-          "pattern": "^(c|r)(f32|f64|i32|i16|u32|u16|i8|u8)(_le|_be)?\\$",
+          "pattern": "^(c|r)(f32|f64|i32|i16|u32|u16|i8|u8)(_le|_be)?",
           "type": "string"
         },
         "core:sample_rate": {
@@ -36,7 +36,7 @@
         "core:dataset": {
           "description": "The full filename of the Dataset file this Metadata file describes, used ONLY with Non-Conforming Datasets. If provided, this string MUST be the complete filename of the Dataset file, including the extension. The Dataset file must be in the same directory as the .sigmf-meta file; note that this string only includes the filename, not directory.  If a Recording does not have this field, it MUST have a compliant SigMF Dataset (NOT a Non-Conforming Dataset) which MUST use the same base filename as the Metadata file and use the `.sigmf-data` extension. If a SigMF Recording or Archive is renamed this field MUST also be updated, because of this it is RECOMMENDED that Compliant SigMF Recordings avoid use of this field.  This field SHOULD NOT be used in conjunction the `core:metadata_only` field. If both fields exist and the file specified by `core:dataset` exists, then `core:metadata_only` SHOULD be ignored by the application.",
           "type": "string",
-          "pattern": "^[^\\/\\\\:*?\"<>|]+(\\.[^\\/\\\\:*?\"<>|]+)*\\$"
+          "pattern": "^[^\\/\\\\:*?\"<>|]+(\\.[^\\/\\\\:*?\"<>|]+)*"
         },
         "core:data_doi": {
           "description": "The registered DOI (ISO 26324) for a Recording's Dataset file.",
@@ -85,7 +85,7 @@
         "core:sha512": {
           "description": "The SHA512 hash of the Dataset file associated with the SigMF file.",
           "type": "string",
-          "pattern": "^[0-9a-fA-F]{128}\\$"
+          "pattern": "^[0-9a-fA-F]{128}"
         },
         "core:trailing_bytes": {
           "description": "The number of bytes to ignore at the end of a Dataset, used ONLY with Non-Conforming Datasets. This field is used with Non-Conforming Datasets to indicate some number of bytes that trail the sample data in the NCD file that should be ignored for processing. This can be used to ignore footer data in non-SigMF filetypes. ",
@@ -179,7 +179,7 @@
               "core:datetime": {
                 "description": "An ISO-8601 string indicating the timestamp of the sample index specified by sample_start. This key/value pair MUST be an ISO-8601 string, as defined by [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt), where the only allowed `time-offset` is `Z`, indicating the UTC/Zulu timezone. The ABNF description is:  \\begin{verbatim} date-fullyear   = 4DIGIT \n date-month      = 2DIGIT  ; 01-12 \n date-mday       = 2DIGIT  ; 01-28, 01-29, 01-30, 01-31 based on month/year \n\n time-hour       = 2DIGIT  ; 00-23 \n time-minute     = 2DIGIT  ; 00-59 \n time-second     = 2DIGIT  ; 00-58, 00-59, 00-60 based on leap second rules \n\n time-secfrac    = \".\" 1*DIGIT \n time-offset     = \"Z\" \n\n partial-time    = time-hour \":\" time-minute \":\" time-second [time-secfrac] \n full-date       = date-fullyear \"-\" date-month \"-\" date-mday \n full-time       = partial-time time-offset \n\n date-time       = full-date \"T\" full-time \\end{verbatim}  Thus, timestamps take the form of `YYYY-MM-DDTHH:MM:SS.SSSZ`, where any number of digits for fractional seconds is permitted. ",
                 "examples": ["1955-11-05T14:00:00.000Z"],
-                "pattern": "^([\\+-]?\\d{4}(?!\\d{2}\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?\\$",
+                "pattern": "^([\\+-]?\\d{4}(?!\\d{2}\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?",
                 "type": "string"
               },
               "core:frequency": {
