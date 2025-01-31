@@ -132,10 +132,7 @@
           "additionalItems": false,
           "items": {
             "type": "object",
-            "anyOf": [
-              {
                 "required": ["name", "version", "optional"],
-                "type": "object",
                 "properties": {
                   "name": {
                     "description": "The name of the SigMF extension namespace.",
@@ -152,8 +149,6 @@
                   }
                 },
                 "additionalProperties": false
-              }
-            ]
           }
         }
       },
@@ -166,10 +161,7 @@
       "additionalItems": false,
       "items": {
         "type": "object",
-        "anyOf": [
-          {
             "required": ["core:sample_start"],
-            "type": "object",
             "properties": {
               "core:sample_start": {
                 "default": 0,
@@ -231,8 +223,6 @@
               }
             },
             "additionalProperties": true
-          }
-        ]
       }
     },
     "annotations": {
@@ -243,10 +233,7 @@
       "items": {
         "type": "object",
         "title": "Annotation",
-        "anyOf": [
-          {
             "required": ["core:sample_start"],
-            "type": "object",
             "properties": {
               "core:sample_start": {
                 "default": 0,
@@ -292,8 +279,6 @@
               }
             },
             "additionalProperties": true
-          }
-        ]
       }
     }
   },
