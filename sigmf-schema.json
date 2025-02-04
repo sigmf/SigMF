@@ -75,7 +75,8 @@
           "description": "The index number of the first sample in the Dataset. If not provided, this value defaults to zero. Typically used when a Recording is split over multiple files. All sample indices in SigMF are absolute, and so all other indices referenced in metadata for this recording SHOULD be greater than or equal to this value.",
           "default": 0,
           "minimum": 0,
-          "maximum": 18446744073709552000,
+          "!comment": "The maximum value for this property is equal to 2^63 - 1, making it easy to fit into a signed 64-bit integer.",
+          "maximum": 9223372036854775807,
           "type": "integer"
         },
         "core:recorder": {
@@ -91,7 +92,7 @@
           "description": "The number of bytes to ignore at the end of a Dataset, used ONLY with Non-Conforming Datasets. This field is used with Non-Conforming Datasets to indicate some number of bytes that trail the sample data in the NCD file that should be ignored for processing. This can be used to ignore footer data in non-SigMF filetypes. ",
           "type": "integer",
           "minimum": 0,
-          "maximum": 18446744073709552000
+          "maximum": 9223372036854775807
         },
         "core:version": {
           "description": "The version of the SigMF specification used to create the Metadata file, in the format X.Y.Z.",
@@ -174,7 +175,7 @@
                 "default": 0,
                 "description": "Index of first sample of this chunk. This field specifies the sample index where this Segment takes effect relative to the recorded Dataset file. If the Dataset is a SigMF Dataset file, this  field can be immediately mapped to physical disk location since conforming Datasets only contain sample data. ",
                 "minimum": 0,
-                "maximum": 18446744073709552000,
+                "maximum": 9223372036854775807,
                 "type": "integer"
               },
               "core:datetime": {
@@ -194,13 +195,13 @@
                 "description": "The index of the sample referenced by `sample_start` relative to an original sample stream. The entirety of which may not have been captured in a recorded Dataset. If omitted, this value SHOULD be treated as equal to `sample_start`.  For example, some hardware devices are capable of 'counting' samples at the point of data conversion. This sample count is commonly used to indicate  a discontinuity in the datastream between the hardware device and processing.  For example, in the below Captures array, there are two Segments describing samples in a SigMF Dataset file. The first Segment begins at the start of the Dataset file. The second segment begins at sample index 500 relative to the recorded samples (and since this is a conforming SigMF Dataset, is physically located on-disk at location `sample_start * sizeof(sample)`), but the `global_index` reports this was actually sample number 1000 in the original datastream, indicating that 500 samples were lost before they could be recorded.  \\begin{verbatim} ...\n \"captures\": [ \n    { \n        \"core:sample_start\": 0, \n        \"core:global_index\": 0 \n    }, \n    { \n        \"core:sample_start\": 500, \n        \"core:global_index\": 1000 \n    }\n ],\n ... \\end{verbatim} ",
                 "type": "integer",
                 "minimum": 0,
-                "maximum": 18446744073709552000
+                "maximum": 9223372036854775807
               },
               "core:header_bytes": {
                 "description": "The number of bytes preceding a chunk of samples that are not sample data, used for NCDs. This field specifies a number of bytes that are not valid sample data that  are physically located at the start of where the chunk of samples referenced by this Segment would otherwise begin. If omitted, this value SHOULD be treated as equal zero. If included, the Dataset is by definition a Non-Conforming Dataset.  For example, the below Metadata for a Non-Conforming Dataset contains two segments describing chunks of 8-bit complex samples (2 bytes per sample) recorded to disk with 4-byte headers that are not valid for processing. Thus, to map these two chunks of samples into memory, a reader application would map the `500 samples` (equal to `1000 bytes`) in the first Segment, starting at a file offset of `4 bytes`, and then the remainder of the file through EOF starting at a file offset of `1008 bytes` (equal to the size  of the previous Segment of samples plus two headers).  \\begin{samepage}\\begin{verbatim} { \n \"global\": { \n    \"core:datatype\": \"cu8\", \n    \"core:version\": \"1.2.0\", \n    \"core:dataset\": \"non-conforming-dataset-01.dat\" \n }, \n \"captures\": [ \n    { \n        \"core:sample_start\": 0, \n        \"core:header_bytes\": 4, \n    }, \n    { \n        \"core:sample_start\": 500, \n        \"core:header_bytes\": 4, \n    }\n ],\n \"annotations\": []\n } \\end{verbatim}\\end{samepage}",
                 "type": "integer",
                 "minimum": 0,
-                "maximum": 18446744073709552000
+                "maximum": 9223372036854775807
               },
               "core:geolocation": {
                 "description": "The location of the recording system at the start of this Captures segment, as a single RFC 7946 GeoJSON `point` Object. For moving emitters, this provides a rudimentary means to manage location through different captures segments. While `core:geolocation` is also allowed in the Global object for backwards compatibility reasons, adding it to Captures is preferred.  Per the GeoJSON specification, the point coordinates use the WGS84 coordinate reference system and are `longitude`, `latitude` (REQUIRED, in decimal degrees), and `altitude` (OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. An example including the altitude field is shown below:  \\begin{verbatim} \"captures\": {\n   ...\n   \"core:geolocation\": {\n     \"type\": \"Point\",\n     \"coordinates\": [-107.6183682, 34.0787916, 2120.0]\n   }\n   ...\n } \\end{verbatim}  GeoJSON permits the use of *Foreign Members* in GeoJSON documents per RFC 7946 Section 6.1. Because the SigMF requirement for the `geolocation` field is to be a valid GeoJSON `point` Object, users MAY include *Foreign Member* fields here for user-defined purposes (position valid indication, GNSS SV counts, dillution of precision, accuracy, etc). It is strongly RECOMMENDED that all fields be documented in a SigMF Extension document.  *Note:* Objects named `geometry` or `properties` are prohibited Foreign Members as specified in RFC 7946 Section 7.1.",
@@ -251,14 +252,14 @@
                 "default": 0,
                 "description": "The sample index at which this Segment takes effect.",
                 "minimum": 0,
-                "maximum": 18446744073709552000,
+                "maximum": 9223372036854775807,
                 "type": "integer"
               },
               "core:sample_count": {
                 "description": "The number of samples that this Segment applies to.",
                 "type": "integer",
                 "minimum": 0,
-                "maximum": 18446744073709552000
+                "maximum": 9223372036854775807
               },
               "core:freq_lower_edge": {
                 "description": "The frequency (Hz) of the lower edge of the feature described by this annotation. The `freq_lower_edge` and `freq_upper_edge` fields SHOULD be at RF if the feature is at a known RF frequency. If there is no known center frequency (as defined by the `frequency` field in the relevant Capture Segment Object), or the center frequency is at baseband, the `freq_lower_edge` and `freq_upper_edge` fields SHOULD be relative to baseband. It is REQUIRED that both `freq_lower_edge` and `freq_upper_edge` be provided, or neither; the use of just one field is not allowed. ",
