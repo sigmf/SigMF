@@ -123,16 +123,16 @@ with doc.create(Section("SigMF Specification Version " + sigmf_version)):
         doc.append("\n\n")
         doc.append(NoEscape("\\rowcolors{1}{}{lightblue}"))
         with doc.create(Tabular("lllp{3.8in}")) as table:
-            gen_table(table, data["properties"]["captures"]["items"]["anyOf"][0])
-        gen_fields(doc, data["properties"]["captures"]["items"]["anyOf"][0])
+            gen_table(table, data["properties"]["captures"]["items"])
+        gen_fields(doc, data["properties"]["captures"]["items"])
 
     with doc.create(Subsection("Annotations Array")):
         doc.append(NoEscape(add_code_tags(data["properties"]["annotations"]["description"])))
         doc.append("\n\n")
         doc.append(NoEscape("\\rowcolors{1}{}{lightblue}"))
         with doc.create(Tabular("lllp{3.8in}")) as table:
-            gen_table(table, data["properties"]["annotations"]["items"]["anyOf"][0])
-        gen_fields(doc, data["properties"]["annotations"]["items"]["anyOf"][0])
+            gen_table(table, data["properties"]["annotations"]["items"])
+        gen_fields(doc, data["properties"]["annotations"]["items"])
 
     with doc.create(Subsection("SigMF Collection Format")):
         doc.append(NoEscape(add_code_tags(data_collection["properties"]["collection"]["description"])))
@@ -158,8 +158,8 @@ with doc.create(Section("Extensions")):
         doc.append("\n\n")
         doc.append(NoEscape("\\rowcolors{1}{}{lightblue}"))
         with doc.create(Tabular("lllp{3.8in}")) as table:
-            gen_table(table, data_antenna["properties"]["annotations"]["items"]["anyOf"][0])
-        gen_fields(doc, data_antenna["properties"]["annotations"]["items"]["anyOf"][0])
+            gen_table(table, data_antenna["properties"]["annotations"]["items"])
+        gen_fields(doc, data_antenna["properties"]["annotations"]["items"])
 
         doc.append(NoEscape("\\nn"))
         doc.append(NoEscape(add_code_tags(data_antenna["properties"]["collection"]["description"])))

@@ -83,10 +83,6 @@
       "type": "array",
       "items": {
         "type": "object",
-        "anyOf": [
-          {
-            "description": "The annotations value is an array of annotation segment objects that describe anything regarding the signal data not part of the Captures and Global objects. It MUST be sorted by the value of each Annotation Segment's `core:sample_start` key, ascending.",
-            "type": "object",
             "properties": {
               "antenna:azimuth_angle": {
                 "description": "Angle of main beam in azimuthal plane from North, in degrees.",
@@ -101,8 +97,6 @@
                 "type": "string"
               }
             }
-          }
-        ]
       }
     },
     "collection": {
