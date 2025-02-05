@@ -4,16 +4,26 @@
   "title": "Schema for SigMF Meta Files",
   "description": "SigMF specifies a way to describe sets of recorded digital signal samples with metadata written in JSON. SigMF can be used to describe general information about a collection of samples, the characteristics of the system that generated the samples, features of signals themselves, and the relationship between different recordings.",
   "type": "object",
-  "required": ["global", "captures", "annotations"],
+  "required": [
+    "global",
+    "captures",
+    "annotations"
+  ],
   "properties": {
     "global": {
       "description": "The `global` object consists of key/value pairs that provide information applicable to the entire Dataset. It contains the information that is minimally necessary to open and parse the Dataset file, as well as general information about the Recording itself.",
-      "required": ["core:datatype", "core:version"],
+      "required": [
+        "core:datatype",
+        "core:version"
+      ],
       "type": "object",
       "properties": {
         "core:datatype": {
           "description": "The SigMF Dataset format of the stored samples in the Dataset file.",
-          "examples": ["cf32_le", "ri16_le"],
+          "examples": [
+            "cf32_le",
+            "ri16_le"
+          ],
           "default": "cf32_le",
           "pattern": "^(c|r)(f32|f64|i32|i16|u32|u16|i8|u8)(_le|_be)?",
           "type": "string"
@@ -21,12 +31,15 @@
         "core:sample_rate": {
           "description": "The sample rate of the signal in samples per second.",
           "minimum": 1,
-          "maximum": 1e12,
+          "maximum": 1000000000000,
           "type": "number"
         },
         "core:author": {
           "description": "A text identifier for the author potentially including name, handle, email, and/or other ID like Amateur Call Sign",
-          "examples": ["Bruce Wayne bruce@waynetech.com", "Bruce (K3X)"],
+          "examples": [
+            "Bruce Wayne bruce@waynetech.com",
+            "Bruce (K3X)"
+          ],
           "type": "string"
         },
         "core:collection": {
@@ -52,7 +65,9 @@
         },
         "core:license": {
           "description": "A URL for the license document under which the Recording is offered. (RFC 3986)",
-          "examples": ["https://creativecommons.org/licenses/by-sa/4.0/"],
+          "examples": [
+            "https://creativecommons.org/licenses/by-sa/4.0/"
+          ],
           "format": "uri",
           "type": "string"
         },
@@ -76,7 +91,7 @@
           "default": 0,
           "minimum": 0,
           "!comment": "The maximum value for this property is equal to 2^63 - 1, making it easy to fit into a signed 64-bit integer.",
-          "maximum": 9223372036854775807,
+          "maximum": 9223372036854776000,
           "type": "integer"
         },
         "core:recorder": {
@@ -92,7 +107,7 @@
           "description": "The number of bytes to ignore at the end of a Dataset, used ONLY with Non-Conforming Datasets. This field is used with Non-Conforming Datasets to indicate some number of bytes that trail the sample data in the NCD file that should be ignored for processing. This can be used to ignore footer data in non-SigMF filetypes. ",
           "type": "integer",
           "minimum": 0,
-          "maximum": 9223372036854775807
+          "maximum": 9223372036854776000
         },
         "core:version": {
           "description": "The version of the SigMF specification used to create the Metadata file, in the format X.Y.Z.",
@@ -102,11 +117,16 @@
         "core:geolocation": {
           "description": "The location of the Recording system (note, using the Captures scope `geolocation` field is preferred). See the `geolocation` field within the Captures metadata for details. While using the Captures scope `geolocation` is preferred, fixed recording systems may still provide position information within the Global object so it is RECOMMENDED that applications check and use this field if the Captures `geolocation` field is not present.",
           "type": "object",
-          "required": ["type", "coordinates"],
+          "required": [
+            "type",
+            "coordinates"
+          ],
           "properties": {
             "type": {
               "type": "string",
-              "enum": ["Point"]
+              "enum": [
+                "Point"
+              ]
             },
             "coordinates": {
               "type": "array",
@@ -132,23 +152,29 @@
           "additionalItems": false,
           "items": {
             "type": "object",
-                "required": ["name", "version", "optional"],
-                "properties": {
-                  "name": {
-                    "description": "The name of the SigMF extension namespace.",
-                    "type": "string"
-                  },
-                  "version": {
-                    "description": "The version of the extension namespace specification used.",
-                    "examples": ["1.2.0"],
-                    "type": "string"
-                  },
-                  "optional": {
-                    "description": "If this field is `true`, the extension is REQUIRED to parse this Recording.",
-                    "type": "boolean"
-                  }
-                },
-                "additionalProperties": false
+            "required": [
+              "name",
+              "version",
+              "optional"
+            ],
+            "properties": {
+              "name": {
+                "description": "The name of the SigMF extension namespace.",
+                "type": "string"
+              },
+              "version": {
+                "description": "The version of the extension namespace specification used.",
+                "examples": [
+                  "1.2.0"
+                ],
+                "type": "string"
+              },
+              "optional": {
+                "description": "If this field is `true`, the extension is REQUIRED to parse this Recording.",
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
           }
         }
       },
@@ -161,68 +187,80 @@
       "additionalItems": false,
       "items": {
         "type": "object",
-            "required": ["core:sample_start"],
+        "required": [
+          "core:sample_start"
+        ],
+        "properties": {
+          "core:sample_start": {
+            "default": 0,
+            "description": "Index of first sample of this chunk. This field specifies the sample index where this Segment takes effect relative to the recorded Dataset file. If the Dataset is a SigMF Dataset file, this  field can be immediately mapped to physical disk location since conforming Datasets only contain sample data. ",
+            "minimum": 0,
+            "maximum": 9223372036854776000,
+            "type": "integer"
+          },
+          "core:datetime": {
+            "description": "An ISO-8601 string indicating the timestamp of the sample index specified by sample_start. This key/value pair MUST be an ISO-8601 string, as defined by [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt), where the only allowed `time-offset` is `Z`, indicating the UTC/Zulu timezone. The ABNF description is:  \\begin{verbatim} date-fullyear   = 4DIGIT \n date-month      = 2DIGIT  ; 01-12 \n date-mday       = 2DIGIT  ; 01-28, 01-29, 01-30, 01-31 based on month/year \n\n time-hour       = 2DIGIT  ; 00-23 \n time-minute     = 2DIGIT  ; 00-59 \n time-second     = 2DIGIT  ; 00-58, 00-59, 00-60 based on leap second rules \n\n time-secfrac    = \".\" 1*DIGIT \n time-offset     = \"Z\" \n\n partial-time    = time-hour \":\" time-minute \":\" time-second [time-secfrac] \n full-date       = date-fullyear \"-\" date-month \"-\" date-mday \n full-time       = partial-time time-offset \n\n date-time       = full-date \"T\" full-time \\end{verbatim}  Thus, timestamps take the form of `YYYY-MM-DDTHH:MM:SS.SSSZ`, where any number of digits for fractional seconds is permitted. ",
+            "examples": [
+              "1955-11-05T14:00:00.000Z"
+            ],
+            "pattern": "^([\\+-]?\\d{4}(?!\\d{2}\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?",
+            "type": "string"
+          },
+          "core:frequency": {
+            "description": "The center frequency of the signal in Hz.",
+            "type": "number",
+            "minimum": -1000000000000,
+            "maximum": 1000000000000,
+            "examples": [
+              915000000,
+              2400000000
+            ]
+          },
+          "core:global_index": {
+            "description": "The index of the sample referenced by `sample_start` relative to an original sample stream. The entirety of which may not have been captured in a recorded Dataset. If omitted, this value SHOULD be treated as equal to `sample_start`.  For example, some hardware devices are capable of 'counting' samples at the point of data conversion. This sample count is commonly used to indicate  a discontinuity in the datastream between the hardware device and processing.  For example, in the below Captures array, there are two Segments describing samples in a SigMF Dataset file. The first Segment begins at the start of the Dataset file. The second segment begins at sample index 500 relative to the recorded samples (and since this is a conforming SigMF Dataset, is physically located on-disk at location `sample_start * sizeof(sample)`), but the `global_index` reports this was actually sample number 1000 in the original datastream, indicating that 500 samples were lost before they could be recorded.  \\begin{verbatim} ...\n \"captures\": [ \n    { \n        \"core:sample_start\": 0, \n        \"core:global_index\": 0 \n    }, \n    { \n        \"core:sample_start\": 500, \n        \"core:global_index\": 1000 \n    }\n ],\n ... \\end{verbatim} ",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9223372036854776000
+          },
+          "core:header_bytes": {
+            "description": "The number of bytes preceding a chunk of samples that are not sample data, used for NCDs. This field specifies a number of bytes that are not valid sample data that  are physically located at the start of where the chunk of samples referenced by this Segment would otherwise begin. If omitted, this value SHOULD be treated as equal zero. If included, the Dataset is by definition a Non-Conforming Dataset.  For example, the below Metadata for a Non-Conforming Dataset contains two segments describing chunks of 8-bit complex samples (2 bytes per sample) recorded to disk with 4-byte headers that are not valid for processing. Thus, to map these two chunks of samples into memory, a reader application would map the `500 samples` (equal to `1000 bytes`) in the first Segment, starting at a file offset of `4 bytes`, and then the remainder of the file through EOF starting at a file offset of `1008 bytes` (equal to the size  of the previous Segment of samples plus two headers).  \\begin{samepage}\\begin{verbatim} { \n \"global\": { \n    \"core:datatype\": \"cu8\", \n    \"core:version\": \"1.2.0\", \n    \"core:dataset\": \"non-conforming-dataset-01.dat\" \n }, \n \"captures\": [ \n    { \n        \"core:sample_start\": 0, \n        \"core:header_bytes\": 4, \n    }, \n    { \n        \"core:sample_start\": 500, \n        \"core:header_bytes\": 4, \n    }\n ],\n \"annotations\": []\n } \\end{verbatim}\\end{samepage}",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9223372036854776000
+          },
+          "core:geolocation": {
+            "description": "The location of the recording system at the start of this Captures segment, as a single RFC 7946 GeoJSON `point` Object. For moving emitters, this provides a rudimentary means to manage location through different captures segments. While `core:geolocation` is also allowed in the Global object for backwards compatibility reasons, adding it to Captures is preferred.  Per the GeoJSON specification, the point coordinates use the WGS84 coordinate reference system and are `longitude`, `latitude` (REQUIRED, in decimal degrees), and `altitude` (OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. An example including the altitude field is shown below:  \\begin{verbatim} \"captures\": {\n   ...\n   \"core:geolocation\": {\n     \"type\": \"Point\",\n     \"coordinates\": [-107.6183682, 34.0787916, 2120.0]\n   }\n   ...\n } \\end{verbatim}  GeoJSON permits the use of *Foreign Members* in GeoJSON documents per RFC 7946 Section 6.1. Because the SigMF requirement for the `geolocation` field is to be a valid GeoJSON `point` Object, users MAY include *Foreign Member* fields here for user-defined purposes (position valid indication, GNSS SV counts, dillution of precision, accuracy, etc). It is strongly RECOMMENDED that all fields be documented in a SigMF Extension document.  *Note:* Objects named `geometry` or `properties` are prohibited Foreign Members as specified in RFC 7946 Section 7.1.",
+            "type": "object",
+            "required": [
+              "type",
+              "coordinates"
+            ],
             "properties": {
-              "core:sample_start": {
-                "default": 0,
-                "description": "Index of first sample of this chunk. This field specifies the sample index where this Segment takes effect relative to the recorded Dataset file. If the Dataset is a SigMF Dataset file, this  field can be immediately mapped to physical disk location since conforming Datasets only contain sample data. ",
-                "minimum": 0,
-                "maximum": 9223372036854775807,
-                "type": "integer"
+              "type": {
+                "type": "string",
+                "enum": [
+                  "Point"
+                ]
               },
-              "core:datetime": {
-                "description": "An ISO-8601 string indicating the timestamp of the sample index specified by sample_start. This key/value pair MUST be an ISO-8601 string, as defined by [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt), where the only allowed `time-offset` is `Z`, indicating the UTC/Zulu timezone. The ABNF description is:  \\begin{verbatim} date-fullyear   = 4DIGIT \n date-month      = 2DIGIT  ; 01-12 \n date-mday       = 2DIGIT  ; 01-28, 01-29, 01-30, 01-31 based on month/year \n\n time-hour       = 2DIGIT  ; 00-23 \n time-minute     = 2DIGIT  ; 00-59 \n time-second     = 2DIGIT  ; 00-58, 00-59, 00-60 based on leap second rules \n\n time-secfrac    = \".\" 1*DIGIT \n time-offset     = \"Z\" \n\n partial-time    = time-hour \":\" time-minute \":\" time-second [time-secfrac] \n full-date       = date-fullyear \"-\" date-month \"-\" date-mday \n full-time       = partial-time time-offset \n\n date-time       = full-date \"T\" full-time \\end{verbatim}  Thus, timestamps take the form of `YYYY-MM-DDTHH:MM:SS.SSSZ`, where any number of digits for fractional seconds is permitted. ",
-                "examples": ["1955-11-05T14:00:00.000Z"],
-                "pattern": "^([\\+-]?\\d{4}(?!\\d{2}\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?",
-                "type": "string"
+              "coordinates": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
               },
-              "core:frequency": {
-                "description": "The center frequency of the signal in Hz.",
-                "type": "number",
-                "minimum": -1e12,
-                "maximum": 1e12,
-                "examples": [915e6, 2.4e9]
-              },
-              "core:global_index": {
-                "description": "The index of the sample referenced by `sample_start` relative to an original sample stream. The entirety of which may not have been captured in a recorded Dataset. If omitted, this value SHOULD be treated as equal to `sample_start`.  For example, some hardware devices are capable of 'counting' samples at the point of data conversion. This sample count is commonly used to indicate  a discontinuity in the datastream between the hardware device and processing.  For example, in the below Captures array, there are two Segments describing samples in a SigMF Dataset file. The first Segment begins at the start of the Dataset file. The second segment begins at sample index 500 relative to the recorded samples (and since this is a conforming SigMF Dataset, is physically located on-disk at location `sample_start * sizeof(sample)`), but the `global_index` reports this was actually sample number 1000 in the original datastream, indicating that 500 samples were lost before they could be recorded.  \\begin{verbatim} ...\n \"captures\": [ \n    { \n        \"core:sample_start\": 0, \n        \"core:global_index\": 0 \n    }, \n    { \n        \"core:sample_start\": 500, \n        \"core:global_index\": 1000 \n    }\n ],\n ... \\end{verbatim} ",
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 9223372036854775807
-              },
-              "core:header_bytes": {
-                "description": "The number of bytes preceding a chunk of samples that are not sample data, used for NCDs. This field specifies a number of bytes that are not valid sample data that  are physically located at the start of where the chunk of samples referenced by this Segment would otherwise begin. If omitted, this value SHOULD be treated as equal zero. If included, the Dataset is by definition a Non-Conforming Dataset.  For example, the below Metadata for a Non-Conforming Dataset contains two segments describing chunks of 8-bit complex samples (2 bytes per sample) recorded to disk with 4-byte headers that are not valid for processing. Thus, to map these two chunks of samples into memory, a reader application would map the `500 samples` (equal to `1000 bytes`) in the first Segment, starting at a file offset of `4 bytes`, and then the remainder of the file through EOF starting at a file offset of `1008 bytes` (equal to the size  of the previous Segment of samples plus two headers).  \\begin{samepage}\\begin{verbatim} { \n \"global\": { \n    \"core:datatype\": \"cu8\", \n    \"core:version\": \"1.2.0\", \n    \"core:dataset\": \"non-conforming-dataset-01.dat\" \n }, \n \"captures\": [ \n    { \n        \"core:sample_start\": 0, \n        \"core:header_bytes\": 4, \n    }, \n    { \n        \"core:sample_start\": 500, \n        \"core:header_bytes\": 4, \n    }\n ],\n \"annotations\": []\n } \\end{verbatim}\\end{samepage}",
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 9223372036854775807
-              },
-              "core:geolocation": {
-                "description": "The location of the recording system at the start of this Captures segment, as a single RFC 7946 GeoJSON `point` Object. For moving emitters, this provides a rudimentary means to manage location through different captures segments. While `core:geolocation` is also allowed in the Global object for backwards compatibility reasons, adding it to Captures is preferred.  Per the GeoJSON specification, the point coordinates use the WGS84 coordinate reference system and are `longitude`, `latitude` (REQUIRED, in decimal degrees), and `altitude` (OPTIONAL, in meters above the WGS84 ellipsoid) - in that order. An example including the altitude field is shown below:  \\begin{verbatim} \"captures\": {\n   ...\n   \"core:geolocation\": {\n     \"type\": \"Point\",\n     \"coordinates\": [-107.6183682, 34.0787916, 2120.0]\n   }\n   ...\n } \\end{verbatim}  GeoJSON permits the use of *Foreign Members* in GeoJSON documents per RFC 7946 Section 6.1. Because the SigMF requirement for the `geolocation` field is to be a valid GeoJSON `point` Object, users MAY include *Foreign Member* fields here for user-defined purposes (position valid indication, GNSS SV counts, dillution of precision, accuracy, etc). It is strongly RECOMMENDED that all fields be documented in a SigMF Extension document.  *Note:* Objects named `geometry` or `properties` are prohibited Foreign Members as specified in RFC 7946 Section 7.1.",
-                "type": "object",
-                "required": ["type", "coordinates"],
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": ["Point"]
-                  },
-                  "coordinates": {
-                    "type": "array",
-                    "minItems": 2,
-                    "maxItems": 3,
-                    "items": {
-                      "type": "number"
-                    }
-                  },
-                  "bbox": {
-                    "type": "array",
-                    "minItems": 4,
-                    "items": {
-                      "type": "number"
-                    }
-                  }
+              "bbox": {
+                "type": "array",
+                "minItems": 4,
+                "items": {
+                  "type": "number"
                 }
               }
-            },
-            "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
       }
     },
     "annotations": {
@@ -233,52 +271,54 @@
       "items": {
         "type": "object",
         "title": "Annotation",
-            "required": ["core:sample_start"],
-            "properties": {
-              "core:sample_start": {
-                "default": 0,
-                "description": "The sample index at which this Segment takes effect.",
-                "minimum": 0,
-                "maximum": 9223372036854775807,
-                "type": "integer"
-              },
-              "core:sample_count": {
-                "description": "The number of samples that this Segment applies to.",
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 9223372036854775807
-              },
-              "core:freq_lower_edge": {
-                "description": "The frequency (Hz) of the lower edge of the feature described by this annotation. The `freq_lower_edge` and `freq_upper_edge` fields SHOULD be at RF if the feature is at a known RF frequency. If there is no known center frequency (as defined by the `frequency` field in the relevant Capture Segment Object), or the center frequency is at baseband, the `freq_lower_edge` and `freq_upper_edge` fields SHOULD be relative to baseband. It is REQUIRED that both `freq_lower_edge` and `freq_upper_edge` be provided, or neither; the use of just one field is not allowed. ",
-                "type": "number",
-                "minimum": -1e12,
-                "maximum": 1e12
-              },
-              "core:freq_upper_edge": {
-                "description": "The frequency (Hz) of the upper edge of the feature described by this annotation.",
-                "type": "number",
-                "minimum": -1e12,
-                "maximum": 1e12
-              },
-              "core:label": {
-                "description": "A short form human/machine-readable label for the annotation. The `label` field MAY be used for any purpose, but it is RECOMMENDED that it be limited to no more than 20 characters as a common use is a short form GUI indicator. Similarly, it is RECOMMENDED that any user interface making use of this field be capable of displaying up to 20 characters. ",
-                "type": "string"
-              },
-              "core:comment": {
-                "description": "A human-readable comment, intended to be used for longer comments (it is recommended to use `label` for shorter text).",
-                "type": "string"
-              },
-              "core:generator": {
-                "description": "Human-readable name of the entity that created this annotation.",
-                "type": "string"
-              },
-              "core:uuid": {
-                "description": "RFC-4122 unique identifier.",
-                "format": "uuid",
-                "type": "string"
-              }
-            },
-            "additionalProperties": true
+        "required": [
+          "core:sample_start"
+        ],
+        "properties": {
+          "core:sample_start": {
+            "default": 0,
+            "description": "The sample index at which this Segment takes effect.",
+            "minimum": 0,
+            "maximum": 9223372036854776000,
+            "type": "integer"
+          },
+          "core:sample_count": {
+            "description": "The number of samples that this Segment applies to.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9223372036854776000
+          },
+          "core:freq_lower_edge": {
+            "description": "The frequency (Hz) of the lower edge of the feature described by this annotation. The `freq_lower_edge` and `freq_upper_edge` fields SHOULD be at RF if the feature is at a known RF frequency. If there is no known center frequency (as defined by the `frequency` field in the relevant Capture Segment Object), or the center frequency is at baseband, the `freq_lower_edge` and `freq_upper_edge` fields SHOULD be relative to baseband. It is REQUIRED that both `freq_lower_edge` and `freq_upper_edge` be provided, or neither; the use of just one field is not allowed. ",
+            "type": "number",
+            "minimum": -1000000000000,
+            "maximum": 1000000000000
+          },
+          "core:freq_upper_edge": {
+            "description": "The frequency (Hz) of the upper edge of the feature described by this annotation.",
+            "type": "number",
+            "minimum": -1000000000000,
+            "maximum": 1000000000000
+          },
+          "core:label": {
+            "description": "A short form human/machine-readable label for the annotation. The `label` field MAY be used for any purpose, but it is RECOMMENDED that it be limited to no more than 20 characters as a common use is a short form GUI indicator. Similarly, it is RECOMMENDED that any user interface making use of this field be capable of displaying up to 20 characters. ",
+            "type": "string"
+          },
+          "core:comment": {
+            "description": "A human-readable comment, intended to be used for longer comments (it is recommended to use `label` for shorter text).",
+            "type": "string"
+          },
+          "core:generator": {
+            "description": "Human-readable name of the entity that created this annotation.",
+            "type": "string"
+          },
+          "core:uuid": {
+            "description": "RFC-4122 unique identifier.",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
       }
     }
   },
