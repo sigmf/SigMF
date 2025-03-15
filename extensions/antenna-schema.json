@@ -8,7 +8,9 @@
     "global": {
       "description": "The following names are specified in the `antenna` namespace and should be used in the `global` object:",
       "type": "object",
-      "required": ["antenna:model"],
+      "required": [
+        "antenna:model"
+      ],
       "properties": {
         "antenna:model": {
           "description": "Antenna make and model number. E.g. ARA CSB-16, L-com HG3512UP-NF.",
@@ -83,26 +85,20 @@
       "type": "array",
       "items": {
         "type": "object",
-        "anyOf": [
-          {
-            "description": "The annotations value is an array of annotation segment objects that describe anything regarding the signal data not part of the Captures and Global objects. It MUST be sorted by the value of each Annotation Segment's `core:sample_start` key, ascending.",
-            "type": "object",
-            "properties": {
-              "antenna:azimuth_angle": {
-                "description": "Angle of main beam in azimuthal plane from North, in degrees.",
-                "type": "number"
-              },
-              "antenna:elevation_angle": {
-                "description": "Angle of main beam in elevation plane from horizontal, in degrees.",
-                "type": "number"
-              },
-              "antenna:polarization": {
-                "description": "E.g. \"vertical\", \"horizontal\", \"slant-45\", \"left-hand circular\", \"right-hand circular\".",
-                "type": "string"
-              }
-            }
+        "properties": {
+          "antenna:azimuth_angle": {
+            "description": "Angle of main beam in azimuthal plane from North, in degrees.",
+            "type": "number"
+          },
+          "antenna:elevation_angle": {
+            "description": "Angle of main beam in elevation plane from horizontal, in degrees.",
+            "type": "number"
+          },
+          "antenna:polarization": {
+            "description": "E.g. \"vertical\", \"horizontal\", \"slant-45\", \"left-hand circular\", \"right-hand circular\".",
+            "type": "string"
           }
-        ]
+        }
       }
     },
     "collection": {
