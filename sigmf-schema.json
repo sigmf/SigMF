@@ -83,7 +83,7 @@
           "description": "Number of interleaved channels in the Dataset file, if omitted this is implied to be 1, for multiple channels of IQ data, it is RECOMMENDED to use SigMF Collections instead of num_channels for widest application support.",
           "default": 1,
           "minimum": 1,
-          "maximum": 1000,
+          "maximum": 9223372036854775807,
           "type": "integer"
         },
         "core:offset": {
