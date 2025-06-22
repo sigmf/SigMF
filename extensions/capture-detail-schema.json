@@ -1,6 +1,6 @@
 {
   "$id": "https://github.com/sigmf/SigMF/spec/1.0.0/extensions/capture-details-schema",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Capture Details Schema extension for SigMF-meta file",
   "description": "The `capture_details` namespace extension defines static IQ capture parameters extending `captures` and dynamic IQ capture parameters extending `annotations`.",
   "type": "object",
@@ -28,7 +28,7 @@
             "description": "Attenuation applied to the input of the sensor, in dB."
           },
           "capture_details:acquisition_bandwidth": {
-            "type": "number", 
+            "type": "number",
             "description": "Bandwidth of the recording (if lower than the `samp_rate`, in Hz."
           },
           "capture_details:start_capture": {

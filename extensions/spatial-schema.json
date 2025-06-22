@@ -1,9 +1,9 @@
 {
   "$id": "https://github.com/sigmf/SigMF/spec/1.0.0/extensions/spatial-schema",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Spatial Schema extension for SigMF-meta file", 
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Spatial Schema extension for SigMF-meta file",
   "description": "Extension for storing information about spatially diverse data, specifically for directional antennas and multichannel phase-coherent datasets",
-   "$defs": {
+  "$defs": {
     "bearing": {
       "type": "object",
       "properties": {
@@ -12,7 +12,7 @@
           "description": "Azimuth component of the direction in degrees increasing clockwise"
         },
         "elevation": {
-          "type": "number", 
+          "type": "number",
           "description": "Elevation component of the direction in degrees above horizon"
         },
         "range": {
@@ -58,10 +58,7 @@
           "description": "Always set to true - indicates that this point is not known"
         }
       },
-      "oneOf": [
-        {"required": ["point"]},
-        {"required": ["unknown"]}
-      ]
+      "oneOf": [{ "required": ["point"] }, { "required": ["unknown"] }]
     },
     "calibration": {
       "type": "object",
@@ -84,8 +81,8 @@
   "type": "object",
   "properties": {
     "global": {
-      "type": "object", 
-      "description":  "The following names are specified in the `spatial` namespace and should be used in the `global` object:",
+      "type": "object",
+      "description": "The following names are specified in the `spatial` namespace and should be used in the `global` object:",
       "required": ["spatial:num_elements", "spatial:channel_index"],
       "properties": {
         "spatial:num_elements": {
@@ -120,7 +117,7 @@
           },
           "spatial:element_geometry": {
             "type": "array",
-            "items": {"$ref": "#/$defs/cartesian_point"}
+            "items": { "$ref": "#/$defs/cartesian_point" }
           },
           "spatial:phase_offset": {
             "type": "number",
@@ -159,7 +156,7 @@
       "properties": {
         "spatial:element_geometry": {
           "type": "array",
-          "items": {"$ref": "#/$defs/cartesian_point"},
+          "items": { "$ref": "#/$defs/cartesian_point" },
           "description": "Array of phase center geometries"
         }
       }

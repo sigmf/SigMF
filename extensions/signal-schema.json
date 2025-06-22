@@ -1,7 +1,6 @@
-
 {
   "$id": "https://github.com/sigmf/SigMF/spec/1.0.0/extensions/signal-schema",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Signal Schema extension for SigMF-meta file",
   "description": "The signal extension namespace defines how to describe the attributes of wireless communications signals and their emitters",
   "type": "object",
@@ -22,7 +21,21 @@
               },
               "mod_class": {
                 "type": "string",
-                "enum": ["am", "fm", "pm", "ssb", "dsb", "vsb", "ask", "fsk", "psk", "qam", "ook", "cpm", "msk"],
+                "enum": [
+                  "am",
+                  "fm",
+                  "pm",
+                  "ssb",
+                  "dsb",
+                  "vsb",
+                  "ask",
+                  "fsk",
+                  "psk",
+                  "qam",
+                  "ook",
+                  "cpm",
+                  "msk"
+                ],
                 "description": "Modulation class"
               },
               "standard": {
@@ -31,13 +44,19 @@
               },
               "carrier_variant": {
                 "type": "string",
-                "enum": ["with_carrier", "suppressed_carrier", "reduced_carrier", "single_carrier", "multi_carrier"],
+                "enum": [
+                  "with_carrier",
+                  "suppressed_carrier",
+                  "reduced_carrier",
+                  "single_carrier",
+                  "multi_carrier"
+                ],
                 "description": "Carrier variant type"
               },
               "symbol_variant": {
                 "type": "string",
                 "enum": ["differential", "offset"],
-                "description": "Symbol variant type" 
+                "description": "Symbol variant type"
               },
               "order": {
                 "type": "integer",
@@ -50,7 +69,7 @@
                 "description": "Duplexing type"
               },
               "multiplexing": {
-                "type": "string", 
+                "type": "string",
                 "enum": ["tdm", "fdm", "cdm", "ofdm", "sdm", "pdm"],
                 "description": "Multiplexing type"
               },

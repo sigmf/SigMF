@@ -1,6 +1,6 @@
 {
   "$id": "https://github.com/sigmf/SigMF/spec/1.0.0/extensions/traceability-schema",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Traceability Schema extension for SigMF-meta file",
   "description": "Extension providing traceability information for SigMF metadata",
   "$defs": {
@@ -15,7 +15,7 @@
         },
         "datetime": {
           "type": "string",
-          "format": "date-time", 
+          "format": "date-time",
           "description": "Timestamp of the modification in ISO 8601 format"
         }
       }
@@ -33,7 +33,7 @@
           "description": "Container or repository name"
         },
         "file_path": {
-          "type": "string", 
+          "type": "string",
           "description": "Path to the file within the container"
         }
       }
