@@ -19,7 +19,7 @@ from pylatex import (
     Section,
     Subsection,
     Subsubsection,
-    Tabular,
+
 )
 from pylatex.utils import NoEscape, bold
 
@@ -164,8 +164,32 @@ class SigMFDocGenerator:
     def build_pdf_and_html(self) -> None:
         """Generate *OUTPUT_BASENAME*.pdf and *OUTPUT_BASENAME*.html."""
         tex_file = self._populate_document()
-        self._compile_latex(tex_file)
-        self._compile_html(tex_file)
+
+        # Try PDF generation
+        try:
+            self.doc.generate_pdf(OUTPUT_BASENAME, clean_tex=False,
+                                  compiler_args=["--shell-escape"])
+            print(f"PDF generated successfully: {OUTPUT_BASENAME}.pdf")
+        except subprocess.CalledProcessError as e:
+            # Check if PDF was actually generated despite errors
+            pdf_path = Path(f"{OUTPUT_BASENAME}.pdf")
+            if pdf_path.exists():
+                print(
+                    f"PDF generated with warnings: {OUTPUT_BASENAME}.pdf")
+                print(
+                    f"LaTeX had some issues but PDF was created (exit code: {e.returncode})")
+            else:
+                print(f"PDF generation failed: {e}")
+        except Exception as e:
+            print(f" PDF generation failed: {e}")
+
+        # Generate HTML
+        try:
+            self._compile_html(tex_file)
+            print("HTML generated successfully")
+        except Exception as e:
+            print(f"HTML generation failed: {e}")
+            raise
 
     # ------------------------------------------------------------------
     # Internal helpers – document structure
@@ -633,56 +657,6 @@ class SigMFDocGenerator:
     # ------------------------------------------------------------------
     # Build/compile helpers
     # ------------------------------------------------------------------
-
-    def _compile_latex(self, tex_path: Path) -> None:
-        """Run ``latexmk`` (preferred) or fall back to one-shot pdfLaTeX."""
-        try:
-            result = subprocess.run([
-                "latexmk",
-                "-pdf",
-                "-shell-escape",
-                "-interaction=nonstopmode",
-                "-f",
-                tex_path.name,
-            ], capture_output=True, text=True)
-
-            # Check if PDF was actually generated - that's what matters
-            pdf_path = Path(f"{OUTPUT_BASENAME}.pdf")
-            if pdf_path.exists():
-                print(f"✓ PDF generated successfully: {pdf_path}")
-                if result.returncode != 0:
-                    print("LaTeX warnings (PDF still generated):")
-                    print(result.stdout)
-                return
-            else:
-                print("LaTeX failed to generate PDF:")
-                print(result.stdout)
-                print(result.stderr)
-                raise subprocess.CalledProcessError(
-                    result.returncode, result.args)
-
-        except FileNotFoundError:
-            print("latexmk not found, falling back to pdflatex...")
-            # Fall back to single run
-            result = subprocess.run([
-                "pdflatex",
-                "--shell-escape",
-                tex_path.name,
-            ], capture_output=True, text=True)
-
-            # Again, check if PDF exists rather than return code
-            pdf_path = Path(f"{OUTPUT_BASENAME}.pdf")
-            if pdf_path.exists():
-                print(f"✓ PDF generated successfully: {pdf_path}")
-                if result.returncode != 0:
-                    print("pdflatex warnings (PDF still generated):")
-                    print(result.stdout)
-            else:
-                print("pdflatex failed to generate PDF:")
-                print(result.stdout)
-                print(result.stderr)
-                raise subprocess.CalledProcessError(
-                    result.returncode, result.args)
 
     def _compile_html(self, tex_path: Path) -> None:
         css_file = Path("main.css")
