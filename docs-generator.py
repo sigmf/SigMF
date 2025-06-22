@@ -19,7 +19,6 @@ from pylatex import (
     Section,
     Subsection,
     Subsubsection,
-    Tabular,
 )
 from pylatex.utils import NoEscape, bold
 
