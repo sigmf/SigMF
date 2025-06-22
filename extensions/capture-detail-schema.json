@@ -1,0 +1,75 @@
+{
+  "$id": "https://github.com/sigmf/SigMF/spec/1.0.0/extensions/capture-details-schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Capture Details Schema extension for SigMF-meta file",
+  "description": "The `capture_details` namespace extension defines static IQ capture parameters extending `captures` and dynamic IQ capture parameters extending `annotations`.",
+  "type": "object",
+  "properties": {
+    "captures": {
+      "description": "The following names are specified in the `capture_details` namespace and should be used in the `captures` object:",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "capture_details:acq_scale_factor",
+          "capture_details:attenuation",
+          "capture_details:acquisition_bandwidth",
+          "capture_details:start_capture",
+          "capture_details:stop_capture",
+          "capture_details:source_file"
+        ],
+        "properties": {
+          "capture_details:acq_scale_factor": {
+            "type": "number",
+            "description": "Scale factor of IQ collection from the spectrum analyzer used to convert back to real power."
+          },
+          "capture_details:attenuation": {
+            "type": "number",
+            "description": "Attenuation applied to the input of the sensor, in dB."
+          },
+          "capture_details:acquisition_bandwidth": {
+            "type": "number",
+            "description": "Bandwidth of the recording (if lower than the `samp_rate`, in Hz."
+          },
+          "capture_details:start_capture": {
+            "type": "string",
+            "description": "Time of the first sample of IQ recording. The time is UTC with the format of yyyy-mm-ddTHH:MM:SSZ."
+          },
+          "capture_details:stop_capture": {
+            "type": "string",
+            "description": "Time of the last sample of IQ recording. The time is UTC with the format of yyyy-mm-ddTHH:MM:SSZ."
+          },
+          "capture_details:source_file": {
+            "type": "string",
+            "description": "RF IQ recording filename that was used to create the file N.sigmf-data. The file N.sigmf-data may be the same or an edited versions of the source_file."
+          },
+          "capture_details:gain": {
+            "type": "number",
+            "description": "Gain setting of the sensor for this acquisition, distilled to a single number, in dB."
+          }
+        }
+      }
+    },
+    "annotations": {
+      "description": "The following names are specified in the `capture_details` namespace and should be used in the `annotations` object:",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "capture_details:SNRdB",
+          "capture_details:signal_reference_number"
+        ],
+        "properties": {
+          "capture_details:SNRdB": {
+            "type": "number",
+            "description": "Root mean square (RMS) calculation of signal to noise ratio (SNR). The calculation is over windows of known signal and no known signal, in dB."
+          },
+          "capture_details:signal_reference_number": {
+            "type": "string",
+            "description": "Sequential reference labels for the elements that form the sequence of signals identified in a SigMF dataset file. The format of the string is the filename followed by an index that increases with each decoded signal."
+          }
+        }
+      }
+    }
+  }
+}

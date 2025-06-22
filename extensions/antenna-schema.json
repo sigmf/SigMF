@@ -1,6 +1,6 @@
 {
   "$id": "https://github.com/sigmf/SigMF/spec/1.0.0/extensions/antenna-schema",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Anntenna Schema extension for SigMF-meta file.",
   "description": "The `antenna` namespace extension defines static antenna parameters extending the `global` and `annotations` objects in SigMF Recordings, and the `collection` object in a SigMF Collection.",
   "type": "object",
@@ -8,9 +8,7 @@
     "global": {
       "description": "The following names are specified in the `antenna` namespace and should be used in the `global` object:",
       "type": "object",
-      "required": [
-        "antenna:model"
-      ],
+      "required": ["antenna:model"],
       "properties": {
         "antenna:model": {
           "description": "Antenna make and model number. E.g. ARA CSB-16, L-com HG3512UP-NF.",
