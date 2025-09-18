@@ -171,6 +171,7 @@ covered by any of the other fields. Examples include pi/4-DQPSK and GMSK.
 |name|required|type|description|
 |----|--------|----|-----------|
 |`seid`|false|uint|Unique ID of the emitter|
+|`label`|false|string|Unique label for the emitter (such as MAC address or serial number)|
 |`manufacturer`|false|string|Manufacturer of the hardware used to emit the signal|
 |`power_tx`|false|double|Total transmitted power by the emitter (dBm)|
 |`power_eirp`|false|double|Effective Isotropic Radiated Power in the direction of the receiver (dBm)|
@@ -212,6 +213,7 @@ Another simple example, this time with an emitter object:
         },
         "signal:emitter": {
             "seid": 1,
+            "label": "CSE41J6A2392",
             "manufacturer": "linksys",
             "power_tx": 27.0
         }
@@ -266,6 +268,7 @@ An example describing just the ID, power, and location of an emitter:
         "core:label": "5G-NR",
         "signal:emitter": {
             "seid": 5428604929,
+            "label": "00:1A:2B:3C:4D:5E",
             "power_eirp": 43.0,
             "geolocation": {
                 "type": "point",
