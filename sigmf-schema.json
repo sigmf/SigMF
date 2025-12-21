@@ -30,7 +30,7 @@
         },
         "core:sample_rate": {
           "description": "The sample rate of the signal in samples per second.",
-          "minimum": 1,
+          "exclusiveMinimum": 0,
           "maximum": 1000000000000,
           "type": "number"
         },
