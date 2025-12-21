@@ -2,7 +2,7 @@ cff-version: 1.0.3
 authors:
   - name: The GNU Radio Foundation, Inc.
 title: The Signal Metadata Format (SigMF)
-version: 1.2.5
+version: 1.2.6
 doi: 10.5281/zenodo.1418396
 date-released: 2025-05-16
 license: CC-BY-SA-4.0
