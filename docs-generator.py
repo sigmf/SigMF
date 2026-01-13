@@ -17,7 +17,7 @@ print("SigMF Version: " + sigmf_version)
 
 
 def add_code_tags(text):  # swaps every pair of ` ` for \code{}
-    text = text.replace("_", "\\_")  # need to escape underscores when inside a command
+    #text = text.replace("_", "\\_")  # need to escape underscores when inside a command
     while text.find("`") != -1:
         text = text.replace("`", "\\code{", 1)
         text = text.replace("`", "}", 1)
