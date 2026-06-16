@@ -30,6 +30,36 @@ compressed. Tools that implement this extension MAY read the sidecar instead of
 parsing the JSON arrays, then fall back to the JSON file whenever the sidecar is
 absent, unreadable, or stale.
 
+### 0.1 Scope and Non-Goals
+
+This extension is deliberately scoped to **metadata only**. To avoid confusion
+with the several other roles HDF5 commonly plays in RF and array workflows, the
+following are explicit non-goals:
+
+1. **It is not a sample-data container.** The sidecar duplicates only the
+   `global`, `captures`, and `annotations` Metadata. It does not store, replace,
+   or reference IQ/sample data, and it has no relationship to the
+   `.sigmf-data` Dataset file. Sample data continues to live in the SigMF
+   Dataset exactly as specified by Core.
+2. **It does not represent multiple channels or arrays.** SigMF already handles
+   multichannel data two ways — interleaved samples in a single Recording via
+   `core:num_channels`, and multiple channels of IQ data (e.g., array
+   processing) via [SigMF Collections](https://github.com/sigmf/SigMF/blob/main/sigmf-spec.md#sigmf-collection-format),
+   where each channel is a separate Recording tied together by a
+   `.sigmf-collection` file. This extension changes neither mechanism. A
+   `core:num_channels` value is carried through as an ordinary `global` field,
+   and because the cache is per-Recording-metadata it composes with Collections
+   without modification: each member Recording MAY carry its own sidecar, and
+   the Collection file itself needs none.
+3. **It does not change the SigMF data model or add Metadata fields.** No fields
+   are added to `captures` or `annotations`, and the JSON Metadata file remains
+   the complete, authoritative, SigMF Compliant source of truth.
+
+In short, `hdf5-meta` is a performance cache for metadata-heavy Recordings, not
+a data format, an array format, or an alternative to Collections. Using HDF5 as
+a container for the sample data of an array is a separate concern that would
+warrant its own proposal.
+
 ## 1 Global
 
 `hdf5-meta` extends the [Global](https://github.com/sigmf/SigMF/blob/main/sigmf-spec.md#global-object) object.
